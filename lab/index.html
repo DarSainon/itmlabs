@@ -1,39 +1,137 @@
 <!DOCTYPE html>
-<html lang="ru" data-theme="light">
+<html lang="ru" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Лаборатория — itmorev.ru</title>
-  <link rel="stylesheet" href="../css/main.css">
-  <style>
-    .lab-wrap{display:flex;height:calc(100vh - 80px);gap:2px;margin:-1.5rem}
-    .lab-panel{flex:1;display:flex;flex-direction:column;min-width:0}
-    .lab-head{padding:5px 10px;font-size:10px;text-transform:uppercase;letter-spacing:0.04em;background:var(--surface);border-bottom:1px solid var(--border);color:var(--text2);display:flex;justify-content:space-between;align-items:center}
-    .lab-code{flex:1;width:100%;border:none;resize:none;padding:10px;font:12.5px/1.5 'Fira Code',monospace;background:var(--bg);color:var(--text);outline:none}
-    .lab-preview{flex:1.3}
-    .lab-preview iframe{width:100%;height:100%;border:none;background:#fff}
-    @media(max-width:768px){.lab-wrap{flex-direction:column;height:auto}.lab-panel{height:250px}}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лаборатория — itmlabs</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        .lab-wrapper {
+            display: flex;
+            height: calc(100vh - 60px);
+            gap: 1px;
+            margin: -24px;
+        }
+        .lab-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        .lab-panel-header {
+            padding: 8px 14px;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .lab-textarea {
+            flex: 1;
+            width: 100%;
+            border: none;
+            resize: none;
+            padding: 14px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+            background: rgba(0,0,0,0.2);
+            color: var(--text);
+            outline: none;
+        }
+        .lab-preview-panel {
+            flex: 1.3;
+        }
+        .lab-preview-panel iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #fff;
+        }
+        @media (max-width: 800px) {
+            .lab-wrapper { flex-direction: column; height: auto; }
+            .lab-panel { height: 250px; }
+        }
+    </style>
 </head>
 <body>
-  <header class="header"><div class="container header-inner">
-    <a href="/" class="logo">itmorev.ru</a>
-    <nav><a href="/">Главная</a><a href="/blog/">Блог</a><a href="/lab/">Лаборатория</a></nav>
-    <button id="themeToggle" class="theme-btn" title="Сменить тему">🌙</button>
-  </div></header>
+    <header class="header" style="margin-top: 10px;">
+        <div class="header-inner">
+            <a href="../" class="logo">itmlabs</a>
+            <nav class="nav">
+                <a href="../lab/">Лаб</a>
+                <a href="../science/">Наука</a>
+                <a href="../dnd/">D&D</a>
+                <a href="../blog/">Блог</a>
+                <a href="../ai-experiments/">AI</a>
+                <a href="../cyss/">СОМУ</a>
+            </nav>
+            <button id="themeToggle" class="theme-btn">🌙</button>
+        </div>
+    </header>
 
-  <div class="lab-wrap">
-    <div class="lab-panel"><div class="lab-head">📄 HTML</div><textarea id="h" class="lab-code" spellcheck="false">&lt;h1&gt;Привет, лаборатория!&lt;/h1&gt;&lt;p&gt;Редактируй HTML, CSS, JS — результат справа.&lt;/p&gt;&lt;button onclick=&quot;document.querySelector('h1').style.color='var(--accent)'&quot;&gt;Нажми&lt;/button&gt;</textarea></div>
-    <div class="lab-panel"><div class="lab-head">🎨 CSS</div><textarea id="c" class="lab-code" spellcheck="false">body{font-family:system-ui;margin:20px;color:#0d0d0d;--accent:#4d6bfe}h1{transition:color 0.3s}button{padding:8px 16px;background:#4d6bfe;color:#fff;border:none;border-radius:8px;cursor:pointer}</textarea></div>
-    <div class="lab-panel"><div class="lab-head">⚡ JS</div><textarea id="j" class="lab-code" spellcheck="false">console.log('🚀 Лаборатория!');</textarea></div>
-    <div class="lab-panel lab-preview"><div class="lab-head"><span>👁️ Результат</span><button id="run" class="btn btn-sm">▶</button></div><iframe id="prev"></iframe></div>
-  </div>
-  <script>
-    const [h,c,j,prev]=['h','c','j','prev'].map(id=>document.getElementById(id));
-    function u(){prev.srcdoc=`<!DOCTYPE html><html><head><style>${c.value}</style></head><body>${h.value}<script>${j.value}<\/script></body></html>`}
-    document.getElementById('run').addEventListener('click',u);
-    [h,c,j].forEach(e=>{let t;e.addEventListener('input',()=>{clearTimeout(t);t=setTimeout(u,400)})});u();
-  </script>
-  <script src="../js/theme.js"></script>
+    <div class="lab-wrapper">
+        <div class="lab-panel">
+            <div class="lab-panel-header">📄 HTML</div>
+            <textarea id="htmlCode" class="lab-textarea" spellcheck="false">&lt;h1&gt;Привет, лаборатория!&lt;/h1&gt;
+&lt;p&gt;Редактируй HTML, CSS, JS — результат справа.&lt;/p&gt;
+&lt;button onclick=&quot;document.querySelector('h1').style.color='#0a84ff'&quot;&gt;Нажми&lt;/button&gt;</textarea>
+        </div>
+        <div class="lab-panel">
+            <div class="lab-panel-header">🎨 CSS</div>
+            <textarea id="cssCode" class="lab-textarea" spellcheck="false">body {
+    font-family: system-ui, sans-serif;
+    margin: 20px;
+    color: #1d1d1f;
+    background: #f5f5f7;
+}
+h1 { transition: color 0.3s; }
+button {
+    padding: 8px 16px;
+    background: #0071e3;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}</textarea>
+        </div>
+        <div class="lab-panel">
+            <div class="lab-panel-header">⚡ JS</div>
+            <textarea id="jsCode" class="lab-textarea" spellcheck="false">console.log('🚀 Лаборатория запущена!');</textarea>
+        </div>
+        <div class="lab-panel lab-preview-panel">
+            <div class="lab-panel-header">
+                <span>👁️ Результат</span>
+                <button id="runBtn" class="btn" style="padding:4px 12px;font-size:0.75rem;">▶</button>
+            </div>
+            <iframe id="preview"></iframe>
+        </div>
+    </div>
+
+    <script>
+        const htmlEl = document.getElementById('htmlCode');
+        const cssEl = document.getElementById('cssCode');
+        const jsEl = document.getElementById('jsCode');
+        const preview = document.getElementById('preview');
+
+        function update() {
+            preview.srcdoc = `<!DOCTYPE html><html><head><style>${cssEl.value}</style></head><body>${htmlEl.value}<script>${jsEl.value}<\/script></body></html>`;
+        }
+
+        document.getElementById('runBtn').addEventListener('click', update);
+        [htmlEl, cssEl, jsEl].forEach(el => {
+            let t;
+            el.addEventListener('input', () => {
+                clearTimeout(t);
+                t = setTimeout(update, 400);
+            });
+        });
+        update();
+    </script>
+    <script src="../js/theme.js"></script>
 </body>
 </html>

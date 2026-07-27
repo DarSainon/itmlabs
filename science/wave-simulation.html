@@ -1,64 +1,52 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Симуляция волн — itmorev.ru</title>
-  <style>
-    :root{--accent:#4d6bfe;--bg:#f8f9fa;--text:#1a1a2e;--surface:#fff;--border:#e5e7eb}
-    body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px}
-    .card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;max-width:900px;width:100%;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
-    h1{color:var(--accent);margin-bottom:0.5rem}
-    canvas{width:100%;border-radius:8px;border:1px solid var(--border);cursor:pointer}
-    .controls{display:flex;gap:1rem;flex-wrap:wrap;margin:1rem 0;align-items:center}
-    .controls label{font-weight:600;font-size:0.9rem}
-    .controls input[type=range]{flex:1;min-width:120px}
-    a{color:var(--accent);text-decoration:none}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Симуляция волн — itmlabs</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <style>
+        .sim-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+        canvas {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: #000;
+            cursor: pointer;
+        }
+        .controls {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            justify-content: center;
+            margin: 16px 0;
+            flex-wrap: wrap;
+        }
+        .controls label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        input[type="range"] {
+            width: 160px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .back-link:hover { color: var(--text); }
+    </style>
 </head>
 <body>
-  <div class="card">
-    <h1>🌊 Симуляция волн</h1>
-    <p style="color:#6b7280;margin-bottom:1rem">Кликни в любом месте — создай волну. Ползунок меняет скорость затухания.</p>
-    <div class="controls">
-      <label>Затухание: <span id="dampVal">0.98</span></label>
-      <input type="range" id="damping" min="0.9" max="0.999" step="0.001" value="0.98">
-    </div>
-    <canvas id="c" width="850" height="300"></canvas>
-    <p style="margin-top:1rem;font-size:0.85rem"><a href="/science/">← Назад к проектам</a></p>
-  </div>
-  <script>
-    const canvas=document.getElementById('c'),ctx=canvas.getContext('2d');
-    const w=canvas.width,h=canvas.height;
-    let current=new Float32Array(w),previous=new Float32Array(w);
-    let damping=0.98;
-    function init(){for(let i=0;i<w;i++)current[i]=previous[i]=0}
-    canvas.addEventListener('click',e=>{
-      const rect=canvas.getBoundingClientRect();
-      const x=Math.floor((e.clientX-rect.left)*(w/rect.width));
-      current[x]=50;
-    });
-    document.getElementById('damping').addEventListener('input',function(){
-      damping=parseFloat(this.value);
-      document.getElementById('dampVal').textContent=damping;
-    });
-    function step(){
-      const next=new Float32Array(w);
-      for(let i=1;i<w-1;i++){
-        next[i]=(2*current[i]-previous[i]+0.4*((current[i-1]+current[i+1])-2*current[i]))*damping;
-      }
-      previous=current;current=next;
-    }
-    function draw(){
-      ctx.fillStyle='#f8f9fa';ctx.fillRect(0,0,w,h);
-      ctx.beginPath();ctx.moveTo(0,h/2-current[0]);
-      for(let i=1;i<w;i++)ctx.lineTo(i,h/2-current[i]);
-      ctx.strokeStyle='#4d6bfe';ctx.lineWidth=2;ctx.stroke();
-      ctx.beginPath();ctx.moveTo(0,h/2);ctx.lineTo(w,h/2);
-      ctx.strokeStyle='#e5e7eb';ctx.lineWidth=1;ctx.stroke();
-    }
-    function loop(){step();draw();requestAnimationFrame(loop)}
-    init();loop();
-  </script>
-</body>
-</html>
+    <div class="sim-container">
+        <h1 style="font-weight:600;font-size:1.8rem;margin-bottom:8px;">🌊 Симуляция волн</h1>
+        <p style="color:var(--text-secondary);margin-bottom:20px;">Кликни по полю — создай волну. Ползунок меняет затухание.</p>
+        <div class="controls">
+            <label>Затухание: <span id="dampVal">0.98

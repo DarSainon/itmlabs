@@ -1,18 +1,25 @@
+// Переключатель темы с иконкой
 (function(){
-  const key='itmorev-theme';
-  const saved=localStorage.getItem(key);
-  const theme=saved||(window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
-  document.documentElement.setAttribute('data-theme',theme);
-  document.addEventListener('DOMContentLoaded',function(){
-    const icon=document.querySelector('.theme-icon')||document.getElementById('themeToggle');
-    if(icon)icon.textContent=theme==='dark'?'☀️':'🌙';
-    const btn=document.getElementById('themeToggle');
-    if(!btn)return;
-    btn.addEventListener('click',function(){
-      const next=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
-      document.documentElement.setAttribute('data-theme',next);
-      if(icon)icon.textContent=next==='dark'?'☀️':'🌙';
-      localStorage.setItem(key,next);
+    const key = 'itmlabs-theme';
+    const saved = localStorage.getItem(key);
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+
+    function updateIcon(el) {
+        if (el) el.textContent = theme === 'dark' ? '☀️' : '🌙';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        updateIcon(btn);
+        btn.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            updateIcon(btn);
+            localStorage.setItem(key, next);
+        });
     });
-  });
 })();

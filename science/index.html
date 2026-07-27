@@ -1,52 +1,48 @@
 <!DOCTYPE html>
-<html lang="ru" data-theme="light">
+<html lang="ru" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Научные проекты — itmorev.ru</title>
-  <link rel="stylesheet" href="../css/main.css">
-  <style>
-    .page-header{text-align:center;padding:2rem 0}
-    .page-header h1{font-size:2rem}
-    .page-header p{color:var(--text2)}
-    .project-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}
-    .project-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;text-decoration:none;color:var(--text);box-shadow:var(--shadow);transition:transform 0.15s}
-    .project-card:hover{transform:translateY(-2px)}
-    .project-thumb{height:120px;background:var(--accent-light);display:flex;align-items:center;justify-content:center;font-size:3rem}
-    .project-body{padding:1rem}
-    .project-body h3{font-size:1.1rem;margin-bottom:0.3rem}
-    .project-body p{font-size:0.85rem;color:var(--text2)}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Наука — itmlabs</title>
+    <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
-  <header class="header"><div class="container header-inner">
-    <a href="/" class="logo">itmorev.ru</a>
-    <nav><a href="/">Главная</a><a href="/blog/">Блог</a><a href="/lab/">Лаборатория</a></nav>
-    <button id="themeToggle" class="theme-btn" title="Сменить тему">🌙</button>
-  </div></header>
+    <header class="header" style="margin-top: 10px;">
+        <div class="header-inner">
+            <a href="../" class="logo">itmlabs</a>
+            <nav class="nav">
+                <a href="../lab/">Лаб</a>
+                <a href="../science/">Наука</a>
+                <a href="../dnd/">D&D</a>
+                <a href="../blog/">Блог</a>
+                <a href="../ai-experiments/">AI</a>
+                <a href="../cyss/">СОМУ</a>
+            </nav>
+            <button id="themeToggle" class="theme-btn">🌙</button>
+        </div>
+    </header>
 
-  <main class="container">
-    <div class="page-header">
-      <h1>🔬 Научные проекты</h1>
-      <p>Визуализации, симуляции и инструменты для исследований</p>
-    </div>
-    <div class="project-grid">
-      <a href="wave-simulation.html" class="project-card">
-        <div class="project-thumb">🌊</div>
-        <div class="project-body"><h3>Симуляция волн</h3><p>Интерактивная физическая модель распространения волн на Canvas</p></div>
-      </a>
-      <a href="#" class="project-card" style="pointer-events:none;opacity:0.5">
-        <div class="project-thumb">📊</div>
-        <div class="project-body"><h3>Графики (скоро)</h3><p>Построение научных графиков с анимацией</p></div>
-      </a>
-      <a href="#" class="project-card" style="pointer-events:none;opacity:0.5">
-        <div class="project-thumb">🧬</div>
-        <div class="project-body"><h3>Генетика (скоро)</h3><p>Визуализация генетических алгоритмов</p></div>
-      </a>
-    </div>
-  </main>
-
-  <footer class="footer"><p>© 2026 itmorev.ru</p></footer>
-  <script src="../js/theme.js"></script>
+    <main class="page-container">
+        <h1 class="page-title">🔬 Научные проекты</h1>
+        <p class="page-subtitle">Визуализации, симуляции и инструменты для исследований</p>
+        <div class="cards-list">
+            <a href="./wave-simulation.html" class="card">
+                <h3>🌊 Симуляция волн</h3>
+                <p>Интерактивная модель распространения волн на Canvas</p>
+                <span class="tag">физика</span>
+            </a>
+            <div class="card" style="opacity:0.5;">
+                <h3>📊 Графики</h3>
+                <p>Построение научных графиков с анимацией (скоро)</p>
+                <span class="tag">в разработке</span>
+            </div>
+            <div class="card" style="opacity:0.5;">
+                <h3>🧬 Генетика</h3>
+                <p>Визуализация генетических алгоритмов (скоро)</p>
+                <span class="tag">в разработке</span>
+            </div>
+        </div>
+    </main>
+    <script src="../js/theme.js"></script>
 </body>
 </html>
