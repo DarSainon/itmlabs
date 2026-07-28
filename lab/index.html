@@ -1,127 +1,150 @@
 <!DOCTYPE html>
-<html lang="ru" data-theme="dark">
+<html lang="ru">
 <head>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>
-  <rect width='64' height='64' rx='12' fill='%23000000'/>
-  <circle cx='32' cy='32' r='8' fill='none' stroke='%23ffffff' stroke-width='2'/>
-  <circle cx='32' cy='32' r='3' fill='%23ffffff'/>
-  <line x1='32' y1='2' x2='32' y2='16' stroke='%23ffffff' stroke-width='1.5'/>
-  <line x1='32' y1='48' x2='32' y2='62' stroke='%23ffffff' stroke-width='1.5'/>
-  <line x1='2' y1='32' x2='16' y2='32' stroke='%23ffffff' stroke-width='1.5'/>
-  <line x1='48' y1='32' x2='62' y2='32' stroke='%23ffffff' stroke-width='1.5'/>
-  <line x1='10' y1='10' x2='21' y2='21' stroke='%23ffffff' stroke-width='1.2'/>
-  <line x1='43' y1='43' x2='54' y2='54' stroke='%23ffffff' stroke-width='1.2'/>
-  <line x1='54' y1='10' x2='43' y2='21' stroke='%23ffffff' stroke-width='1.2'/>
-  <line x1='21' y1='43' x2='10' y2='54' stroke='%23ffffff' stroke-width='1.2'/>
-</svg>">
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Лаборатория — itmlabs</title>
-    <link rel="stylesheet" href="../css/main.css">
+    <title>Лаборатория — ITMLABS</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="../images/favicon/icon-1.svg?v=0.2">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        .lab-wrapper {
-            display: flex;
-            height: calc(100vh - 60px);
-            gap: 1px;
-            margin: -24px;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #000; color: #fff;
+            font-family: 'Inter', sans-serif;
+            height: 100vh; display: flex;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
         }
-        .lab-panel {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
+
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background:
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 100px 100px;
+            pointer-events: none; z-index: 0;
         }
-        .lab-panel-header {
-            padding: 8px 14px;
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            color: var(--text-secondary);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+
+        /* Круглая кнопка-домик */
+        .home-btn {
+            position: fixed; top: 24px; left: 24px; z-index: 10;
+            width: 44px; height: 44px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 50%;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.25s;
         }
-        .lab-textarea {
-            flex: 1;
-            width: 100%;
-            border: none;
-            resize: none;
-            padding: 14px;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            font-size: 12px;
-            line-height: 1.5;
-            background: rgba(0,0,0,0.2);
-            color: var(--text);
-            outline: none;
+        .home-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            transform: scale(1.05);
         }
-        .lab-preview-panel {
-            flex: 1.3;
+        .home-btn svg {
+            width: 18px; height: 18px;
+            stroke: currentColor; stroke-width: 1.5;
+            fill: none; stroke-linecap: round; stroke-linejoin: round;
         }
-        .lab-preview-panel iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: #fff;
+
+        .lab {
+            display: flex; width: 100%; height: 100%;
+            gap: 1px; background: rgba(255,255,255,0.05);
+            position: relative; z-index: 1;
         }
+        .panel {
+            flex: 1; display: flex; flex-direction: column;
+            min-width: 0; background: #000;
+        }
+        .panel-header {
+            padding: 10px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem; text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(255,255,255,0.35);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .code-area {
+            flex: 1; width: 100%;
+            border: none; resize: none;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px; line-height: 1.6;
+            background: #000; color: #fff;
+            outline: none; caret-color: #fff;
+        }
+        .code-area::placeholder { color: rgba(255,255,255,0.2); }
+        .preview-panel { flex: 1.3; display: flex; flex-direction: column; background: #000; }
+        .preview-panel iframe {
+            flex: 1; width: 100%;
+            border: none; background: #fff;
+        }
+        .run-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff; padding: 4px 14px;
+            border-radius: 4px; cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem; text-transform: uppercase;
+            letter-spacing: 0.06em;
+            transition: all 0.3s;
+        }
+        .run-btn:hover { background: #fff; color: #000; border-color: #fff; }
+
         @media (max-width: 800px) {
-            .lab-wrapper { flex-direction: column; height: auto; }
-            .lab-panel { height: 250px; }
+            .lab { flex-direction: column; }
+            .panel { height: 200px; }
         }
     </style>
 </head>
 <body>
-    <header class="header" style="margin-top: 10px;">
-        <div class="header-inner">
-            <a href="../" class="logo">itmlabs</a>
-            <nav class="nav">
-                <a href="../lab/">Лаб</a>
-                <a href="../science/">Наука</a>
-                <a href="../dnd/">D&D</a>
-                <a href="../blog/">Блог</a>
-                <a href="../ai-experiments/">AI</a>
-                <a href="../cyss/">СОМУ</a>
-            </nav>
-            <button id="themeToggle" class="theme-btn">🌙</button>
-        </div>
-    </header>
+    <a href="../" class="home-btn" title="В меню">
+        <svg viewBox="0 0 24 24">
+            <path d="M3 12L12 3l9 9"/>
+            <path d="M5 10v10a1 1 0 0 0 1 1h4v-5h4v5h4a1 1 0 0 0 1-1V10"/>
+        </svg>
+    </a>
 
-    <div class="lab-wrapper">
-        <div class="lab-panel">
-            <div class="lab-panel-header">📄 HTML</div>
-            <textarea id="htmlCode" class="lab-textarea" spellcheck="false">&lt;h1&gt;Привет, лаборатория!&lt;/h1&gt;
-&lt;p&gt;Редактируй HTML, CSS, JS — результат справа.&lt;/p&gt;
-&lt;button onclick=&quot;document.querySelector('h1').style.color='#0a84ff'&quot;&gt;Нажми&lt;/button&gt;</textarea>
+    <div class="lab">
+        <div class="panel">
+            <div class="panel-header">HTML</div>
+            <textarea id="htmlCode" class="code-area" spellcheck="false">&lt;h1&gt;Заголовок&lt;/h1&gt;
+&lt;p&gt;тестировать тут&lt;/p&gt;
+&lt;button&gt;кнопка&lt;/button&gt;</textarea>
         </div>
-        <div class="lab-panel">
-            <div class="lab-panel-header">🎨 CSS</div>
-            <textarea id="cssCode" class="lab-textarea" spellcheck="false">body {
+        <div class="panel">
+            <div class="panel-header">CSS</div>
+            <textarea id="cssCode" class="code-area" spellcheck="false">body {
     font-family: system-ui, sans-serif;
-    margin: 20px;
-    color: #1d1d1f;
+    padding: 20px;
     background: #f5f5f7;
+    color: #1d1d1f;
 }
-h1 { transition: color 0.3s; }
 button {
     padding: 8px 16px;
-    background: #0071e3;
+    background: #000;
     color: #fff;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
 }</textarea>
         </div>
-        <div class="lab-panel">
-            <div class="lab-panel-header">⚡ JS</div>
-            <textarea id="jsCode" class="lab-textarea" spellcheck="false">console.log('🚀 Лаборатория запущена!');</textarea>
+        <div class="panel">
+            <div class="panel-header">JS</div>
+            <textarea id="jsCode" class="code-area" spellcheck="false">console.log('лаборатория запущена');</textarea>
         </div>
-        <div class="lab-panel lab-preview-panel">
-            <div class="lab-panel-header">
-                <span>👁️ Результат</span>
-                <button id="runBtn" class="btn" style="padding:4px 12px;font-size:0.75rem;">▶</button>
+        <div class="panel preview-panel">
+            <div class="panel-header">
+                PREVIEW
+                <button id="runBtn" class="run-btn">run</button>
             </div>
             <iframe id="preview"></iframe>
         </div>
@@ -133,20 +156,21 @@ button {
         const jsEl = document.getElementById('jsCode');
         const preview = document.getElementById('preview');
 
-        function update() {
-            preview.srcdoc = `<!DOCTYPE html><html><head><style>${cssEl.value}</style></head><body>${htmlEl.value}<script>${jsEl.value}<\/script></body></html>`;
+        function updatePreview() {
+            preview.srcdoc = '<!DOCTYPE html><html><head><style>' + cssEl.value + '</style></head><body>' + htmlEl.value + '<script>' + jsEl.value + '<\/script></body></html>';
         }
 
-        document.getElementById('runBtn').addEventListener('click', update);
+        document.getElementById('runBtn').addEventListener('click', updatePreview);
+
         [htmlEl, cssEl, jsEl].forEach(el => {
-            let t;
-            el.addEventListener('input', () => {
-                clearTimeout(t);
-                t = setTimeout(update, 400);
+            let timer;
+            el.addEventListener('input', function() {
+                clearTimeout(timer);
+                timer = setTimeout(updatePreview, 400);
             });
         });
-        update();
+
+        updatePreview();
     </script>
-    <script src="../js/theme.js"></script>
 </body>
 </html>
