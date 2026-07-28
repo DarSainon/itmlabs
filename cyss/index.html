@@ -1,1 +1,271 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>СОМУ — ITMLABS</title>
+    <link rel="icon" type="image/svg+xml" href="../images/favicon/favicon-5.svg?v=0.2">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
+        :root {
+            --teal: #00a69c;
+            --red: #ff2324;
+            --teal-glow: rgba(0, 166, 156, 0.15);
+            --red-glow: rgba(255, 35, 36, 0.1);
+            --bg: #fafafa;
+            --surface: rgba(255, 255, 255, 0.8);
+            --border: rgba(0, 166, 156, 0.12);
+            --text: #1a1a2e;
+            --text-dim: #6b7280;
+            --shadow: 0 1px 3px rgba(0,0,0,0.04);
+            --radius: 18px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            background-image:
+                radial-gradient(ellipse at 30% 20%, rgba(0,166,156,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 60%, rgba(255,35,36,0.04) 0%, transparent 60%);
+            background-attachment: fixed;
+        }
+
+        /* Сетка на фоне */
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background:
+                linear-gradient(rgba(0,166,156,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,166,156,0.04) 1px, transparent 1px);
+            background-size: 80px 80px;
+            pointer-events: none; z-index: 0;
+        }
+
+        /* Декоративные линии */
+        .decor-left, .decor-right {
+            position: fixed; top: 0;
+            width: 1px; height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(0,166,156,0.15), transparent);
+            z-index: 0;
+        }
+        .decor-left { left: 15%; }
+        .decor-right { right: 15%; }
+        .decor-top, .decor-bottom {
+            position: fixed; left: 0;
+            width: 100%; height: 1px;
+            background: linear-gradient(to right, transparent, rgba(0,166,156,0.1), transparent);
+            z-index: 0;
+        }
+        .decor-top { top: 12%; }
+        .decor-bottom { bottom: 12%; }
+
+        /* Круглая кнопка-домик */
+        .home-btn {
+            position: fixed; top: 24px; left: 24px; z-index: 10;
+            width: 44px; height: 44px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 166, 156, 0.2);
+            border-radius: 50%;
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.25s;
+        }
+        .home-btn:hover {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: var(--teal);
+            color: var(--teal);
+            transform: scale(1.05);
+        }
+        .home-btn svg {
+            width: 18px; height: 18px;
+            stroke: currentColor; stroke-width: 1.5;
+            fill: none; stroke-linecap: round; stroke-linejoin: round;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 80px 24px 60px;
+            position: relative; z-index: 1;
+        }
+
+        /* Hero с местом под эмблему */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 48px;
+            text-align: left;
+        }
+        .hero-logo {
+            width: 80px; height: 80px;
+            flex-shrink: 0;
+            border: 1px dashed rgba(0, 166, 156, 0.3);
+            border-radius: 16px;
+            background: rgba(0, 166, 156, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-logo img {
+            width: 100%; height: 100%;
+            object-fit: contain;
+            border-radius: 16px;
+        }
+        .hero-text h1 {
+            font-size: 2.4rem; font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.02em;
+            margin: 0;
+        }
+        .hero-text h1 .teal { color: var(--teal); }
+        .hero-text h1 .red { color: var(--red); }
+
+        /* Карточки */
+        .tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+        .tile {
+            background: var(--surface);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+            display: flex; flex-direction: column;
+            box-shadow: var(--shadow);
+        }
+        .tile:hover {
+            transform: translateY(-4px);
+            border-color: rgba(0, 166, 156, 0.3);
+            box-shadow: 0 16px 32px rgba(0, 166, 156, 0.08);
+        }
+
+        /* Плейсхолдер под фото */
+        .tile-image {
+            height: 120px;
+            background: linear-gradient(135deg, rgba(0,166,156,0.08), rgba(255,35,36,0.04));
+        }
+
+        .tile-body {
+            padding: 18px; flex: 1;
+            display: flex; flex-direction: column; gap: 6px;
+        }
+        .tile-body h3 { font-size: 1.1rem; font-weight: 600; color: var(--text); }
+        .tile-body p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.5; flex: 1; }
+
+        /* Теги */
+        .tag {
+            padding: 3px 10px; border-radius: 14px;
+            font-size: 0.68rem; font-weight: 600;
+            display: inline-block; width: fit-content;
+        }
+        .tag-teal { background: rgba(0,166,156,0.1); color: #008f86; }
+        .tag-red { background: rgba(255,35,36,0.08); color: #c62828; }
+
+        /* Кнопки */
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 8px 18px;
+            background: var(--teal);
+            color: #fff;
+            border-radius: 20px;
+            font-weight: 600; font-size: 0.8rem;
+            text-decoration: none;
+            margin-top: auto; align-self: flex-start;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+        .btn-primary:hover {
+            background: #008f86;
+            box-shadow: 0 0 15px rgba(0,166,156,0.2);
+        }
+
+        .footer-note {
+            text-align: center; margin-top: 48px;
+            font-size: 0.8rem; color: var(--text-dim);
+        }
+        .footer-note a { color: var(--teal); text-decoration: none; }
+        .footer-note a:hover { text-decoration: underline; }
+
+        @media (max-width: 700px) {
+            .hero { flex-direction: column; text-align: center; }
+            .hero-text h1 { font-size: 1.8rem; }
+            .tiles-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="decor-left"></div>
+    <div class="decor-right"></div>
+    <div class="decor-top"></div>
+    <div class="decor-bottom"></div>
+
+    <a href="../" class="home-btn" title="В меню">
+        <svg viewBox="0 0 24 24">
+            <path d="M3 12L12 3l9 9"/>
+            <path d="M5 10v10a1 1 0 0 0 1 1h4v-5h4v5h4a1 1 0 0 0 1-1V10"/>
+        </svg>
+    </a>
+
+    <main class="container">
+        <div class="hero">
+            <div class="hero-logo"></div>
+            <div class="hero-text">
+                <h1>
+                    Совет
+                    <span class="teal">обучающихся</span>
+                    и
+                    <span class="red">молодых учёных</span>
+                </h1>
+            </div>
+        </div>
+
+        <div class="tiles-grid">
+            <div class="tile">
+                <div class="tile-image"></div>
+                <div class="tile-body">
+                    <h3>База конференций</h3>
+                    <p>Сервис для поиска подходящей медицинской конференции по обширной базе данных. Умные фильтры, актуальные даты, все направления.</p>
+                    <span class="tag tag-teal">проект</span>
+                    <a href="/cyss/projects/baza-conf/index.html" class="btn-primary">Подробнее →</a>
+                </div>
+            </div>
+            <div class="tile">
+                <div class="tile-image"></div>
+                <div class="tile-body">
+                    <h3>Исследования</h3>
+                    <p>Материалы появятся в ближайшее время.</p>
+                    <span class="tag tag-red">скоро</span>
+                    <a href="#" class="btn-primary">Подробнее →</a>
+                </div>
+            </div>
+            <div class="tile">
+                <div class="tile-image"></div>
+                <div class="tile-body">
+                    <h3>Гранты</h3>
+                    <p>Раздел находится в разработке.</p>
+                    <span class="tag tag-red">скоро</span>
+                    <a href="#" class="btn-primary">Подробнее →</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            Тестовые страницы и проекты СОМУ.<br>
+            Оригинальный сайт: <a href="https://cyss.almazovcentre.ru" target="_blank">cyss.almazovcentre.ru</a>
+        </div>
+    </main>
+</body>
+</html>
