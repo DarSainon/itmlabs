@@ -1,70 +1,352 @@
 <!DOCTYPE html>
-<html lang="ru" data-theme="dark">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>itmlabs — Лаборатория</title>
-    <link rel="stylesheet" href="./css/main.css">
+    <title>ITMLABS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Фоновая сетка */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 100px 100px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Декоративные линии — киберпанк */
+        .decor-left,
+        .decor-right {
+            position: fixed;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.2), transparent);
+            z-index: 0;
+        }
+        .decor-left {
+            left: 15%;
+        }
+        .decor-right {
+            right: 15%;
+        }
+        .decor-top,
+        .decor-bottom {
+            position: fixed;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.15), transparent);
+            z-index: 0;
+        }
+        .decor-top {
+            top: 12%;
+        }
+        .decor-bottom {
+            bottom: 12%;
+        }
+
+        /* Основной контейнер */
+        .container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        /* Логотип с градиентом */
+        .logo {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .logo h1 {
+            font-size: 4rem;
+            font-weight: 200;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #ffffff;
+        }
+        .logo h1 strong {
+            font-weight: 700;
+            background: linear-gradient(180deg, #ffffff 0%, #aaaaaa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+        .logo-line {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffffff, transparent);
+            margin: 16px auto 0;
+        }
+
+        /* Меню */
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 420px;
+            max-width: 90vw;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.55);
+            padding: 16px 24px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            backdrop-filter: blur(0px);
+        }
+        .menu-item:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+        }
+        .menu-item:hover .menu-icon {
+            border-color: #ffffff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.25);
+        }
+        .menu-item:hover .menu-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Номер пункта */
+        .menu-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            color: #ffffff;
+            opacity: 0.35;
+            width: 32px;
+            text-align: right;
+            transition: opacity 0.3s;
+        }
+        .menu-item:hover .menu-num {
+            opacity: 0.8;
+        }
+
+        /* Иконки — CSS */
+        .menu-icon {
+            width: 28px;
+            height: 28px;
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            position: relative;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        /* Лаб — терминал */
+        .icon-lab::after {
+            content: '> _';
+            position: absolute;
+            bottom: 3px;
+            left: 5px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            color: #ffffff;
+            opacity: 0.7;
+        }
+
+        /* Наука — орбита */
+        .icon-science {
+            border-radius: 50%;
+        }
+        .icon-science::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: #ffffff;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+
+        /* D&D — меч */
+        .icon-dnd {
+            width: 4px;
+            height: 22px;
+            background: rgba(255, 255, 255, 0.35);
+            margin: 3px auto 0;
+            border-radius: 2px;
+        }
+        .icon-dnd::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -5px;
+            width: 14px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.35);
+            border-radius: 1px;
+        }
+
+        /* AI — процессор */
+        .icon-ai::before {
+            content: '';
+            position: absolute;
+            top: 7px;
+            left: 0;
+            width: 28px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.35);
+        }
+        .icon-ai::after {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 0;
+            width: 1px;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.35);
+        }
+
+        /* СОМУ — колонна */
+        .icon-comu {
+            width: 6px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.25);
+            margin: 2px auto 0;
+        }
+        .icon-comu::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -3px;
+            width: 12px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Название пункта */
+        .menu-label {
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            flex: 1;
+        }
+
+        /* Стрелка */
+        .menu-arrow {
+            opacity: 0;
+            transform: translateX(-8px);
+            transition: all 0.3s;
+            color: #ffffff;
+            font-size: 1rem;
+        }
+
+        /* Версия */
+        .version {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            color: rgba(255, 255, 255, 0.2);
+            letter-spacing: 0.1em;
+            z-index: 2;
+        }
+
+        /* Адаптив */
+        @media (max-width: 500px) {
+            .logo h1 {
+                font-size: 2.4rem;
+                letter-spacing: 0.2em;
+            }
+            .menu {
+                width: 100%;
+            }
+            .menu-item {
+                padding: 14px 16px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header class="header" id="header">
-        <div class="header-inner">
-            <a href="./" class="logo">itmlabs</a>
-            <nav class="nav">
-                <a href="./lab/">Лаб</a>
-                <a href="./science/">Наука</a>
-                <a href="./dnd/">D&D</a>
-                <a href="./blog/">Блог</a>
-                <a href="./ai-experiments/">AI</a>
-                <a href="./cyss/">СОМУ</a>
-            </nav>
-            <button id="themeToggle" class="theme-btn" aria-label="Сменить тему">🌙</button>
+    <!-- Декоративная геометрия -->
+    <div class="decor-left"></div>
+    <div class="decor-right"></div>
+    <div class="decor-top"></div>
+    <div class="decor-bottom"></div>
+
+    <div class="container">
+        <!-- Логотип -->
+        <div class="logo">
+            <h1>ITM<strong>LABS</strong></h1>
+            <div class="logo-line"></div>
         </div>
-    </header>
 
-    <main class="main-grid">
-        <section class="hero-section">
-            <h1 class="hero-title">itmlabs</h1>
-            <p class="hero-subtitle">Лаборатория идей · Наука · Игры · AI</p>
-            <p class="hero-desc">Цифровое пространство для экспериментов: от научных симуляций до сайта D&D-кампании. Каждый проект — отдельная страница, которой можно поделиться.</p>
-        </section>
+        <!-- Главное меню -->
+        <nav class="menu">
+            <a href="./lab/" class="menu-item">
+                <span class="menu-num">01</span>
+                <div class="menu-icon icon-lab"></div>
+                <span class="menu-label">Лаборатория</span>
+                <span class="menu-arrow">→</span>
+            </a>
+            <a href="./science/" class="menu-item">
+                <span class="menu-num">02</span>
+                <div class="menu-icon icon-science"></div>
+                <span class="menu-label">Наука</span>
+                <span class="menu-arrow">→</span>
+            </a>
+            <a href="./dnd/" class="menu-item">
+                <span class="menu-num">03</span>
+                <div class="menu-icon icon-dnd"></div>
+                <span class="menu-label">D&amp;D</span>
+                <span class="menu-arrow">→</span>
+            </a>
+            <a href="./ai-experiments/" class="menu-item">
+                <span class="menu-num">04</span>
+                <div class="menu-icon icon-ai"></div>
+                <span class="menu-label">AI</span>
+                <span class="menu-arrow">→</span>
+            </a>
+            <a href="./cyss/" class="menu-item">
+                <span class="menu-num">05</span>
+                <div class="menu-icon icon-comu"></div>
+                <span class="menu-label">СОМУ</span>
+                <span class="menu-arrow">→</span>
+            </a>
+        </nav>
+    </div>
 
-        <section class="hub-section">
-            <div class="hub-grid">
-                <a href="./lab/" class="hub-card">
-                    <span class="hub-icon">🧪</span>
-                    <span class="hub-title">Лаборатория</span>
-                    <span class="hub-desc">Живой редактор кода</span>
-                </a>
-                <a href="./science/" class="hub-card">
-                    <span class="hub-icon">🔬</span>
-                    <span class="hub-title">Наука</span>
-                    <span class="hub-desc">Визуализации и симуляции</span>
-                </a>
-                <a href="./dnd/" class="hub-card">
-                    <span class="hub-icon">🐉</span>
-                    <span class="hub-title">D&D</span>
-                    <span class="hub-desc">Кампания и персонажи</span>
-                </a>
-                <a href="./blog/" class="hub-card">
-                    <span class="hub-icon">📝</span>
-                    <span class="hub-title">Блог</span>
-                    <span class="hub-desc">Заметки и идеи</span>
-                </a>
-                <a href="./ai-experiments/" class="hub-card">
-                    <span class="hub-icon">🤖</span>
-                    <span class="hub-title">AI</span>
-                    <span class="hub-desc">Эксперименты нейросетей</span>
-                </a>
-                <a href="./cyss/" class="hub-card">
-                    <span class="hub-icon">🏛️</span>
-                    <span class="hub-title">СОМУ</span>
-                    <span class="hub-desc">Проекты для Совета</span>
-                </a>
-            </div>
-        </section>
-    </main>
-
-    <script src="./js/theme.js"></script>
+    <div class="version">v 0.1 // itmlabs</div>
 </body>
 </html>
