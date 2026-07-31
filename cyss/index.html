@@ -1,274 +1,326 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>СОМУ — ITMLABS</title>
-    <link rel="icon" type="image/svg+xml" href="../images/favicon/icon-5.svg?v=0.2">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>СОМУ — ITMLABS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="icon" type="image/svg+xml" href="../images/favicon/icon-5.svg?v=0.2">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#00a69c;
+    --primary-dark:#007a72;
+    --accent:#ff2324;
+    --accent-dark:#b71c1c;
+    --bg:#f4f3ef;
+    --surface:rgba(255,255,255,0.55);
+    --surface-solid:rgba(255,255,255,0.82);
+    --text:#12181c;
+    --text-muted:#5b6570;
+    --text-faint:#98a1a8;
+    --line:rgba(18,24,28,0.12);
+    --line-soft:rgba(18,24,28,0.07);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{background:var(--bg);}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+  }
+  body::before{
+    content:'';
+    position:fixed; inset:0;
+    background:
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size:64px 64px;
+    pointer-events:none; z-index:0;
+    mask-image:radial-gradient(ellipse at 30% 0%, black 0%, transparent 70%);
+  }
 
-        :root {
-            --teal: #00a69c;
-            --red: #ff2324;
-            --teal-glow: rgba(0, 166, 156, 0.15);
-            --red-glow: rgba(255, 35, 36, 0.1);
-            --bg: #fafafa;
-            --surface: rgba(255, 255, 255, 0.8);
-            --border: rgba(0, 166, 156, 0.12);
-            --text: #1a1a2e;
-            --text-dim: #6b7280;
-            --shadow: 0 1px 3px rgba(0,0,0,0.04);
-            --radius: 18px;
-        }
+  /* HUD corner brackets — signature element */
+  .hud{ position:relative; }
+  .hud::before, .hud::after,
+  .hud .br-tl, .hud .br-tr, .hud .br-bl, .hud .br-br{ content:''; position:absolute; width:14px; height:14px; pointer-events:none; }
+  .hud::before{ top:8px; left:8px; border-top:1.5px solid var(--primary); border-left:1.5px solid var(--primary); border-top-left-radius:6px; }
+  .hud::after{ bottom:8px; right:8px; border-bottom:1.5px solid var(--primary); border-right:1.5px solid var(--primary); border-bottom-right-radius:6px; }
+  .hud .br-tr{ top:8px; right:8px; border-top:1.5px solid var(--primary); border-right:1.5px solid var(--primary); border-top-right-radius:6px; }
+  .hud .br-bl{ bottom:8px; left:8px; border-bottom:1.5px solid var(--primary); border-left:1.5px solid var(--primary); border-bottom-left-radius:6px; }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-            background-image:
-                radial-gradient(ellipse at 30% 20%, rgba(0,166,156,0.06) 0%, transparent 60%),
-                radial-gradient(ellipse at 70% 60%, rgba(255,35,36,0.04) 0%, transparent 60%);
-            background-attachment: fixed;
-        }
+  .top{
+    display:flex; align-items:center; gap:10px;
+    padding:22px 32px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--text-faint); font-weight:500;
+    position:relative; z-index:2;
+  }
+  .top a{
+    color:var(--text); text-decoration:none;
+    width:34px; height:34px;
+    border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--surface);
+    backdrop-filter:blur(20px) saturate(1.6); -webkit-backdrop-filter:blur(20px) saturate(1.6);
+    border:1px solid var(--line);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.6), 0 4px 12px rgba(18,24,28,0.05);
+    transition:all .2s;
+    flex-shrink:0;
+  }
+  .top a:hover{ border-color:var(--primary); color:var(--primary-dark); }
 
-        /* Сетка на фоне */
-        body::before {
-            content: '';
-            position: fixed; inset: 0;
-            background:
-                linear-gradient(rgba(0,166,156,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,166,156,0.04) 1px, transparent 1px);
-            background-size: 80px 80px;
-            pointer-events: none; z-index: 0;
-        }
+  .wrap{ position:relative; z-index:1; max-width:980px; margin:0 auto; padding:24px 32px 110px; }
 
-        /* Декоративные линии */
-        .decor-left, .decor-right {
-            position: fixed; top: 0;
-            width: 1px; height: 100%;
-            background: linear-gradient(to bottom, transparent, rgba(0,166,156,0.15), transparent);
-            z-index: 0;
-        }
-        .decor-left { left: 15%; }
-        .decor-right { right: 15%; }
-        .decor-top, .decor-bottom {
-            position: fixed; left: 0;
-            width: 100%; height: 1px;
-            background: linear-gradient(to right, transparent, rgba(0,166,156,0.1), transparent);
-            z-index: 0;
-        }
-        .decor-top { top: 12%; }
-        .decor-bottom { bottom: 12%; }
+  /* HERO */
+  .hero{
+    background:var(--surface);
+    backdrop-filter:blur(28px) saturate(1.7); -webkit-backdrop-filter:blur(28px) saturate(1.7);
+    border:1px solid var(--line);
+    border-radius:28px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.7), 0 20px 50px -24px rgba(18,24,28,0.15);
+    padding:56px 48px;
+    display:flex; align-items:center; gap:36px;
+    margin-bottom:48px;
+  }
+  .emblem{
+    width:80px; height:80px; flex-shrink:0;
+    border-radius:20px;
+    background:rgba(255,255,255,0.6);
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+    overflow:hidden;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.7), 0 18px 30px -12px rgba(0,166,156,0.25);
+  }
+  .emblem::after{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(135deg, rgba(0,166,156,0.1), transparent 60%);
+    pointer-events:none;
+  }
 
-        /* Круглая кнопка-домик */
-        .home-btn {
-            position: fixed; top: 24px; left: 24px; z-index: 10;
-            width: 44px; height: 44px;
-            display: flex; align-items: center; justify-content: center;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(0, 166, 156, 0.2);
-            border-radius: 50%;
-            color: var(--text);
-            text-decoration: none;
-            transition: all 0.25s;
-        }
-        .home-btn:hover {
-            background: rgba(255, 255, 255, 0.9);
-            border-color: var(--teal);
-            color: var(--teal);
-            transform: scale(1.05);
-        }
-        .home-btn svg {
-            width: 18px; height: 18px;
-            stroke: currentColor; stroke-width: 1.5;
-            fill: none; stroke-linecap: round; stroke-linejoin: round;
-        }
+  .hero-text .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.72rem; font-weight:600; letter-spacing:0.14em;
+    color:var(--primary-dark); text-transform:uppercase;
+    margin-bottom:10px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{ content:''; width:6px; height:6px; background:var(--primary); box-shadow:0 0 8px var(--primary); }
 
-        .container {
-            max-width: 960px;
-            margin: 0 auto;
-            padding: 80px 24px 60px;
-            position: relative; z-index: 1;
-        }
+  h1{
+    font-size:2.3rem; font-weight:800; line-height:1.1;
+    letter-spacing:-0.02em;
+    margin-bottom:14px;
+  }
+  .hero-text p{
+    font-size:1rem; color:var(--text-muted); line-height:1.6; max-width:520px; font-weight:400;
+  }
 
-        /* Hero с местом под эмблему */
-        .hero {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 24px;
-            margin-bottom: 48px;
-            text-align: left;
-        }
-        .hero-logo {
-            width: 80px; height: 80px;
-            flex-shrink: 0;
-            background: rgba(0, 166, 156, 0.04);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .hero-logo img {
-            width: 100%; height: 100%;
-            object-fit: contain;
-            border-radius: 16px;
-        }
-        .hero-text h1 {
-            font-size: 2.4rem; font-weight: 700;
-            color: var(--text);
-            letter-spacing: -0.02em;
-            margin: 0;
-        }
-        .hero-text h1 .teal { color: var(--teal); }
-        .hero-text h1 .red { color: var(--red); }
+  /* SECTION HEADER */
+  .section-head{
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin-bottom:22px;
+    padding-bottom:14px;
+    border-bottom:1px solid var(--line);
+  }
+  h2{ font-size:1.4rem; font-weight:700; letter-spacing:-0.01em; }
+  .count{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.72rem; color:var(--text-faint); font-weight:600; letter-spacing:0.05em;
+  }
 
-        /* Карточки */
-        .tiles-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-        }
-        .tile {
-            background: var(--surface);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
-            display: flex; flex-direction: column;
-            box-shadow: var(--shadow);
-        }
-        .tile:hover {
-            transform: translateY(-4px);
-            border-color: rgba(0, 166, 156, 0.3);
-            box-shadow: 0 16px 32px rgba(0, 166, 156, 0.08);
-        }
+  /* GRID */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+    gap:16px;
+  }
 
-        /* Плейсхолдер под фото */
-        .tile-image {
-            height: 120px;
-            background: linear-gradient(135deg, rgba(0,166,156,0.08), rgba(255,35,36,0.04));
-        }
+  .card{
+    background:var(--surface-solid);
+    backdrop-filter:blur(18px) saturate(1.5); -webkit-backdrop-filter:blur(18px) saturate(1.5);
+    border:1px solid var(--line);
+    border-radius:22px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.6);
+    padding:26px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    text-decoration:none;
+    color:inherit;
+    transition:background .2s, transform .2s, box-shadow .2s;
+    position:relative;
+  }
+  .card.is-live:hover{ background:rgba(255,255,255,0.95); transform:translateY(-2px); box-shadow:inset 0 1px 0 rgba(255,255,255,0.6), 0 16px 32px -16px rgba(0,166,156,0.25); }
 
-        .tile-body {
-            padding: 18px; flex: 1;
-            display: flex; flex-direction: column; gap: 6px;
-        }
-        .tile-body h3 { font-size: 1.1rem; font-weight: 600; color: var(--text); }
-        .tile-body p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.5; flex: 1; }
+  .doc-link{
+    position:absolute; top:18px; right:18px;
+    width:30px; height:30px; border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,0.7);
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    border:1px solid var(--line);
+    color:var(--text-faint);
+    text-decoration:none;
+    transition:all .2s;
+    z-index:2;
+  }
+  .doc-link:hover{ color:var(--primary-dark); border-color:var(--primary); transform:rotate(-8deg) scale(1.05); }
 
-        /* Теги */
-        .tag {
-            padding: 3px 10px; border-radius: 14px;
-            font-size: 0.68rem; font-weight: 600;
-            display: inline-block; width: fit-content;
-        }
-        .tag-teal { background: rgba(0,166,156,0.1); color: #008f86; }
-        .tag-red { background: rgba(255,35,36,0.08); color: #c62828; }
+  .card-id{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.68rem; color:var(--text-faint); letter-spacing:0.06em;
+  }
 
-        /* Кнопки */
-        .btn-primary {
-            display: inline-flex; align-items: center; gap: 5px;
-            padding: 8px 18px;
-            background: var(--teal);
-            color: #fff;
-            border-radius: 20px;
-            font-weight: 600; font-size: 0.8rem;
-            text-decoration: none;
-            margin-top: auto; align-self: flex-start;
-            transition: background 0.2s, box-shadow 0.2s;
-        }
-        .btn-primary:hover {
-            background: #008f86;
-            box-shadow: 0 0 15px rgba(0,166,156,0.2);
-        }
+  .cover{
+    width:100%; height:118px;
+    border-radius:14px;
+    background:linear-gradient(135deg, #eef8f7, var(--bg));
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+    border:1px solid var(--line-soft);
+    position:relative;
+  }
+  .cover img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .cover i{ font-size:22px; color:var(--text-faint); }
 
-        .footer-note {
-            text-align: center; margin-top: 48px;
-            font-size: 0.8rem; color: var(--text-dim);
-        }
-        .footer-note a { color: var(--teal); text-decoration: none; }
-        .footer-note a:hover { text-decoration: underline; }
+  .card h3{ font-size:1.1rem; font-weight:700; letter-spacing:-0.01em; }
+  .card p{ font-size:0.88rem; color:var(--text-muted); line-height:1.55; flex:1; }
 
-        @media (max-width: 700px) {
-            .hero { flex-direction: column; text-align: center; }
-            .hero-text h1 { font-size: 1.8rem; }
-            .tiles-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+  .tags{ display:flex; gap:8px; flex-wrap:wrap; }
+  .tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.66rem; font-weight:600; letter-spacing:0.04em; text-transform:uppercase;
+    padding:4px 10px;
+    border-radius:20px;
+    border:1px solid;
+  }
+  .tag.teal{ background:rgba(0,166,156,0.07); color:var(--primary-dark); border-color:rgba(0,166,156,0.3); }
+  .tag.neutral{ background:transparent; color:var(--text-faint); border-color:var(--line); }
+
+  .card-foot{ display:flex; align-items:center; justify-content:space-between; margin-top:2px; }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:'Inter',sans-serif;
+    font-size:0.82rem; font-weight:600;
+    padding:9px 20px;
+    border-radius:40px;
+    border:1px solid var(--primary);
+    cursor:pointer;
+    text-decoration:none;
+    color:var(--primary-dark);
+    background:transparent;
+    transition:all .2s;
+  }
+  .btn-primary:hover{ background:var(--primary); color:#fff; box-shadow:0 0 16px rgba(0,166,156,0.4); }
+  .btn-disabled{ border-color:var(--line); color:var(--text-faint); cursor:default; }
+
+  /* FOOTER */
+  .foot{
+    margin-top:64px;
+    padding-top:24px;
+    border-top:1px solid var(--line);
+  }
+  .foot p{
+    font-family:'JetBrains Mono',monospace;
+    font-size:0.72rem; color:var(--text-faint); letter-spacing:0.03em;
+    line-height:1.7;
+  }
+  .foot a{ color:var(--primary-dark); text-decoration:none; border-bottom:1px solid rgba(0,166,156,0.3); transition:border-color .2s; }
+  .foot a:hover{ border-color:var(--primary); color:var(--primary); }
+
+  @media (max-width:600px){
+    .hero{ flex-direction:column; text-align:center; padding:40px 26px; }
+    h1{ font-size:1.8rem; }
+  }
+</style>
 </head>
 <body>
-    <div class="decor-left"></div>
-    <div class="decor-right"></div>
-    <div class="decor-top"></div>
-    <div class="decor-bottom"></div>
 
-    <a href="../" class="home-btn" title="В меню">
-        <svg viewBox="0 0 24 24">
-            <path d="M3 12L12 3l9 9"/>
-            <path d="M5 10v10a1 1 0 0 0 1 1h4v-5h4v5h4a1 1 0 0 0 1-1V10"/>
-        </svg>
-    </a>
+  <div class="top">
+    <a href="../" title="В меню"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-5h4v5h4a1 1 0 0 0 1-1V10"/></svg></a>
+  </div>
 
-    <main class="container">
-        <div class="hero">
-            <div class="hero-logo">
-                <img src="../images/cyss/logo.png" alt="СОМУ"> 
-            </div>
-            
-            <div class="hero-text">
-                <h1>
-                    Совет
-                    <span class="teal">обучающихся</span>
-                    и
-                    <span class="red">молодых учёных</span>
-                </h1>
-            </div>
+  <div class="wrap">
+
+    <div class="hero hud">
+      <div class="emblem">
+        <img src="../images/cyss/logo.png" alt="СОМУ" style="width:100%;height:100%;object-fit:contain;padding:12px;position:relative;z-index:1;">
+      </div>
+      <div class="hero-text">
+        <div class="eyebrow">Реестр проектов</div>
+        <h1>Совет обучающихся<br>и молодых учёных</h1>
+        <p>Тестовые продукты и проекты СОМУ.</p>
+      </div>
+      <span class="br-tr"></span><span class="br-bl"></span>
+    </div>
+
+    <div class="section-head">
+      <h2>Проекты</h2>
+      <span class="count">003 ЗАПИСИ</span>
+    </div>
+
+    <div class="grid">
+
+      <div class="card is-live hud">
+        <a href="#" title="Документация проекта" class="doc-link"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></a>
+        <span class="card-id">/ 001</span>
+        <div class="cover">
+          <img src="../images/cyss/baza_conf.png" alt="База конференций">
         </div>
-
-        <div class="tiles-grid">
-            <div class="tile">
-                <div class="tile-image">
-                    <img src="../images/cyss/baza_conf.png" alt="База конференций" style="width:100%; height:100%; object-fit:cover;">
-                </div>
-                <div class="tile-body">
-                    <h3>База конференций</h3>
-                    <p>Продукт для поиска подходящей медицинской конференции по базе данных. Умные фильтры, актуальные даты, все медицинские направления.</p>
-                    <span class="tag tag-teal">проект</span>
-                    <a href="/itmlabs/cyss/projects/baza-conf/index.html" class="btn-primary">Подробнее →</a>
-                </div>
-            </div>
-            <div class="tile">
-                <div class="tile-image"></div>
-                <div class="tile-body">
-                    <h3>Заголовок проекта</h3>
-                    <p>Описание проекта</p>
-                    <span class="tag tag-red">скоро</span>
-                    <a href="#" class="btn-primary">Подробнее →</a>
-                </div>
-            </div>
-            <div class="tile">
-                <div class="tile-image"></div>
-                <div class="tile-body">
-                    <h3>Заголовок проекта</h3>
-                    <p>Описание проекта</p>
-                    <span class="tag tag-red">скоро</span>
-                    <a href="#" class="btn-primary">Подробнее →</a>
-                </div>
-            </div>
+        <h3>База конференций</h3>
+        <p>Поиск подходящей медицинской конференции по базе данных. Умные фильтры, актуальные даты, все направления.</p>
+        <div class="tags">
+          <span class="tag teal">проект</span>
+          <span class="tag neutral">v0.01</span>
         </div>
-
-        <div class="footer-note">
-            Тестовые страницы и проекты СОМУ.<br>
-            Оригинальный сайт: <a href="https://cyss.almazovcentre.ru" target="_blank">cyss.almazovcentre.ru</a>
+        <div class="card-foot">
+          <a href="/itmlabs/cyss/projects/baza-conf/index.html" class="btn btn-primary">Подробнее <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
         </div>
-    </main>
+        <span class="br-tr"></span><span class="br-bl"></span>
+      </div>
+
+      <div class="card">
+        <span class="card-id">/ 002</span>
+        <div class="cover"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-faint)"><path d="M5 2h14M5 22h14M6 2c0 5 4 6.5 6 8 2-1.5 6-3 6-8M6 22c0-5 4-6.5 6-8 2 1.5 6 3 6 8"/></svg></div>
+        <h3>Заголовок проекта</h3>
+        <p>Описание появится по мере готовности проекта.</p>
+        <div class="tags">
+          <span class="tag neutral">Скоро</span>
+        </div>
+        <div class="card-foot">
+          <span class="btn btn-disabled">Подробнее</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="card-id">/ 003</span>
+        <div class="cover"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-faint)"><path d="M5 2h14M5 22h14M6 2c0 5 4 6.5 6 8 2-1.5 6-3 6-8M6 22c0-5 4-6.5 6-8 2 1.5 6 3 6 8"/></svg></div>
+        <h3>Заголовок проекта</h3>
+        <p>Описание появится по мере готовности проекта.</p>
+        <div class="tags">
+          <span class="tag neutral">Скоро</span>
+        </div>
+        <div class="card-foot">
+          <span class="btn btn-disabled">Подробнее</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="foot">
+      <p>Тестовые страницы и проекты СОМУ.<br>Оригинальный сайт: <a href="https://cyss.almazovcentre.ru/" target="_blank" rel="noopener">cyss.almazovcentre.ru</a></p>
+    </div>
+
+  </div>
+
 </body>
 </html>
+
