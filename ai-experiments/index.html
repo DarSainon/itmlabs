@@ -1,42 +1,51 @@
 <!DOCTYPE html>
-<html lang="ru" data-theme="dark">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>В разработке — ITMLABS</title>
-    <link rel="icon" type="image/svg+xml" href="../images/favicon/favicon-0.svg?v=0.2">
+    <title>AI — ITMLABS</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        body {
-            background: #000;
-            color: #fff;
-            font-family: 'Inter', sans-serif;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            -webkit-font-smoothing: antialiased;
-            overflow: hidden;
+        :root {
+            --bg: #000;
+            --text: #fff;
+            --text-dim: rgba(255,255,255,0.5);
+            --text-faint: rgba(255,255,255,0.3);
+            --accent: #5eead4;
+            --blue: #60a5fa;
+            --red: #f87171;
+            --surface: rgba(20,20,22,0.8);
+            --border: rgba(255,255,255,0.08);
+            --radius: 14px;
         }
 
-        /* Фоновая сетка */
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        body.network-mode { cursor: grab; }
+        body.network-mode.dragging { cursor: grabbing; }
+
         body::before {
             content: '';
             position: fixed; inset: 0;
             background:
-                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: 100px 100px;
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 80px 80px;
             pointer-events: none; z-index: 0;
         }
 
-        /* Линии */
         .decor-left, .decor-right {
             position: fixed; top: 0;
             width: 1px; height: 100%;
-            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.15), transparent);
+            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.1), transparent);
             z-index: 0;
         }
         .decor-left { left: 15%; }
@@ -44,158 +53,574 @@
         .decor-top, .decor-bottom {
             position: fixed; left: 0;
             width: 100%; height: 1px;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.1), transparent);
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.08), transparent);
             z-index: 0;
         }
         .decor-top { top: 12%; }
         .decor-bottom { bottom: 12%; }
 
-        /* Круглая кнопка-домик */
         .home-btn {
-            position: fixed; top: 24px; left: 24px; z-index: 10;
+            position: fixed; top: 24px; left: 24px; z-index: 20;
             width: 44px; height: 44px;
             display: flex; align-items: center; justify-content: center;
             background: rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255,255,255,0.12);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
             border-radius: 50%;
             color: rgba(255,255,255,0.7);
             text-decoration: none;
             transition: all 0.25s;
         }
-        .home-btn:hover {
-            background: rgba(255,255,255,0.12);
-            border-color: rgba(255,255,255,0.3);
-            color: #fff;
-            transform: scale(1.05);
-        }
-        .home-btn svg {
-            width: 18px; height: 18px;
-            stroke: currentColor; stroke-width: 1.5;
-            fill: none; stroke-linecap: round; stroke-linejoin: round;
-        }
+        .home-btn:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); color: #fff; }
+        .home-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
 
-        /* Центральный блок */
-        .wrapper {
-            position: relative; z-index: 1;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 40px;
+        .mode-toggle {
+            position: fixed; top: 24px; right: 24px; z-index: 20;
+            display: flex; gap: 4px;
+            background: rgba(20,20,22,0.8);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 4px;
         }
-
-        /* Механизм — вращающиеся элементы */
-        .mechanism {
-            position: relative;
-            width: 120px;
-            height: 120px;
+        .mode-btn {
+            padding: 8px 16px;
+            border: none; border-radius: 10px;
+            background: transparent;
+            color: var(--text-dim);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem; font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            letter-spacing: 0.02em;
         }
-
-        /* Внешнее кольцо */
-        .ring {
-            position: absolute;
-            inset: 0;
-            border: 2px solid rgba(255,255,255,0.15);
-            border-radius: 50%;
-            animation: spin 8s linear infinite;
-        }
-
-        /* Внешнее кольцо (обратное вращение) */
-        .ring-reverse {
-            position: absolute;
-            inset: 10px;
-            border: 1.5px solid rgba(255,255,255,0.1);
-            border-radius: 50%;
-            border-left-color: transparent;
-            border-bottom-color: transparent;
-            animation: spin-reverse 6s linear infinite;
-        }
-
-        /* Зубчатое кольцо (пунктир) */
-        .gear {
-            position: absolute;
-            inset: 20px;
-            border: 2px dashed rgba(255,255,255,0.2);
-            border-radius: 50%;
-            animation: spin 12s linear infinite;
-        }
-
-        /* Ядро — вращающийся ромб */
-        .core {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 30px; height: 30px;
+        .mode-btn.active {
             background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.25);
-            transform-origin: center center;
-            animation: spin-core 4s linear infinite;
+            color: #fff;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.05);
+        }
+        .mode-btn:hover:not(.active) { color: rgba(255,255,255,0.8); }
+
+        /* Журнал */
+        .journal-container {
+            position: fixed; inset: 0;
+            z-index: 5;
+            overflow-y: auto;
+            padding: 80px 24px 60px;
+            transition: filter 0.4s, opacity 0.4s;
+        }
+        .journal-container.blur-bg {
+            filter: blur(12px);
+            opacity: 0.5;
+            pointer-events: none;
         }
 
-        /* Точка в центре */
-        .dot {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 4px; height: 4px;
-            background: #fff;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 10px rgba(255,255,255,0.5);
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        @keyframes spin-reverse {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(-360deg); }
-        }
-        @keyframes spin-core {
-            from { transform: translate(-50%, -50%) rotate(0deg); }
-            to { transform: translate(-50%, -50%) rotate(90deg); }
-        }
-
-        /* Текст */
-        .title {
-            font-size: 1.6rem;
-            font-weight: 300;
+        .journal-inner { max-width: 750px; margin: 0 auto; }
+        .journal-title {
+            font-size: 2rem; font-weight: 300;
             letter-spacing: 0.15em;
-            color: rgba(255,255,255,0.8);
+            margin-bottom: 40px;
+            opacity: 0.9;
         }
-        .subtitle {
+
+        .timeline { position: relative; padding-left: 100px; }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 84px; top: 0; bottom: 0;
+            width: 1px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.3), rgba(255,255,255,0.03));
+        }
+
+        .entry { position: relative; margin-bottom: 32px; padding-left: 32px; }
+        .entry-date {
+            position: absolute;
+            left: -100px; top: 0;
+            width: 70px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
-            color: rgba(255,255,255,0.35);
-            letter-spacing: 0.1em;
-            margin-top: -24px;
+            font-size: 0.72rem;
+            color: var(--text-faint);
+            text-align: right;
+            letter-spacing: 0.05em;
+            line-height: 1.4;
+        }
+        .entry-dot {
+            position: absolute;
+            left: -7px; top: 4px;
+            width: 15px; height: 15px;
+            background: var(--bg);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            z-index: 2;
+            transition: all 0.2s;
+        }
+        .entry:hover .entry-dot {
+            border-color: var(--accent);
+            box-shadow: 0 0 14px rgba(94,234,212,0.4);
+        }
+
+        .entry-card {
+            background: var(--surface);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 22px;
+            cursor: pointer;
+            transition: all 0.25s;
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .entry-card:hover {
+            background: rgba(30,30,35,0.9);
+            border-color: rgba(255,255,255,0.15);
+            transform: translateX(6px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+        .entry-card-body { flex: 1; }
+        .entry-card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; }
+        .entry-card p { font-size: 0.82rem; color: var(--text-dim); line-height: 1.6; }
+        .entry-tags { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+        .tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.62rem; font-weight: 500;
+            padding: 4px 8px; border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-dim);
+            letter-spacing: 0.03em;
+        }
+        .tag.active-tag { border-color: var(--accent); color: var(--accent); }
+        .tag.soon-tag { border-color: rgba(255,255,255,0.1); color: var(--text-faint); }
+
+        /* Стрелка на карточке */
+        .entry-arrow {
+            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
+            color: var(--text-dim);
+            transition: all 0.25s;
+        }
+        .entry-card:hover .entry-arrow {
+            color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        /* Canvas (сеть) */
+        canvas {
+            position: fixed; inset: 0;
+            z-index: 10;
+            display: none;
+        }
+        canvas.active { display: block; }
+
+        /* Информационная карточка */
+        .info-card {
+            position: fixed;
+            z-index: 25;
+            background: rgba(20,20,22,0.95);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--accent);
+            border-radius: 16px;
+            padding: 20px;
+            width: 280px;
+            display: none;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.6), 0 0 30px rgba(94,234,212,0.2);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            pointer-events: auto;
+        }
+        .info-card.show { display: block; }
+        .info-card .close-btn {
+            position: absolute; top: 10px; right: 12px;
+            width: 28px; height: 28px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 50%;
+            color: rgba(255,255,255,0.6);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .info-card .close-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        .info-card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; padding-right: 30px; }
+        .info-card p { font-size: 0.82rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 16px; }
+        .info-card .go-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 18px;
+            background: var(--accent);
+            color: #000;
+            border-radius: 8px;
+            font-weight: 600; font-size: 0.82rem;
+            text-decoration: none;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .info-card .go-btn.disabled {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-dim);
+            pointer-events: none;
+        }
+        .info-card .go-btn:hover:not(.disabled) { background: #4dd9c8; }
+
+        @media (max-width: 600px) {
+            .timeline { padding-left: 60px; }
+            .timeline::before { left: 44px; }
+            .entry-date { left: -60px; width: 45px; font-size: 0.65rem; }
+            .entry-dot { left: -9px; }
+            .mode-btn { padding: 6px 12px; font-size: 0.72rem; }
         }
     </style>
 </head>
 <body>
-    <div class="decor-left"></div>
-    <div class="decor-right"></div>
-    <div class="decor-top"></div>
-    <div class="decor-bottom"></div>
+    <div class="decor-left"></div><div class="decor-right"></div><div class="decor-top"></div><div class="decor-bottom"></div>
 
     <a href="../" class="home-btn" title="В меню">
-        <svg viewBox="0 0 24 24">
-            <path d="M3 12L12 3l9 9"/>
-            <path d="M5 10v10a1 1 0 0 0 1 1h4v-5h4v5h4a1 1 0 0 0 1-1V10"/>
-        </svg>
+        <svg viewBox="0 0 24 24"><path d="M3 12L12 3l9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-5h4v5h4a1 1 0 0 0 1-1V10"/></svg>
     </a>
 
-    <div class="wrapper">
-        <div class="mechanism">
-            <div class="ring"></div>
-            <div class="ring-reverse"></div>
-            <div class="gear"></div>
-            <div class="core"></div>
-            <div class="dot"></div>
-        </div>
-        <div class="title">В разработке</div>
-        <div class="subtitle">страница скоро появится</div>
+    <div class="mode-toggle">
+        <button class="mode-btn active" id="btnJournal" onclick="switchMode('journal')">Журнал</button>
+        <button class="mode-btn" id="btnNetwork" onclick="switchMode('network')">Сеть</button>
     </div>
+
+    <!-- Журнал -->
+    <div class="journal-container" id="journalContainer">
+        <div class="journal-inner">
+            <h1 class="journal-title">Журнал AI</h1>
+            <div class="timeline" id="timeline"></div>
+        </div>
+    </div>
+
+    <!-- Canvas сети -->
+    <canvas id="canvas"></canvas>
+
+    <!-- Информационная карточка -->
+    <div class="info-card" id="infoCard">
+        <span class="close-btn" id="closeInfoBtn">&times;</span>
+        <h3 id="infoTitle"></h3>
+        <p id="infoDesc"></p>
+        <a href="#" class="go-btn" id="infoLink" target="_blank">Перейти →</a>
+    </div>
+
+    <script>
+        // ==================== РЕЖИМЫ ====================
+        const canvas = document.getElementById('canvas');
+        const journalContainer = document.getElementById('journalContainer');
+        const btnNetwork = document.getElementById('btnNetwork');
+        const btnJournal = document.getElementById('btnJournal');
+        const infoCard = document.getElementById('infoCard');
+        const infoTitle = document.getElementById('infoTitle');
+        const infoDesc = document.getElementById('infoDesc');
+        const infoLink = document.getElementById('infoLink');
+        const closeInfoBtn = document.getElementById('closeInfoBtn');
+        let currentMode = 'journal';
+
+        function switchMode(mode) {
+            currentMode = mode;
+            if (mode === 'journal') {
+                canvas.classList.remove('active');
+                journalContainer.classList.remove('blur-bg');
+                btnJournal.classList.add('active');
+                btnNetwork.classList.remove('active');
+                document.body.classList.remove('network-mode');
+                hideInfoCard();
+                if (draggedNode) { draggedNode = null; document.body.classList.remove('dragging'); }
+            } else {
+                canvas.classList.add('active');
+                journalContainer.classList.add('blur-bg');
+                btnNetwork.classList.add('active');
+                btnJournal.classList.remove('active');
+                document.body.classList.add('network-mode');
+                hideInfoCard();
+                resize();
+                initPositions();
+            }
+        }
+
+        function hideInfoCard() {
+            infoCard.classList.remove('show');
+            selectedNode = null;
+        }
+        closeInfoBtn.addEventListener('click', hideInfoCard);
+        infoCard.addEventListener('click', (e) => e.stopPropagation());
+        document.addEventListener('click', (e) => {
+            if (currentMode === 'network' && infoCard.classList.contains('show')) {
+                if (e.target !== canvas && !infoCard.contains(e.target)) {
+                    hideInfoCard();
+                }
+            }
+        });
+
+        // ==================== СЕТЬ УЗЛОВ ====================
+        const ctx = canvas.getContext('2d');
+        let W, H;
+
+        const nodes = [
+            { id: 0, color: '#ffffff', radius: 35, x:0, y:0, vx:0, vy:0, label:'Модуль 1', desc:'[ЗАБЛОКИРОВАНО]', link:'#', locked:true },
+            { id: 1, color: '#ffffff', radius: 35, x:0, y:0, vx:0, vy:0, label:'Модуль 2', desc:'[ЗАБЛОКИРОВАНО]', link:'#', locked:true },
+            { id: 2, color: '#ffffff', radius: 35, x:0, y:0, vx:0, vy:0, label:'Модуль 3', desc:'[ЗАБЛОКИРОВАНО]', link:'#', locked:true },
+            { id: 3, color: '#ffffff', radius: 35, x:0, y:0, vx:0, vy:0, label:'Модуль 4', desc:'[ЗАБЛОКИРОВАНО]', link:'#', locked:true },
+            { id: 4, color: '#f87171', radius: 35, x:0, y:0, vx:0, vy:0, label:'Доврачебный подбор', desc:'Доврачебный подбор подходящего врача клиники исходя из запросов пациента', link:'./projects//', locked:false },
+            { id: 5, color: '#60a5fa', radius: 35, x:0, y:0, vx:0, vy:0, label:'Вероятность ХСН', desc:'Обучение модели на датасете ЭКГ И ЭХО.', link:'./projects//', locked:false },
+        ];
+
+        const edges = [
+            [0,1],[0,2],[0,3],[1,4],[2,4],[3,5],[4,5],[1,5],[2,3]
+        ];
+
+        const SPRING_STIFFNESS = 0.008;
+        const SPRING_LENGTH = 200;
+        const DAMPING = 0.9;
+        const REPULSION = 1500;
+        const MIN_DIST = 80;
+
+        let draggedNode = null;
+        let selectedNode = null;
+        let mouseX = 0, mouseY = 0;
+
+        function initPositions() {
+            if (currentMode !== 'network') return;
+            const cx = W/2, cy = H/2;
+            const r = Math.min(W, H) * 0.4;
+            nodes.forEach((n, i) => {
+                const angle = (2*Math.PI*i)/nodes.length - Math.PI/2;
+                n.x = cx + Math.cos(angle) * r;
+                n.y = cy + Math.sin(angle) * r;
+                n.vx = 0; n.vy = 0;
+            });
+            hideInfoCard();
+        }
+
+        function physics() {
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const a = nodes[i], b = nodes[j];
+                    let dx = b.x - a.x;
+                    let dy = b.y - a.y;
+                    let dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < MIN_DIST && dist > 0.1) {
+                        const force = REPULSION / (dist * dist);
+                        const fx = (dx / dist) * force;
+                        const fy = (dy / dist) * force;
+                        a.vx -= fx; a.vy -= fy;
+                        b.vx += fx; b.vy += fy;
+                    }
+                }
+            }
+
+            for (const [i, j] of edges) {
+                const a = nodes[i], b = nodes[j];
+                let dx = b.x - a.x;
+                let dy = b.y - a.y;
+                let dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < 1) dist = 1;
+                const displacement = dist - SPRING_LENGTH;
+                const force = displacement * SPRING_STIFFNESS;
+                const fx = (dx/dist) * force;
+                const fy = (dy/dist) * force;
+                a.vx += fx; a.vy += fy;
+                b.vx -= fx; b.vy -= fy;
+            }
+
+            for (const n of nodes) {
+                if (n === draggedNode) continue;
+                n.vx *= DAMPING;
+                n.vy *= DAMPING;
+                n.x += n.vx;
+                n.y += n.vy;
+                const pad = n.radius + 20;
+                if (n.x < pad) { n.x = pad; n.vx *= -0.3; }
+                if (n.x > W - pad) { n.x = W - pad; n.vx *= -0.3; }
+                if (n.y < pad) { n.y = pad; n.vy *= -0.3; }
+                if (n.y > H - pad) { n.y = H - pad; n.vy *= -0.3; }
+            }
+
+            if (draggedNode) {
+                const n = draggedNode;
+                const pad = n.radius + 20;
+                n.x = Math.max(pad, Math.min(W - pad, mouseX));
+                n.y = Math.max(pad, Math.min(H - pad, mouseY));
+                n.vx = 0; n.vy = 0;
+                if (selectedNode === draggedNode && infoCard.classList.contains('show')) {
+                    positionInfoCard(selectedNode);
+                }
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+            ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+            ctx.lineWidth = 1;
+            for (const [i, j] of edges) {
+                const a = nodes[i], b = nodes[j];
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.stroke();
+            }
+            for (const n of nodes) {
+                const isDragged = n === draggedNode;
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, n.radius, 0, Math.PI*2);
+                ctx.fillStyle = n.color;
+                ctx.fill();
+                if (isDragged || n === selectedNode) {
+                    ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                }
+                ctx.beginPath();
+                ctx.arc(n.x, n.y, n.radius + 4, 0, Math.PI*2);
+                ctx.fillStyle = n.color + '30';
+                ctx.fill();
+            }
+        }
+
+        function findNode(mx, my) {
+            for (const n of nodes) {
+                const dx = mx - n.x, dy = my - n.y;
+                if (dx*dx + dy*dy <= (n.radius + 10)*(n.radius + 10)) return n;
+            }
+            return null;
+        }
+
+        function positionInfoCard(node) {
+            if (!node) return;
+            const cardWidth = 300;
+            const cardHeight = 180;
+            let left = node.x - node.radius - cardWidth - 15;
+            let top = node.y - cardHeight / 2;
+            if (left < 10) left = node.x + node.radius + 15;
+            if (top < 10) top = 10;
+            if (top + cardHeight > H - 10) top = H - cardHeight - 10;
+            if (left + cardWidth > W - 10) left = W - cardWidth - 10;
+            infoCard.style.left = left + 'px';
+            infoCard.style.top = top + 'px';
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            if (currentMode !== 'network') return;
+            const n = findNode(e.clientX, e.clientY);
+            if (n) {
+                draggedNode = n;
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+                document.body.classList.add('dragging');
+                hideInfoCard();
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (currentMode !== 'network') return;
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            if (draggedNode) {
+                draggedNode.x = mouseX;
+                draggedNode.y = mouseY;
+                draggedNode.vx = 0;
+                draggedNode.vy = 0;
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (draggedNode) {
+                const node = draggedNode;
+                draggedNode = null;
+                document.body.classList.remove('dragging');
+                selectedNode = node;
+                infoTitle.textContent = node.label;
+                infoDesc.textContent = node.desc;
+                infoLink.href = node.link;
+                if (node.locked) {
+                    infoLink.classList.add('disabled');
+                    infoLink.textContent = 'Заблокировано';
+                } else {
+                    infoLink.classList.remove('disabled');
+                    infoLink.textContent = 'Перейти →';
+                }
+                positionInfoCard(node);
+                infoCard.classList.add('show');
+            }
+        });
+
+        canvas.addEventListener('click', (e) => {
+            if (currentMode !== 'network') return;
+            if (draggedNode) return;
+            const n = findNode(e.clientX, e.clientY);
+            if (n) {
+                selectedNode = n;
+                infoTitle.textContent = n.label;
+                infoDesc.textContent = n.desc;
+                infoLink.href = n.link;
+                if (n.locked) {
+                    infoLink.classList.add('disabled');
+                    infoLink.textContent = 'Заблокировано';
+                } else {
+                    infoLink.classList.remove('disabled');
+                    infoLink.textContent = 'Перейти →';
+                }
+                positionInfoCard(n);
+                infoCard.classList.add('show');
+            } else {
+                hideInfoCard();
+            }
+        });
+
+        function resize() {
+            W = window.innerWidth;
+            H = window.innerHeight;
+            canvas.width = W;
+            canvas.height = H;
+        }
+        window.addEventListener('resize', () => { resize(); if (currentMode === 'network') initPositions(); });
+        resize();
+
+        function loop() {
+            if (currentMode === 'network') {
+                physics();
+                draw();
+            }
+            requestAnimationFrame(loop);
+        }
+        loop();
+
+        // ==================== ЖУРНАЛ (2 записи, обе активны) ====================
+        const journalData = [
+            { date:'2026-08-03', title:'Доврачебный подбор', desc:'Доврачебный подбор подходящего врача клиники исходя из запросов пациента', tags:[{t:'активен',c:'active-tag'}], link:'./projects//' },
+            { date:'2026-07-15', title:'Вероятность ХСН', desc:'Обучение модели на датасете ЭКГ И ЭХО.', tags:[{t:'активен',c:'active-tag'}], link:'./projects//' },
+        ];
+
+        const timeline = document.getElementById('timeline');
+        journalData.forEach(entry => {
+            const div = document.createElement('div');
+            div.className = 'entry';
+            div.innerHTML = `
+                <span class="entry-date">${entry.date}</span>
+                <span class="entry-dot"></span>
+                <a href="${entry.link}" class="entry-card">
+                    <div class="entry-card-body">
+                        <h3>${entry.title}</h3>
+                        <p>${entry.desc}</p>
+                        <div class="entry-tags">
+                            ${entry.tags.map(t=>`<span class="tag ${t.c}">${t.t}</span>`).join('')}
+                        </div>
+                    </div>
+                    <svg class="entry-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14M13 6l6 6-6 6"/>
+                    </svg>
+                </a>
+            `;
+            timeline.appendChild(div);
+        });
+
+        // Старт — журнал
+        switchMode('journal');
+    </script>
 </body>
 </html>
