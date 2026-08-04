@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог конференций — СОМУ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --teal: #00a69c;
+            --teal-dark: #007a72;
+            --red: #ff2324;
+            --red-dark: #b71c1c;
+            --bg: #f4f3ef;
+            --surface: rgba(255,255,255,0.55);
+            --surface-solid: rgba(255,255,255,0.82);
+            --text: #12181c;
+            --text-muted: #5b6570;
+            --text-faint: #98a1a8;
+            --line: rgba(18,24,28,0.12);
+            --line-soft: rgba(18,24,28,0.07);
+            --radius: 22px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html { background: var(--bg); }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* Фоновая сетка */
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background:
+                linear-gradient(var(--line-soft) 1px, transparent 1px),
+                linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none; z-index: 0;
+            mask-image: radial-gradient(ellipse at 30% 0%, black 0%, transparent 70%);
+        }
+
+        /* Декоративные линии */
+        .decor-left, .decor-right {
+            position: fixed; top: 0;
+            width: 1px; height: 100%;
+            background: linear-gradient(to bottom, transparent, rgba(0,166,156,0.15), transparent);
+            z-index: 0;
+        }
+        .decor-left { left: 15%; }
+        .decor-right { right: 15%; }
+        .decor-top, .decor-bottom {
+            position: fixed; left: 0;
+            width: 100%; height: 1px;
+            background: linear-gradient(to right, transparent, rgba(0,166,156,0.1), transparent);
+            z-index: 0;
+        }
+        .decor-top { top: 12%; }
+        .decor-bottom { bottom: 12%; }
+
+        /* Кнопка "назад" */
+        .home-btn {
+            position: fixed; top: 24px; left: 24px; z-index: 20;
+            width: 44px; height: 44px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0,166,156,0.2);
+            border-radius: 50%;
+            color: var(--text);
+            text-decoration: none;
+            transition: all var(--transition);
+        }
+        .home-btn:hover {
+            background: rgba(255,255,255,0.9);
+            border-color: var(--teal);
+            color: var(--teal);
+            transform: scale(1.05);
+        }
+        .home-btn svg {
+            width: 18px; height: 18px;
+            stroke: currentColor; stroke-width: 1.5;
+            fill: none; stroke-linecap: round; stroke-linejoin: round;
+        }
+
+        /* HUD brackets */
+        .hud { position: relative; }
+        .hud::before, .hud::after {
+            content: ''; position: absolute; width: 14px; height: 14px; pointer-events: none;
+        }
+        .hud::before {
+            top: 8px; left: 8px;
+            border-top: 1.5px solid var(--teal); border-left: 1.5px solid var(--teal);
+            border-top-left-radius: 6px;
+        }
+        .hud::after {
+            bottom: 8px; right: 8px;
+            border-bottom: 1.5px solid var(--teal); border-right: 1.5px solid var(--teal);
+            border-bottom-right-radius: 6px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 24px 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Заголовок */
+        .page-header {
+            background: var(--surface);
+            backdrop-filter: blur(28px) saturate(1.7);
+            -webkit-backdrop-filter: blur(28px) saturate(1.7);
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 20px 50px -24px rgba(18,24,28,0.15);
+            padding: 48px 48px;
+            margin-bottom: 32px;
+            position: relative;
+        }
+        .page-header .eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em;
+            color: var(--teal-dark); text-transform: uppercase;
+            margin-bottom: 12px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .eyebrow::before { content: ''; width: 6px; height: 6px; background: var(--teal); box-shadow: 0 0 8px var(--teal); }
+        h1 {
+            font-size: 2.3rem; font-weight: 800; line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+        .page-header p { font-size: 1rem; color: var(--text-muted); margin-top: 8px; }
+
+        /* Панель фильтров */
+        .filter-panel {
+            background: var(--surface-solid);
+            backdrop-filter: blur(18px) saturate(1.5);
+            -webkit-backdrop-filter: blur(18px) saturate(1.5);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+            position: relative;
+        }
+        .filter-group {
+            display: flex; gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-group label {
+            font-size: 0.78rem; font-weight: 600; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.04em;
+            white-space: nowrap;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .filter-input {
+            padding: 10px 16px;
+            border-radius: 40px;
+            border: 1px solid var(--line);
+            font-size: 0.9rem;
+            outline: none;
+            background: var(--surface);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            transition: border-color var(--transition);
+            min-width: 160px;
+        }
+        .filter-input:focus { border-color: var(--teal); }
+        .filter-input.search { min-width: 240px; }
+
+        .filter-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 16px;
+            border-radius: 40px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            font-size: 0.82rem; font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition);
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+        .filter-badge.active {
+            background: var(--teal);
+            color: #fff;
+            border-color: var(--teal);
+        }
+        .filter-badge:hover:not(.active) {
+            border-color: var(--teal);
+            color: var(--text);
+        }
+
+        .btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 20px; border-radius: 40px; font-weight: 600; font-size: 0.85rem;
+            cursor: pointer; transition: all var(--transition);
+            border: 1px solid var(--teal);
+            background: transparent;
+            color: var(--teal-dark);
+            font-family: 'Inter', sans-serif;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .btn:hover { background: var(--teal); color: #fff; box-shadow: 0 0 16px rgba(0,166,156,0.4); }
+        .btn-clear { border-color: var(--line); color: var(--text-faint); }
+        .btn-clear:hover { background: var(--surface-solid); color: var(--text); border-color: var(--teal); box-shadow: none; }
+
+        .sort-select {
+            padding: 10px 16px;
+            border-radius: 40px;
+            border: 1px solid var(--line);
+            font-size: 0.85rem;
+            outline: none;
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Счётчик результатов */
+        .results-info {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 0.85rem; color: var(--text-muted);
+        }
+        .results-count {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--teal-dark);
+        }
+
+        /* Сетка карточек */
+        .conference-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 20px;
+        }
+        .conference-card {
+            background: var(--surface-solid);
+            backdrop-filter: blur(18px) saturate(1.5);
+            -webkit-backdrop-filter: blur(18px) saturate(1.5);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+            transition: transform var(--transition), box-shadow var(--transition);
+            display: flex; flex-direction: column;
+            position: relative;
+            animation: fadeInUp 0.4s ease backwards;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .conference-card:hover {
+            transform: translateY(-4px);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 20px 40px -16px rgba(0,166,156,0.25);
+            border-color: var(--teal);
+        }
+
+        /* Превью карточки */
+        .card-img {
+            height: 150px;
+            background: linear-gradient(135deg, rgba(0,166,156,0.08), rgba(255,35,36,0.04));
+            position: relative;
+            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .card-img img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .card-img .placeholder-icon {
+            font-size: 2.5rem;
+            color: rgba(0,166,156,0.15);
+        }
+        .level-badge {
+            position: absolute; top: 14px; left: 14px;
+            background: rgba(0,166,156,0.9); color: white;
+            padding: 5px 14px; border-radius: 20px;
+            font-size: 0.72rem; font-weight: 600;
+            letter-spacing: 0.03em;
+            backdrop-filter: blur(8px);
+        }
+        .level-badge.international { background: rgba(124,58,237,0.9); }
+        .level-badge.national { background: rgba(0,166,156,0.9); }
+        .level-badge.regional { background: rgba(91,127,149,0.9); }
+        .level-badge.local { background: rgba(148,163,184,0.9); }
+
+        .card-body {
+            padding: 20px 22px;
+            flex: 1;
+            display: flex; flex-direction: column;
+            gap: 10px;
+        }
+        .card-body h3 { font-weight: 700; font-size: 1.15rem; line-height: 1.3; }
+        .card-meta {
+            display: flex; flex-wrap: wrap; gap: 10px;
+            font-size: 0.8rem; color: var(--text-muted);
+        }
+        .card-meta span { display: flex; align-items: center; gap: 5px; }
+        .card-meta i { color: var(--teal); width: 14px; font-size: 0.85rem; }
+        .card-description {
+            font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;
+            flex: 1;
+        }
+        .card-footer {
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 10px; flex-wrap: wrap;
+            padding-top: 8px;
+            border-top: 1px solid var(--line-soft);
+        }
+        .deadline {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: rgba(255,35,36,0.08);
+            color: var(--red-dark);
+            padding: 5px 12px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 600;
+        }
+        .funding {
+            font-size: 0.75rem; color: var(--text-faint);
+            display: flex; align-items: center; gap: 4px;
+        }
+        .funding.full { color: #16a34a; }
+        .funding.partial { color: #d97706; }
+        .funding.none { color: var(--text-faint); }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center; padding: 60px 20px;
+            color: var(--text-faint); font-size: 1rem;
+        }
+        .no-results i { font-size: 3rem; display: block; margin-bottom: 16px; opacity: 0.3; }
+
+        @media (max-width: 768px) {
+            .page-header { padding: 32px 24px; }
+            h1 { font-size: 1.7rem; }
+            .filter-panel { padding: 16px; }
+            .filter-input.search { min-width: 100%; width: 100%; }
+            .conference-grid { grid-template-columns: 1fr; }
+            .card-body h3 { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="decor-left"></div>
+    <div class="decor-right"></div>
+    <div class="decor-top"></div>
+    <div class="decor-bottom"></div>
+
+    <a href="../" class="home-btn" title="Назад">
+        <svg viewBox="0 0 24 24"><path d="M3 12L12 3l9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-5h4v5h4a1 1 0 0 0 1-1V10"/></svg>
+    </a>
+
+    <div class="container">
+        <!-- Заголовок -->
+        <div class="page-header hud">
+            <div class="eyebrow">Реестр мероприятий</div>
+            <h1>Каталог конференций</h1>
+            <p>Актуальные научные мероприятия для молодых учёных и специалистов Центра Алмазова</p>
+        </div>
+
+        <!-- Фильтры -->
+        <div class="filter-panel hud" id="filterPanel">
+            <div class="filter-group">
+                <input type="text" id="searchInput" class="filter-input search" placeholder="Поиск по названию...">
+            </div>
+            <div class="filter-group">
+                <label>Направление</label>
+                <select id="filterDirection" class="filter-input">
+                    <option value="">Все</option>
+                    <option value="междисциплинарные">Междисциплинарные</option>
+                    <option value="кардиология">Кардиология</option>
+                    <option value="онкология">Онкология</option>
+                    <option value="неврология">Неврология</option>
+                    <option value="радиология">Лучевая диагностика</option>
+                    <option value="хирургия">Хирургия</option>
+                    <option value="общественное здоровье">Общественное здоровье</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Уровень</label>
+                <select id="filterLevel" class="filter-input">
+                    <option value="">Любой</option>
+                    <option value="международный">Международный</option>
+                    <option value="всероссийский">Всероссийский</option>
+                    <option value="региональный">Региональный</option>
+                    <option value="вузовский">Вузовский</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Сортировка</label>
+                <select id="sortBy" class="sort-select">
+                    <option value="date-asc">По дате ↑</option>
+                    <option value="date-desc" selected>По дате ↓</option>
+                    <option value="name-asc">По названию А-Я</option>
+                    <option value="name-desc">По названию Я-А</option>
+                </select>
+            </div>
+            <button class="btn btn-clear" onclick="clearFilters()">
+                <i class="fas fa-times"></i> Сбросить
+            </button>
+        </div>
+
+        <!-- Результаты -->
+        <div class="results-info">
+            <span class="results-count" id="resultsCount">6 конференций</span>
+        </div>
+
+        <div class="conference-grid" id="conferenceGrid"></div>
+    </div>
+
+    <script>
+        // Данные конференций
+        const conferences = [
+            {
+                id: 1,
+                name: "Алмазовский молодёжный медицинский форум (АММФ'27)",
+                direction: "междисциплинарные",
+                level: "всероссийский",
+                start: "2027-05-12",
+                end: "2027-05-15",
+                deadline: "2027-03-01",
+                city: "Санкт-Петербург",
+                funding: "full",
+                fundingLabel: "Совет (полное)",
+                description: "Крупнейшая в России конференция для молодых учёных-медиков. Более 1000 участников, устные и постерные доклады, олимпиады, мастер-классы.",
+                link: "https://cyss.almazovcentre.ru/ammf/",
+                functional: true,
+                image: "https://placehold.co/600x400/00a69c/white?text=АММФ'27"
+            },
+            {
+                id: 2,
+                name: "Российский национальный конгресс кардиологов",
+                direction: "кардиология",
+                level: "всероссийский",
+                start: "2026-09-22",
+                end: "2026-09-25",
+                deadline: "2026-08-15",
+                city: "Москва",
+                funding: "partial",
+                fundingLabel: "Совет (частично)",
+                description: "Ведущее событие по кардиологии. Пленарные заседания, секции по интервенционной кардиологии, нарушениям ритма и профилактике.",
+                link: "#",
+                functional: false,
+                image: ""
+            },
+            {
+                id: 3,
+                name: "ESMO Congress 2026",
+                direction: "онкология",
+                level: "международный",
+                start: "2026-10-16",
+                end: "2026-10-20",
+                deadline: "2026-07-30",
+                city: "Барселона, Испания",
+                funding: "partial",
+                fundingLabel: "Грант РНФ",
+                description: "Крупнейший европейский конгресс по онкологии. Новейшие подходы к терапии, иммуноонкология, таргетная терапия.",
+                link: "#",
+                functional: false,
+                image: ""
+            },
+            {
+                id: 4,
+                name: "Всероссийская конференция по лучевой диагностике",
+                direction: "радиология",
+                level: "всероссийский",
+                start: "2026-11-10",
+                end: "2026-11-12",
+                deadline: "2026-10-01",
+                city: "Казань",
+                funding: "full",
+                fundingLabel: "Центр (полное)",
+                description: "Современные методы визуализации: МРТ, КТ, ПЭТ/КТ, применение ИИ в радиологии.",
+                link: "#",
+                functional: false,
+                image: ""
+            },
+            {
+                id: 5,
+                name: "Неврологические чтения им. В.М. Бехтерева",
+                direction: "неврология",
+                level: "региональный",
+                start: "2026-09-05",
+                end: "2026-09-06",
+                deadline: "2026-08-20",
+                city: "Санкт-Петербург",
+                funding: "none",
+                fundingLabel: "Нет",
+                description: "Разбор клинических случаев, лекции по цереброваскулярной патологии и нейродегенерации.",
+                link: "#",
+                functional: false,
+                image: ""
+            },
+            {
+                id: 6,
+                name: "Школа молодых учёных по хирургии",
+                direction: "хирургия",
+                level: "вузовский",
+                start: "2026-08-25",
+                end: "2026-08-26",
+                deadline: "2026-08-10",
+                city: "Москва",
+                funding: "none",
+                fundingLabel: "Нет",
+                description: "Двухдневная школа с мастер-классами по лапароскопии, шовному материалу и основам хирургической техники.",
+                link: "#",
+                functional: false,
+                image: ""
+            }
+        ];
+
+        // Уровни для badge
+        const levelClasses = {
+            "международный": "international",
+            "всероссийский": "national",
+            "региональный": "regional",
+            "вузовский": "local"
+        };
+
+        // Функция рендера
+        function renderGrid(confs) {
+            const grid = document.getElementById('conferenceGrid');
+            document.getElementById('resultsCount').textContent = 
+                `${confs.length} ${pluralize(confs.length, 'конференция', 'конференции', 'конференций')}`;
+
+            if (confs.length === 0) {
+                grid.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-calendar-times"></i>
+                        <p>Конференций по выбранным фильтрам не найдено</p>
+                        <button class="btn btn-clear" onclick="clearFilters()" style="margin-top:16px;">Сбросить фильтры</button>
+                    </div>`;
+                return;
+            }
+
+            grid.innerHTML = confs.map((c, index) => {
+                const imageBlock = c.image 
+                    ? `<img src="${c.image}" alt="${c.name}">` 
+                    : `<i class="fas fa-calendar-alt placeholder-icon"></i>`;
+                const actions = c.functional 
+                    ? `<a href="${c.link}" target="_blank" class="btn">Подробнее <i class="fas fa-external-link-alt"></i></a>` 
+                    : `<span style="color:var(--text-faint); font-size:0.82rem;"><i class="fas fa-clock"></i> Скоро</span>`;
+                const deadlineHtml = c.deadline 
+                    ? `<span class="deadline"><i class="fas fa-hourglass-end"></i> Дедлайн: ${c.deadline}</span>`
+                    : '';
+                const fundingClass = c.funding === 'full' ? 'full' : (c.funding === 'partial' ? 'partial' : 'none');
+                const fundingIcon = c.funding === 'full' ? 'fa-check-circle' : (c.funding === 'partial' ? 'fa-adjust' : 'fa-minus-circle');
+
+                return `
+                    <div class="conference-card hud" style="animation-delay:${index * 0.05}s">
+                        <div class="card-img">
+                            <span class="level-badge ${levelClasses[c.level] || ''}">${c.level}</span>
+                            ${imageBlock}
+                        </div>
+                        <div class="card-body">
+                            <h3>${c.name}</h3>
+                            <div class="card-meta">
+                                <span><i class="fas fa-map-marker-alt"></i> ${c.city}</span>
+                                <span><i class="fas fa-tag"></i> ${c.direction}</span>
+                            </div>
+                            <p class="card-description">${c.description}</p>
+                            <div class="card-footer">
+                                <div style="display:flex; flex-direction:column; gap:4px;">
+                                    <span style="font-size:0.8rem; color:var(--text-muted);">
+                                        <i class="far fa-calendar"></i> ${formatDateRange(c.start, c.end)}
+                                    </span>
+                                    <span class="funding ${fundingClass}">
+                                        <i class="fas ${fundingIcon}"></i> ${c.fundingLabel}
+                                    </span>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    ${deadlineHtml}
+                                    ${actions}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Форматирование диапазона дат
+        function formatDateRange(start, end) {
+            const months = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+            const s = new Date(start);
+            const e = new Date(end);
+            const sMonth = months[s.getMonth()];
+            const eMonth = months[e.getMonth()];
+            if (sMonth === eMonth) {
+                return `${s.getDate()}–${e.getDate()} ${eMonth} ${e.getFullYear()}`;
+            }
+            return `${s.getDate()} ${sMonth} – ${e.getDate()} ${eMonth} ${e.getFullYear()}`;
+        }
+
+        // Плюрализация
+        function pluralize(n, one, few, many) {
+            const mod10 = n % 10;
+            const mod100 = n % 100;
+            if (mod10 === 1 && mod100 !== 11) return one;
+            if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return few;
+            return many;
+        }
+
+        // Применение фильтров
+        function applyFilters() {
+            const search = document.getElementById('searchInput').value.toLowerCase().trim();
+            const direction = document.getElementById('filterDirection').value;
+            const level = document.getElementById('filterLevel').value;
+            const sortBy = document.getElementById('sortBy').value;
+
+            let filtered = conferences.filter(c => {
+                if (search && !c.name.toLowerCase().includes(search)) return false;
+                if (direction && c.direction !== direction) return false;
+                if (level && c.level !== level) return false;
+                return true;
+            });
+
+            // Сортировка
+            filtered.sort((a, b) => {
+                switch(sortBy) {
+                    case 'date-asc': return a.start.localeCompare(b.start);
+                    case 'date-desc': return b.start.localeCompare(a.start);
+                    case 'name-asc': return a.name.localeCompare(b.name, 'ru');
+                    case 'name-desc': return b.name.localeCompare(a.name, 'ru');
+                    default: return 0;
+                }
+            });
+
+            renderGrid(filtered);
+            updateURL();
+        }
+
+        // Сохранение фильтров в URL
+        function updateURL() {
+            const params = new URLSearchParams();
+            const search = document.getElementById('searchInput').value;
+            const direction = document.getElementById('filterDirection').value;
+            const level = document.getElementById('filterLevel').value;
+            const sortBy = document.getElementById('sortBy').value;
+
+            if (search) params.set('q', search);
+            if (direction) params.set('dir', direction);
+            if (level) params.set('lvl', level);
+            if (sortBy !== 'date-desc') params.set('sort', sortBy);
+
+            const newURL = params.toString() 
+                ? `${window.location.pathname}?${params.toString()}`
+                : window.location.pathname;
+            window.history.replaceState({}, '', newURL);
+        }
+
+        // Восстановление фильтров из URL
+        function loadFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('q')) document.getElementById('searchInput').value = params.get('q');
+            if (params.get('dir')) document.getElementById('filterDirection').value = params.get('dir');
+            if (params.get('lvl')) document.getElementById('filterLevel').value = params.get('lvl');
+            if (params.get('sort')) document.getElementById('sortBy').value = params.get('sort');
+        }
+
+        // Сброс фильтров
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('filterDirection').value = '';
+            document.getElementById('filterLevel').value = '';
+            document.getElementById('sortBy').value = 'date-desc';
+            applyFilters();
+        }
+
+        // Обработчики
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('filterDirection').addEventListener('change', applyFilters);
+        document.getElementById('filterLevel').addEventListener('change', applyFilters);
+        document.getElementById('sortBy').addEventListener('change', applyFilters);
+
+        // Инициализация
+        loadFromURL();
+        applyFilters();
+    </script>
+</body>
+</html>

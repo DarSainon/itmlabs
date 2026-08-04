@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Брендбук АММФ — ITMLABS</title>
+    <link rel="icon" type="image/svg+xml" href="../../images/favicon/favicon-3.svg?v=0.2">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --teal: #00a69c; --teal-dark: #007a72;
+            --bg: #f4f3ef; --surface: rgba(255,255,255,0.55);
+            --surface-solid: rgba(255,255,255,0.82);
+            --text: #12181c; --text-muted: #5b6570;
+            --text-faint: #98a1a8;
+            --line: rgba(18,24,28,0.12); --line-soft: rgba(18,24,28,0.07);
+            --ammf-blue: #1d7abd; --ammf-dark: #0a3a5c;
+        }
+        html { background: var(--bg); }
+        body {
+            background: var(--bg); color: var(--text);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background:
+                linear-gradient(var(--line-soft) 1px, transparent 1px),
+                linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none; z-index: 0;
+            mask-image: radial-gradient(ellipse at 30% 0%, black 0%, transparent 70%);
+        }
+        .hud { position: relative; }
+        .hud::before, .hud::after {
+            content: ''; position: absolute; width: 14px; height: 14px; pointer-events: none;
+        }
+        .hud::before {
+            top: 8px; left: 8px;
+            border-top: 1.5px solid var(--teal); border-left: 1.5px solid var(--teal);
+            border-top-left-radius: 6px;
+        }
+        .hud::after {
+            bottom: 8px; right: 8px;
+            border-bottom: 1.5px solid var(--teal); border-right: 1.5px solid var(--teal);
+            border-bottom-right-radius: 6px;
+        }
+        .top {
+            display: flex; align-items: center; gap: 10px;
+            padding: 22px 32px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--text-faint); font-weight: 500;
+            position: relative; z-index: 2;
+        }
+        .top a {
+            color: var(--text); text-decoration: none;
+            width: 34px; height: 34px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--surface);
+            backdrop-filter: blur(20px) saturate(1.6);
+            border: 1px solid var(--line);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 4px 12px rgba(18,24,28,0.05);
+            transition: all .2s; flex-shrink: 0;
+        }
+        .top a:hover { border-color: var(--teal); color: var(--teal-dark); }
+
+        .wrap { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; padding: 24px 32px 110px; }
+
+        h1 { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
+        .subtitle { color: var(--text-muted); margin-bottom: 40px; }
+
+        .section { margin-bottom: 48px; }
+        .section h2 {
+            font-size: 1.3rem; font-weight: 700; margin-bottom: 16px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .section h2::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+        .palette { display: flex; flex-wrap: wrap; gap: 14px; }
+        .swatch { width: 60px; height: 60px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); }
+        .swatch-label { font-size: 0.7rem; text-align: center; margin-top: 5px; color: var(--text-muted); line-height: 1.3; }
+
+        .btn-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+        .btn-demo {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 24px; border-radius: 40px; font-weight: 600; font-size: 0.9rem;
+            border: 1px solid transparent; cursor: default;
+        }
+
+        .typography-block p { margin: 6px 0; }
+        .typography-block .h1-sample { font-size: 2rem; font-weight: 700; }
+        .typography-block .h2-sample { font-size: 1.4rem; font-weight: 600; }
+        .typography-block .body-sample { font-size: 1rem; }
+        .typography-block .caption-sample { font-size: 0.8rem; color: var(--text-faint); }
+
+        .card {
+            background: var(--surface-solid);
+            backdrop-filter: blur(18px) saturate(1.5);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+            padding: 24px;
+        }
+        .placeholder-box {
+            background: var(--surface);
+            border: 1px dashed var(--line);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            color: var(--text-faint);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <a href="../" title="Назад к айдентике">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12L12 3l9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-5h4v5h4a1 1 0 0 0 1-1V10"/>
+            </svg>
+        </a>
+    </div>
+    <div class="wrap">
+        <h1>Брендбук АММФ</h1>
+        <p class="subtitle">Алмазовский молодёжный медицинский форум</p>
+
+        <!-- Логотип -->
+        <div class="section card hud">
+            <h2>Логотип</h2>
+            <div style="display:flex; gap:24px; flex-wrap:wrap; align-items:start;">
+                <div style="width:180px; height:120px; border:1px solid var(--line); border-radius:14px; display:flex; align-items:center; justify-content:center; background:var(--surface);">
+                    <!-- Вставь логотип: <img src="../../images/identity/logo-ammf.svg" alt="Логотип АММФ" style="max-width:80%; max-height:80%;"> -->
+                    <span style="color:var(--text-faint);">логотип</span>
+                </div>
+                <div style="flex:1;">
+                    <p style="font-weight:600; margin-bottom:6px;">Основная версия</p>
+                    <p style="font-size:0.85rem; color:var(--text-muted);">Полноцветный логотип АММФ. Охранное поле — ...px со всех сторон.</p>
+                    <p style="font-size:0.85rem; color:var(--text-muted);">Минимальный размер: ...px по ширине.</p>
+                </div>
+            </div>
+            <div style="margin-top:16px; display:flex; gap:16px; flex-wrap:wrap;">
+                <div style="width:100px; height:70px; background:#000; border-radius:10px; display:flex; align-items:center; justify-content:center;">
+                    <span style="color:#fff; font-size:0.7rem;">монохром</span>
+                </div>
+                <div style="width:100px; height:70px; background:#fff; border:1px solid var(--line); border-radius:10px; display:flex; align-items:center; justify-content:center;">
+                    <span style="color:var(--text-faint); font-size:0.7rem;">знак</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Цвета -->
+        <div class="section card hud">
+            <h2>Цветовая палитра</h2>
+            <div class="palette">
+                <div><div class="swatch" style="background:#1d7abd;"></div><div class="swatch-label">Primary<br>#1d7abd</div></div>
+                <div><div class="swatch" style="background:#055cac;"></div><div class="swatch-label">Dark blue<br>#055cac</div></div>
+                <div><div class="swatch" style="background:#5bb5d8;"></div><div class="swatch-label">Light blue<br>#5bb5d8</div></div>
+                <div><div class="swatch" style="background:#78c5e3;"></div><div class="swatch-label">Sky<br>#78c5e3</div></div>
+                <div><div class="swatch" style="background:#c6fcfc;"></div><div class="swatch-label">Ice<br>#c6fcfc</div></div>
+                <div><div class="swatch" style="background:#0a3a5c;"></div><div class="swatch-label">Dark text<br>#0a3a5c</div></div>
+            </div>
+        </div>
+
+        <!-- Типографика -->
+        <div class="section card hud">
+            <h2>Типографика</h2>
+            <div class="typography-block">
+                <p class="h1-sample">Заголовок H1 · 2rem · Bold</p>
+                <p class="h2-sample">Подзаголовок H2 · 1.4rem · Semibold</p>
+                <p class="body-sample">Основной текст Body · 1rem · Regular. Используется для абзацев и описаний.</p>
+                <p class="caption-sample">Вспомогательный текст Caption · 0.8rem</p>
+            </div>
+        </div>
+
+        <!-- Кнопки -->
+        <div class="section card hud">
+            <h2>Кнопки</h2>
+            <div class="btn-row">
+                <span class="btn-demo" style="background:linear-gradient(145deg, #055cac, #1d7abd); color:#fff;">Primary</span>
+                <span class="btn-demo" style="background:transparent; border:1px solid rgba(29,122,189,0.4); color:#0a3a5c;">Outline</span>
+                <span class="btn-demo" style="background:#E2E8F0; color:#94A3B8;">Disabled</span>
+            </div>
+            <p style="font-size:0.8rem; color:var(--text-faint); margin-top:10px;">Радиус 40px, padding 10–24px, шрифт 600</p>
+        </div>
+
+        <!-- Теги -->
+        <div class="section card hud">
+            <h2>Теги и бейджи</h2>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <span style="padding:4px 14px; border-radius:20px; font-size:0.75rem; font-weight:600; background:rgba(29,122,189,0.1); color:#055cac; border:1px solid rgba(29,122,189,0.2);">Кардиология</span>
+                <span style="padding:4px 14px; border-radius:20px; font-size:0.75rem; font-weight:600; background:rgba(91,181,216,0.2); color:#0a3a5c; border:1px solid rgba(91,181,216,0.3);">Мастер-класс</span>
+            </div>
+        </div>
+
+        <!-- Иконографика -->
+        <div class="section card hud">
+            <h2>Иконографика</h2>
+            <div class="placeholder-box">Стиль иконок: контурные, толщина линии ...px, цвет: основной / акцентный. Примеры загрузить позже.</div>
+        </div>
+
+        <!-- Карточка события -->
+        <div class="section card hud">
+            <h2>Карточка события</h2>
+            <div style="background:rgba(255,255,255,0.7); border-radius:24px; padding:20px; border:1px solid rgba(29,122,189,0.2); display:flex; flex-direction:column; gap:10px;">
+                <p style="font-weight:700; font-size:1.1rem;">АММФ'27</p>
+                <p style="font-size:0.85rem; color:var(--text-muted);">📅 12–15 мая 2027 · 📍 СПб, Центр Алмазова</p>
+                <div style="display:flex; gap:6px;">
+                    <span style="padding:4px 12px; border-radius:20px; font-size:0.7rem; font-weight:600; background:rgba(29,122,189,0.1); color:#055cac;">Междисциплинарный</span>
+                </div>
+                <span class="btn-demo" style="background:linear-gradient(145deg, #055cac, #1d7abd); color:#fff; width:fit-content;">Подробнее</span>
+            </div>
+        </div>
+
+        <!-- Поля ввода -->
+        <div class="section card hud">
+            <h2>Поля ввода</h2>
+            <div class="placeholder-box">Стили для input, textarea, select. Активное состояние, ошибка, disabled. Заполнить позже.</div>
+        </div>
+
+        <!-- Носители -->
+        <div class="section card hud">
+            <h2>Примеры применения</h2>
+            <div class="placeholder-box">Визитка, бланк письма, презентация, соцсети, мерч. Заполнить позже.</div>
+        </div>
+    </div>
+</body>
+</html>

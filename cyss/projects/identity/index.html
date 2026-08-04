@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Айдентика — ITMLABS</title>
+    <link rel="icon" type="image/svg+xml" href="../images/favicon/favicon-0.svg?v=0.2">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --teal: #00a69c; --teal-dark: #007a72;
+            --red: #ff2324; --red-dark: #b71c1c;
+            --wip: #f59e0b; --wip-dark: #b45309;
+            --bg: #f4f3ef; --surface: rgba(255,255,255,0.55);
+            --surface-solid: rgba(255,255,255,0.82);
+            --text: #12181c; --text-muted: #5b6570;
+            --text-faint: #98a1a8;
+            --line: rgba(18,24,28,0.12); --line-soft: rgba(18,24,28,0.07);
+        }
+
+        html { background: var(--bg); }
+        body {
+            background: var(--bg); color: var(--text);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased; position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background:
+                linear-gradient(var(--line-soft) 1px, transparent 1px),
+                linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none; z-index: 0;
+            mask-image: radial-gradient(ellipse at 30% 0%, black 0%, transparent 70%);
+        }
+
+        .hud { position: relative; }
+        .hud::before, .hud::after,
+        .hud .br-tl, .hud .br-tr, .hud .br-bl, .hud .br-br {
+            content: ''; position: absolute; width: 14px; height: 14px; pointer-events: none;
+        }
+        .hud::before {
+            top: 8px; left: 8px;
+            border-top: 1.5px solid var(--teal); border-left: 1.5px solid var(--teal);
+            border-top-left-radius: 6px;
+        }
+        .hud::after {
+            bottom: 8px; right: 8px;
+            border-bottom: 1.5px solid var(--teal); border-right: 1.5px solid var(--teal);
+            border-bottom-right-radius: 6px;
+        }
+        .hud .br-tr {
+            top: 8px; right: 8px;
+            border-top: 1.5px solid var(--teal); border-right: 1.5px solid var(--teal);
+            border-top-right-radius: 6px;
+        }
+        .hud .br-bl {
+            bottom: 8px; left: 8px;
+            border-bottom: 1.5px solid var(--teal); border-left: 1.5px solid var(--teal);
+            border-bottom-left-radius: 6px;
+        }
+
+        .top {
+            display: flex; align-items: center; gap: 10px;
+            padding: 22px 32px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--text-faint); font-weight: 500;
+            position: relative; z-index: 2;
+        }
+        .top a {
+            color: var(--text); text-decoration: none;
+            width: 34px; height: 34px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--surface);
+            backdrop-filter: blur(20px) saturate(1.6);
+            border: 1px solid var(--line);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 4px 12px rgba(18,24,28,0.05);
+            transition: all .2s; flex-shrink: 0;
+        }
+        .top a:hover { border-color: var(--teal); color: var(--teal-dark); }
+
+        .wrap { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; padding: 24px 32px 110px; }
+
+        .hero {
+            background: var(--surface);
+            backdrop-filter: blur(28px) saturate(1.7);
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 20px 50px -24px rgba(18,24,28,0.15);
+            padding: 56px 48px; margin-bottom: 48px;
+        }
+        .hero-text .eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em;
+            color: var(--teal-dark); text-transform: uppercase;
+            margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+        }
+        .eyebrow::before { content: ''; width: 6px; height: 6px; background: var(--teal); box-shadow: 0 0 8px var(--teal); }
+        h1 { font-size: 2.3rem; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 14px; }
+        .hero-text p { font-size: 1rem; color: var(--text-muted); line-height: 1.6; max-width: 520px; font-weight: 400; }
+
+        /* Широкая карточка СОМУ */
+        .head-org {
+            background: var(--surface-solid);
+            backdrop-filter: blur(28px) saturate(1.7);
+            border: 1px solid var(--teal);
+            border-radius: 28px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 16px 40px -16px rgba(0,166,156,0.2);
+            padding: 32px 36px;
+            margin-bottom: 24px;
+            display: flex; align-items: center; gap: 28px;
+            cursor: pointer;
+            transition: all .25s;
+            text-decoration: none; color: inherit;
+        }
+        .head-org:hover {
+            transform: translateY(-3px);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 24px 48px -16px rgba(0,166,156,0.3);
+            border-color: var(--teal-dark);
+        }
+        .head-org .cover {
+            width: 80px; height: 80px; border-radius: 16px;
+            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid var(--line-soft);
+            background: linear-gradient(135deg, rgba(0,166,156,0.12), rgba(0,166,156,0.05));
+        }
+        .head-org .cover img { width: 100%; height: 100%; object-fit: contain; padding: 10px; }
+        .head-org .info { flex: 1; }
+        .head-org .info h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 4px; }
+        .head-org .info p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; }
+        .head-org .arrow {
+            font-size: 1.5rem; color: var(--teal);
+            flex-shrink: 0; transition: transform .25s;
+        }
+        .head-org:hover .arrow { transform: translateX(6px); }
+
+        /* Плашка "в разработке" строго по тексту */
+        .tag-wip {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.64rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 20px;
+            border: 1px solid rgba(245,158,11,0.3);
+            background: rgba(245,158,11,0.08);
+            color: var(--wip-dark);
+            display: inline-block;
+            width: fit-content;
+        }
+
+        /* Фильтр */
+        .filter-bar {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 8px 18px;
+            border: 1px solid var(--line);
+            border-radius: 40px;
+            background: var(--surface);
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.04em; text-transform: uppercase;
+            cursor: pointer;
+            transition: all .2s;
+            white-space: nowrap;
+        }
+        .filter-btn.active {
+            background: var(--teal);
+            color: #fff;
+            border-color: var(--teal);
+        }
+        .filter-btn:hover:not(.active) {
+            background: var(--surface-solid);
+            color: var(--text);
+            border-color: var(--teal);
+        }
+
+        .section-head {
+            display: flex; align-items: baseline; justify-content: space-between;
+            margin-bottom: 22px; padding-bottom: 14px;
+            border-bottom: 1px solid var(--line);
+        }
+        h2 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.01em; }
+        .count { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-faint); font-weight: 600; letter-spacing: 0.05em; }
+
+        .group { margin-bottom: 32px; }
+        .group-title {
+            font-size: 1rem; font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 0.02em;
+            margin-bottom: 14px;
+            text-transform: uppercase;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .group-title::after {
+            content: '';
+            flex: 1; height: 1px;
+            background: var(--line);
+        }
+        .group.hidden-group { display: none; }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+
+        .card {
+            background: var(--surface-solid);
+            backdrop-filter: blur(18px) saturate(1.5);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+            padding: 24px;
+            display: flex; flex-direction: column; gap: 12px;
+            cursor: pointer; transition: background .2s, transform .2s, box-shadow .2s;
+            position: relative;
+            text-decoration: none; color: inherit;
+        }
+        .card:hover {
+            background: rgba(255,255,255,0.95); transform: translateY(-2px);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6), 0 16px 32px -16px rgba(0,166,156,0.25);
+        }
+
+        .cover {
+            width: 100%; height: 100px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            border: 1px solid var(--line-soft);
+            position: relative; overflow: hidden;
+        }
+        .cover img { width: 100%; height: 100%; object-fit: contain; padding: 12px; }
+        .card h3 { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; }
+        .card p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; flex: 1; }
+
+        .card-foot { display: flex; align-items: center; gap: 8px; margin-top: auto; flex-wrap: wrap; }
+
+        .btn {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem; font-weight: 600;
+            padding: 8px 16px; border-radius: 40px;
+            cursor: pointer; text-decoration: none;
+            transition: all .2s; border: 1px solid var(--teal);
+            color: var(--teal-dark); background: transparent;
+            white-space: nowrap;
+        }
+        .btn:hover { background: var(--teal); color: #fff; box-shadow: 0 0 16px rgba(0,166,156,0.4); }
+
+        .card.hidden { display: none; }
+
+        @media (max-width: 600px) {
+            .hero { padding: 40px 26px; }
+            h1 { font-size: 1.8rem; }
+            .head-org { flex-direction: column; text-align: center; padding: 24px; gap: 16px; }
+            .head-org .cover { width: 60px; height: 60px; }
+            .grid { grid-template-columns: 1fr 1fr; }
+            .filter-bar { gap: 6px; }
+            .filter-btn { padding: 6px 14px; font-size: 0.65rem; }
+        }
+        @media (max-width: 400px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top">
+        <a href="../" title="В меню">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12L12 3l9 9"/>
+                <path d="M5 10v10a1 1 0 0 0 1 1h4v-5h4v5h4a1 1 0 0 0 1-1V10"/>
+            </svg>
+        </a>
+    </div>
+
+    <div class="wrap">
+
+        <div class="hero hud">
+            <div class="hero-text">
+                <div class="eyebrow">Графические стандарты</div>
+                <h1>Айдентика подразделений</h1>
+                <p>Брендбуки, цвета, шрифты и элементы оформления для каждого подразделения.</p>
+            </div>
+            <span class="br-tr"></span><span class="br-bl"></span>
+        </div>
+
+        <!-- СОМУ -->
+        <a href="./csys/" class="head-org hud">
+            <div class="cover">
+                <!-- Замени путь на свой логотип: <img src="../images/identity/logo-somu.svg" alt="СОМУ"> -->
+            </div>
+            <div class="info">
+                <h3>СОМУ</h3>
+                <p>Совет обучающихся и молодых учёных. Бирюзовый, красный, белый — строго и научно.</p>
+                <span class="tag-wip">в разработке</span>
+            </div>
+            <span class="arrow">→</span>
+            <span class="br-tr"></span><span class="br-bl"></span>
+        </a>
+
+        <!-- Фильтр -->
+        <div class="filter-bar">
+            <button class="filter-btn active" data-filter="all">Все</button>
+            <button class="filter-btn" data-filter="org">Организации</button>
+            <button class="filter-btn" data-filter="event">Мероприятия</button>
+        </div>
+
+        <div class="section-head">
+            <h2>Организации и мероприятия</h2>
+            <span class="count" id="recordCount">004 ЗАПИСИ</span>
+        </div>
+
+        <!-- Группа: Организации -->
+        <div class="group" data-group="org">
+            <div class="group-title">Организации</div>
+            <div class="grid">
+                <!-- АСНО -->
+                <a href="./almazovscs/" class="card hud" data-category="org">
+                    <div class="cover" style="background:linear-gradient(135deg, #ede9fe, #f3e8ff);">
+                        <!-- Замени путь: <img src="../images/identity/logo-asno.svg" alt="АСНО"> -->
+                    </div>
+                    <h3>АСНО</h3>
+                    <p>Фиолетовый, лиловый, воздушный.</p>
+                    <span class="tag-wip">в разработке</span>
+                    <div class="card-foot"><span class="btn">Полный</span></div>
+                    <span class="br-tr"></span><span class="br-bl"></span>
+                </a>
+
+                <!-- Только сердцем -->
+                <a href="./onlyheart/" class="card hud" data-category="org">
+                    <div class="cover" style="background:linear-gradient(135deg, #fce4ec, #f8bbd0, #e8f5e9, #c8e6c9, #fce4ec);">
+                        <!-- Замени путь: <img src="../images/identity/logo-onlyheart.svg" alt="Только сердцем"> -->
+                    </div>
+                    <h3>Только сердцем</h3>
+                    <p>Волонтёрское движение.</p>
+                    <span class="tag-wip">в разработке</span>
+                    <div class="card-foot"><span class="btn">Полный</span></div>
+                    <span class="br-tr"></span><span class="br-bl"></span>
+                </a>
+
+                <!-- Клуб сердца -->
+                <a href="./heartclub/" class="card hud" data-category="org">
+                    <div class="cover" style="background:linear-gradient(135deg, #ffebee, #ef9a9a, #ffcdd2, #ffebee);">
+                        <!-- Замени путь: <img src="../images/identity/logo-heartclub.svg" alt="Клуб сердца"> -->
+                    </div>
+                    <h3>Клуб сердца</h3>
+                    <p>Общественная организация.</p>
+                    <span class="tag-wip">в разработке</span>
+                    <div class="card-foot"><span class="btn">Полный</span></div>
+                    <span class="br-tr"></span><span class="br-bl"></span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Группа: Мероприятия -->
+        <div class="group" data-group="event">
+            <div class="group-title">Мероприятия</div>
+            <div class="grid">
+                <!-- АММФ -->
+                <a href="./ammf/" class="card hud" data-category="event">
+                    <div class="cover" style="background:linear-gradient(135deg, #d9eef7, #c6fcfc);">
+                        <!-- Замени путь: <img src="../images/identity/logo-ammf.svg" alt="АММФ"> -->
+                    </div>
+                    <h3>АММФ</h3>
+                    <p>Алмазовский молодёжный медицинский форум.</p>
+                    <span class="tag-wip">в разработке</span>
+                    <div class="card-foot"><span class="btn">Полный</span></div>
+                    <span class="br-tr"></span><span class="br-bl"></span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const groups = document.querySelectorAll('.group');
+        const recordCount = document.getElementById('recordCount');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const filter = btn.dataset.filter;
+                let totalVisible = 0;
+
+                groups.forEach(group => {
+                    const groupCategory = group.dataset.group;
+                    const cards = group.querySelectorAll('.card');
+
+                    if (filter === 'all') {
+                        group.classList.remove('hidden-group');
+                        cards.forEach(card => { card.classList.remove('hidden'); totalVisible++; });
+                    } else if (filter === groupCategory) {
+                        group.classList.remove('hidden-group');
+                        cards.forEach(card => { card.classList.remove('hidden'); totalVisible++; });
+                    } else {
+                        group.classList.add('hidden-group');
+                        cards.forEach(card => card.classList.add('hidden'));
+                    }
+                });
+
+                recordCount.textContent = String(totalVisible).padStart(3, '0') + ' ЗАПИСЕЙ';
+            });
+        });
+    </script>
+
+</body>
+</html>
