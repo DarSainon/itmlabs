@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Протокол совещания — СОМУ</title>
+    <title>Конструктор протоколов — СОМУ</title>
     <link rel="icon" type="image/svg+xml" href="/itmlabs/images/favicon/favicon-5.svg?v=0.2">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -150,7 +150,7 @@
         }
         .pdf-template table th { background: #f0f0f0; text-align: left; font-weight: 600; }
 
-        /* Подписи: вертикально, линия фиксированной ширины, выровнена по правому краю */
+        /* Подписи */
         .pdf-signatures {
             margin-top: 24px;
             display: flex;
@@ -212,7 +212,7 @@
     </a>
 
     <div class="container">
-        <h1>Протокол совещания</h1>
+        <h1>Конструктор протоколов</h1>
 
         <div class="card">
             <h2>Данные протокола</h2>
@@ -304,7 +304,6 @@
         const STORAGE_KEY = 'protocol-data';
         const TTL = 60 * 60 * 1000;
 
-        // Форматирование даты из input[type=date] в "4 августа 2026 года"
         function formatDate(dateStr) {
             if (!dateStr) return '';
             const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
@@ -459,60 +458,53 @@
             if (e.target === this) closePreview();
         });
 
-       async function downloadPDF() {
-    const d = getFormData();
+        // Исправленная функция скачивания PDF
+        function downloadPDF() {
+            const d = getFormData();
 
-    document.getElementById('pdfDateTop').textContent = d.date || '';
-    document.getElementById('pdfTitle').textContent = `ПРОТОКОЛ № ${d.number || ''}`;
-    document.getElementById('pdfSubtitle').textContent = d.meetingType || '';
-    document.getElementById('pdfSecretaryName').textContent = d.secretary || '';
+            document.getElementById('pdfDateTop').textContent = d.date || '';
+            document.getElementById('pdfTitle').textContent = `ПРОТОКОЛ № ${d.number || ''}`;
+            document.getElementById('pdfSubtitle').textContent = d.meetingType || '';
+            document.getElementById('pdfSecretaryName').textContent = d.secretary || '';
 
-    const pdfContent = document.getElementById('pdfContent');
-    let html = '';
+            const pdfContent = document.getElementById('pdfContent');
+            let html = '';
+            if (d.attendees.trim()) {
+                html += `<table><tr><th>Присутствовали</th></tr>`;
+                d.attendees.trim().split('\n').filter(Boolean).forEach(name => {
+                    html += `<tr><td>${name}</td></tr>`;
+                });
+                html += `</table>`;
+            }
+            html += `<p style="margin-top:8px;"><strong>Повестка дня:</strong></p><p>${d.agenda.replace(/\n/g, '<br>')}</p>`;
+            html += `<p style="margin-top:8px;"><strong>Решили:</strong></p><p>${d.decisions.replace(/\n/g, '<br>')}</p>`;
+            pdfContent.innerHTML = html;
 
-    if (d.attendees.trim()) {
-        html += `<table><tr><th>Присутствовали</th></tr>`;
-        d.attendees.trim().split('\n').filter(Boolean).forEach(name => {
-            html += `<tr><td>${name}</td></tr>`;
-        });
-        html += `</table>`;
-    }
+            var element = document.getElementById('pdfTemplate');
+            // Временно делаем видимым
+            element.style.position = 'fixed';
+            element.style.left = '0';
+            element.style.top = '0';
+            element.style.zIndex = '9999';
+            element.style.opacity = '1';
+            element.style.width = '680px';
 
-    html += `<p style="margin-top:8px;"><strong>Повестка дня:</strong></p><p>${d.agenda.replace(/\n/g, '<br>')}</p>`;
-    html += `<p style="margin-top:8px;"><strong>Решили:</strong></p><p>${d.decisions.replace(/\n/g, '<br>')}</p>`;
+            var opt = {
+                margin: [8, 8, 8, 8],
+                filename: `protocol-${d.number || 'new'}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
 
-    pdfContent.innerHTML = html;
-
-    const element = document.getElementById('pdfTemplate');
-
-    // Временно показываем шаблон
-    element.style.position = 'fixed';
-    element.style.left = '0';
-    element.style.top = '0';
-    element.style.zIndex = '-1';
-    element.style.opacity = '1';
-
-    const opt = {
-        margin: [8, 8, 8, 8],
-        filename: `protocol-${d.number || 'new'}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    try {
-        await html2pdf().set(opt).from(element).save();
-    } catch(e) {
-        console.error('Ошибка генерации PDF:', e);
-        alert('Не удалось создать PDF. Проверьте консоль (F12).');
-    }
-
-    // Возвращаем скрытое состояние
-    element.style.position = 'absolute';
-    element.style.left = '-9999px';
-    element.style.top = '0';
-    element.style.zIndex = '';
-}
+            html2pdf().set(opt).from(element).save().then(function() {
+                // После успешного сохранения скрываем обратно
+                element.style.position = 'absolute';
+                element.style.left = '-9999px';
+                element.style.top = '0';
+                element.style.zIndex = '';
+            });
+        }
 
         function getFormData() {
             return {
