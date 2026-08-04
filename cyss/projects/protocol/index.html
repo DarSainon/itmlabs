@@ -459,41 +459,60 @@
             if (e.target === this) closePreview();
         });
 
-        function downloadPDF() {
-            const d = getFormData();
+       async function downloadPDF() {
+    const d = getFormData();
 
-            document.getElementById('pdfDateTop').textContent = d.date || '';
-            document.getElementById('pdfTitle').textContent = `ПРОТОКОЛ № ${d.number || ''}`;
-            document.getElementById('pdfSubtitle').textContent = d.meetingType || '';
-            document.getElementById('pdfSecretaryName').textContent = d.secretary || '';
+    document.getElementById('pdfDateTop').textContent = d.date || '';
+    document.getElementById('pdfTitle').textContent = `ПРОТОКОЛ № ${d.number || ''}`;
+    document.getElementById('pdfSubtitle').textContent = d.meetingType || '';
+    document.getElementById('pdfSecretaryName').textContent = d.secretary || '';
 
-            const pdfContent = document.getElementById('pdfContent');
-            let html = '';
+    const pdfContent = document.getElementById('pdfContent');
+    let html = '';
 
-            if (d.attendees.trim()) {
-                html += `<table><tr><th>Присутствовали</th></tr>`;
-                d.attendees.trim().split('\n').filter(Boolean).forEach(name => {
-                    html += `<tr><td>${name}</td></tr>`;
-                });
-                html += `</table>`;
-            }
+    if (d.attendees.trim()) {
+        html += `<table><tr><th>Присутствовали</th></tr>`;
+        d.attendees.trim().split('\n').filter(Boolean).forEach(name => {
+            html += `<tr><td>${name}</td></tr>`;
+        });
+        html += `</table>`;
+    }
 
-            html += `<p style="margin-top:8px;"><strong>Повестка дня:</strong></p><p>${d.agenda.replace(/\n/g, '<br>')}</p>`;
-            html += `<p style="margin-top:8px;"><strong>Решили:</strong></p><p>${d.decisions.replace(/\n/g, '<br>')}</p>`;
+    html += `<p style="margin-top:8px;"><strong>Повестка дня:</strong></p><p>${d.agenda.replace(/\n/g, '<br>')}</p>`;
+    html += `<p style="margin-top:8px;"><strong>Решили:</strong></p><p>${d.decisions.replace(/\n/g, '<br>')}</p>`;
 
-            pdfContent.innerHTML = html;
+    pdfContent.innerHTML = html;
 
-            const element = document.getElementById('pdfTemplate');
-            const opt = {
-                margin: [8, 8, 8, 8],
-                filename: `protocol-${d.number || 'new'}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
+    const element = document.getElementById('pdfTemplate');
 
-            html2pdf().set(opt).from(element).save();
-        }
+    // Временно показываем шаблон
+    element.style.position = 'fixed';
+    element.style.left = '0';
+    element.style.top = '0';
+    element.style.zIndex = '-1';
+    element.style.opacity = '1';
+
+    const opt = {
+        margin: [8, 8, 8, 8],
+        filename: `protocol-${d.number || 'new'}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    try {
+        await html2pdf().set(opt).from(element).save();
+    } catch(e) {
+        console.error('Ошибка генерации PDF:', e);
+        alert('Не удалось создать PDF. Проверьте консоль (F12).');
+    }
+
+    // Возвращаем скрытое состояние
+    element.style.position = 'absolute';
+    element.style.left = '-9999px';
+    element.style.top = '0';
+    element.style.zIndex = '';
+}
 
         function getFormData() {
             return {
