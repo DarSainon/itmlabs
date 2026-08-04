@@ -459,52 +459,65 @@
         });
 
         // Исправленная функция скачивания PDF
-        function downloadPDF() {
-            const d = getFormData();
+     function downloadPDF() {
+    const d = getFormData();
 
-            document.getElementById('pdfDateTop').textContent = d.date || '';
-            document.getElementById('pdfTitle').textContent = `ПРОТОКОЛ № ${d.number || ''}`;
-            document.getElementById('pdfSubtitle').textContent = d.meetingType || '';
-            document.getElementById('pdfSecretaryName').textContent = d.secretary || '';
+    // Создаём временный контейнер для PDF
+    var tempDiv = document.createElement('div');
+    tempDiv.style.position = 'fixed';
+    tempDiv.style.left = '0';
+    tempDiv.style.top = '0';
+    tempDiv.style.width = '680px';
+    tempDiv.style.padding = '25px 30px';
+    tempDiv.style.background = '#fff';
+    tempDiv.style.color = '#000';
+    tempDiv.style.fontFamily = 'Times New Roman, serif';
+    tempDiv.style.lineHeight = '1.5';
+    tempDiv.style.border = '3px double #000';
+    tempDiv.style.zIndex = '9999';
 
-            const pdfContent = document.getElementById('pdfContent');
-            let html = '';
-            if (d.attendees.trim()) {
-                html += `<table><tr><th>Присутствовали</th></tr>`;
-                d.attendees.trim().split('\n').filter(Boolean).forEach(name => {
-                    html += `<tr><td>${name}</td></tr>`;
-                });
-                html += `</table>`;
-            }
-            html += `<p style="margin-top:8px;"><strong>Повестка дня:</strong></p><p>${d.agenda.replace(/\n/g, '<br>')}</p>`;
-            html += `<p style="margin-top:8px;"><strong>Решили:</strong></p><p>${d.decisions.replace(/\n/g, '<br>')}</p>`;
-            pdfContent.innerHTML = html;
+    // Собираем HTML-контент
+    var html = '';
+    html += '<div style="text-align:center; margin-bottom:14px;">';
+    html += '<p style="font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.02em; line-height:1.4;">Федеральное государственное бюджетное учреждение<br>«Национальный медицинский исследовательский центр<br>имени В. А. Алмазова»<br>Министерства здравоохранения Российской Федерации</p>';
+    html += '<p style="font-size:0.8rem; font-weight:700; color:#007a72; margin-top:4px;">Совет обучающихся и молодых учёных</p>';
+    html += '</div>';
+    html += '<div style="display:flex; justify-content:space-between; font-size:0.7rem; margin-bottom:8px;"><span>г. Санкт-Петербург</span><span>' + (d.date || '') + '</span></div>';
+    html += '<div style="text-align:center; font-size:0.9rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; margin:12px 0 2px;">ПРОТОКОЛ № ' + (d.number || '') + '</div>';
+    html += '<div style="text-align:center; font-size:0.75rem; margin-bottom:10px;">' + (d.meetingType || '') + '</div>';
 
-            var element = document.getElementById('pdfTemplate');
-            // Временно делаем видимым
-            element.style.position = 'fixed';
-            element.style.left = '0';
-            element.style.top = '0';
-            element.style.zIndex = '9999';
-            element.style.opacity = '1';
-            element.style.width = '680px';
+    if (d.attendees.trim()) {
+        html += '<table style="width:100%; border-collapse:collapse; margin:10px 0; font-size:0.72rem;"><tr><th style="background:#f0f0f0; text-align:left; padding:4px 8px; border:1px solid #000;">Присутствовали</th></tr>';
+        d.attendees.trim().split('\n').filter(Boolean).forEach(name => {
+            html += '<tr><td style="padding:4px 8px; border:1px solid #000;">' + name + '</td></tr>';
+        });
+        html += '</table>';
+    }
 
-            var opt = {
-                margin: [8, 8, 8, 8],
-                filename: `protocol-${d.number || 'new'}.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
+    html += '<p style="margin-top:8px;"><strong>Повестка дня:</strong></p><p>' + d.agenda.replace(/\n/g, '<br>') + '</p>';
+    html += '<p style="margin-top:8px;"><strong>Решили:</strong></p><p>' + d.decisions.replace(/\n/g, '<br>') + '</p>';
 
-            html2pdf().set(opt).from(element).save().then(function() {
-                // После успешного сохранения скрываем обратно
-                element.style.position = 'absolute';
-                element.style.left = '-9999px';
-                element.style.top = '0';
-                element.style.zIndex = '';
-            });
-        }
+    // Подписи
+    html += '<div style="margin-top:24px; display:flex; flex-direction:column; gap:20px; font-size:0.78rem;">';
+    html += '<div style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px;"><div><div style="font-weight:600;">Председатель СОМУ</div><div style="color:#333;">Ланская Е.В.</div></div><div style="width:200px; border-top:1px solid #000; padding-top:3px; color:#555; font-size:0.7rem; text-align:right;">(подпись)</div></div>';
+    html += '<div style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px;"><div><div style="font-weight:600;">Секретарь совещания</div><div style="color:#333;">' + (d.secretary || '') + '</div></div><div style="width:200px; border-top:1px solid #000; padding-top:3px; color:#555; font-size:0.7rem; text-align:right;">(подпись)</div></div>';
+    html += '</div>';
+
+    tempDiv.innerHTML = html;
+    document.body.appendChild(tempDiv);
+
+    var opt = {
+        margin: [8, 8, 8, 8],
+        filename: 'protocol-' + (d.number || 'new') + '.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(tempDiv).save().then(function() {
+        document.body.removeChild(tempDiv);
+    });
+}
 
         function getFormData() {
             return {
