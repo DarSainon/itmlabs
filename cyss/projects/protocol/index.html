@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Конструктор протоколов — СОМУ</title>
     <link rel="icon" type="image/svg+xml" href="/itmlabs/images/favicon/favicon-5.svg?v=0.2">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -122,86 +121,11 @@
         }
         .toast.hidden { opacity: 0; pointer-events: none; }
 
-        /* PDF-шаблон (скрыт) */
-        .pdf-template {
-            position: absolute; left: -9999px; top: 0;
-            width: 680px; padding: 25px 30px;
-            background: #fff; color: #000;
-            font-family: 'Times New Roman', serif; line-height: 1.5;
-            border: 3px double #000;
-        }
-        .pdf-header { text-align: center; margin-bottom: 14px; }
-        .pdf-header .official {
-            font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
-            letter-spacing: 0.02em; line-height: 1.4;
-        }
-        .pdf-header .council { font-size: 0.8rem; font-weight: 700; color: #007a72; margin-top: 4px; }
-        .pdf-location-date { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 8px; }
-        .pdf-title {
-            text-align: center; font-size: 0.9rem; font-weight: 700;
-            margin: 12px 0 2px; text-transform: uppercase; letter-spacing: 0.04em;
-        }
-        .pdf-subtitle { text-align: center; font-size: 0.75rem; margin-bottom: 10px; }
-        .pdf-template table {
-            width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.72rem;
-        }
-        .pdf-template table td, .pdf-template table th {
-            padding: 4px 8px; border: 1px solid #000;
-        }
-        .pdf-template table th { background: #f0f0f0; text-align: left; font-weight: 600; }
-
-        /* Подписи */
-        .pdf-signatures {
-            margin-top: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            font-size: 0.78rem;
-        }
-        .pdf-signatures .sig-block {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 20px;
-        }
-        .pdf-signatures .sig-info { flex: 0 0 auto; }
-        .pdf-signatures .sig-info .role { font-weight: 600; }
-        .pdf-signatures .sig-info .name { color: #333; }
-        .pdf-signatures .sig-line {
-            width: 200px;
-            flex: none;
-            border-top: 1px solid #000;
-            padding-top: 3px;
-            color: #555;
-            font-size: 0.7rem;
-            text-align: right;
-        }
-
-        /* Превью в модалке */
-        .preview-signatures {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            font-size: 0.75rem;
-        }
-        .preview-signatures .sig-block {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 20px;
-        }
-        .preview-signatures .sig-info { flex: 0 0 auto; }
-        .preview-signatures .sig-info .role { font-weight: 600; }
-        .preview-signatures .sig-info .name { color: #333; }
-        .preview-signatures .sig-line {
-            width: 200px;
-            flex: none;
-            border-top: 1px solid #000;
-            padding-top: 3px;
-            color: #555;
-            font-size: 0.68rem;
-            text-align: right;
+        @media (max-width: 600px) {
+            .preview-signatures .sig-block {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
@@ -251,7 +175,7 @@
             </div>
 
             <div class="btn-row" style="margin-top:16px;">
-                <button class="btn btn-primary" onclick="downloadPDF()">Скачать PDF</button>
+                <button class="btn btn-primary" onclick="printProtocol()">Распечатать</button>
                 <button class="btn btn-outline" onclick="openPreview()">Предпросмотр</button>
                 <button class="btn btn-outline" onclick="clearForm()">Очистить</button>
             </div>
@@ -268,37 +192,6 @@
 
     <!-- Уведомление -->
     <div class="toast" id="toast">Данные сохраняются 1 час</div>
-
-    <!-- PDF-шаблон (скрыт) -->
-    <div class="pdf-template" id="pdfTemplate">
-        <div class="pdf-header">
-            <p class="official">Федеральное государственное бюджетное учреждение<br>«Национальный медицинский исследовательский центр<br>имени В. А. Алмазова»<br>Министерства здравоохранения Российской Федерации</p>
-            <p class="council">Совет обучающихся и молодых учёных</p>
-        </div>
-        <div class="pdf-location-date">
-            <span>г. Санкт-Петербург</span>
-            <span id="pdfDateTop"></span>
-        </div>
-        <div class="pdf-title" id="pdfTitle">ПРОТОКОЛ № </div>
-        <div class="pdf-subtitle" id="pdfSubtitle"></div>
-        <div id="pdfContent"></div>
-        <div class="pdf-signatures" id="pdfSignatures">
-            <div class="sig-block">
-                <div class="sig-info">
-                    <div class="role">Председатель СОМУ</div>
-                    <div class="name">Ланская Е.В.</div>
-                </div>
-                <div class="sig-line">(подпись)</div>
-            </div>
-            <div class="sig-block">
-                <div class="sig-info">
-                    <div class="role">Секретарь совещания</div>
-                    <div class="name" id="pdfSecretaryName"></div>
-                </div>
-                <div class="sig-line">(подпись)</div>
-            </div>
-        </div>
-    </div>
 
     <script>
         const STORAGE_KEY = 'protocol-data';
@@ -428,20 +321,14 @@
             html += `<p style="margin-top:8px;"><strong>Решили:</strong></p><p>${d.decisions.replace(/\n/g,'<br>') || '<em>не указаны</em>'}</p>`;
 
             html += `
-                <div class="preview-signatures">
-                    <div class="sig-block">
-                        <div class="sig-info">
-                            <div class="role">Председатель СОМУ</div>
-                            <div class="name">Ланская Е.В.</div>
-                        </div>
-                        <div class="sig-line">(подпись)</div>
+                <div class="preview-signatures" style="margin-top:20px; display:flex; flex-direction:column; gap:16px; font-size:0.75rem;">
+                    <div class="sig-block" style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px;">
+                        <div><div style="font-weight:600;">Председатель СОМУ</div><div style="color:#333;">Ланская Е.В.</div></div>
+                        <div style="width:200px; border-top:1px solid #000; padding-top:3px; color:#555; text-align:right;">(подпись)</div>
                     </div>
-                    <div class="sig-block">
-                        <div class="sig-info">
-                            <div class="role">Секретарь совещания</div>
-                            <div class="name">${d.secretary || '...'}</div>
-                        </div>
-                        <div class="sig-line">(подпись)</div>
+                    <div class="sig-block" style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px;">
+                        <div><div style="font-weight:600;">Секретарь совещания</div><div style="color:#333;">${d.secretary || '...'}</div></div>
+                        <div style="width:200px; border-top:1px solid #000; padding-top:3px; color:#555; text-align:right;">(подпись)</div>
                     </div>
                 </div>
             `;
@@ -458,66 +345,54 @@
             if (e.target === this) closePreview();
         });
 
-        // Исправленная функция скачивания PDF
-     function downloadPDF() {
-    const d = getFormData();
-
-    // Создаём временный контейнер для PDF
-    var tempDiv = document.createElement('div');
-    tempDiv.style.position = 'fixed';
-    tempDiv.style.left = '0';
-    tempDiv.style.top = '0';
-    tempDiv.style.width = '680px';
-    tempDiv.style.padding = '25px 30px';
-    tempDiv.style.background = '#fff';
-    tempDiv.style.color = '#000';
-    tempDiv.style.fontFamily = 'Times New Roman, serif';
-    tempDiv.style.lineHeight = '1.5';
-    tempDiv.style.border = '3px double #000';
-    tempDiv.style.zIndex = '9999';
-
-    // Собираем HTML-контент
-    var html = '';
-    html += '<div style="text-align:center; margin-bottom:14px;">';
-    html += '<p style="font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.02em; line-height:1.4;">Федеральное государственное бюджетное учреждение<br>«Национальный медицинский исследовательский центр<br>имени В. А. Алмазова»<br>Министерства здравоохранения Российской Федерации</p>';
-    html += '<p style="font-size:0.8rem; font-weight:700; color:#007a72; margin-top:4px;">Совет обучающихся и молодых учёных</p>';
-    html += '</div>';
-    html += '<div style="display:flex; justify-content:space-between; font-size:0.7rem; margin-bottom:8px;"><span>г. Санкт-Петербург</span><span>' + (d.date || '') + '</span></div>';
-    html += '<div style="text-align:center; font-size:0.9rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; margin:12px 0 2px;">ПРОТОКОЛ № ' + (d.number || '') + '</div>';
-    html += '<div style="text-align:center; font-size:0.75rem; margin-bottom:10px;">' + (d.meetingType || '') + '</div>';
-
-    if (d.attendees.trim()) {
-        html += '<table style="width:100%; border-collapse:collapse; margin:10px 0; font-size:0.72rem;"><tr><th style="background:#f0f0f0; text-align:left; padding:4px 8px; border:1px solid #000;">Присутствовали</th></tr>';
-        d.attendees.trim().split('\n').filter(Boolean).forEach(name => {
-            html += '<tr><td style="padding:4px 8px; border:1px solid #000;">' + name + '</td></tr>';
-        });
-        html += '</table>';
-    }
-
-    html += '<p style="margin-top:8px;"><strong>Повестка дня:</strong></p><p>' + d.agenda.replace(/\n/g, '<br>') + '</p>';
-    html += '<p style="margin-top:8px;"><strong>Решили:</strong></p><p>' + d.decisions.replace(/\n/g, '<br>') + '</p>';
-
-    // Подписи
-    html += '<div style="margin-top:24px; display:flex; flex-direction:column; gap:20px; font-size:0.78rem;">';
-    html += '<div style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px;"><div><div style="font-weight:600;">Председатель СОМУ</div><div style="color:#333;">Ланская Е.В.</div></div><div style="width:200px; border-top:1px solid #000; padding-top:3px; color:#555; font-size:0.7rem; text-align:right;">(подпись)</div></div>';
-    html += '<div style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px;"><div><div style="font-weight:600;">Секретарь совещания</div><div style="color:#333;">' + (d.secretary || '') + '</div></div><div style="width:200px; border-top:1px solid #000; padding-top:3px; color:#555; font-size:0.7rem; text-align:right;">(подпись)</div></div>';
-    html += '</div>';
-
-    tempDiv.innerHTML = html;
-    document.body.appendChild(tempDiv);
-
-    var opt = {
-        margin: [8, 8, 8, 8],
-        filename: 'protocol-' + (d.number || 'new') + '.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    html2pdf().set(opt).from(tempDiv).save().then(function() {
-        document.body.removeChild(tempDiv);
-    });
-}
+        // НОВАЯ функция печати
+        function printProtocol() {
+            const d = getFormData();
+            
+            var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Протокол</title>';
+            html += '<style>';
+            html += 'body { font-family: "Times New Roman", serif; line-height: 1.5; color: #000; width: 680px; margin: 25px auto; padding: 25px 30px; border: 3px double #000; }';
+            html += '.official { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; text-align: center; }';
+            html += '.council { font-size: 0.8rem; font-weight: 700; color: #007a72; text-align: center; margin-top: 4px; }';
+            html += '.location-date { display: flex; justify-content: space-between; font-size: 0.7rem; margin: 8px 0; }';
+            html += '.title { text-align: center; font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin: 12px 0 2px; }';
+            html += '.subtitle { text-align: center; font-size: 0.75rem; margin-bottom: 10px; }';
+            html += 'table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.72rem; }';
+            html += 'table th, table td { padding: 4px 8px; border: 1px solid #000; }';
+            html += 'table th { background: #f0f0f0; text-align: left; }';
+            html += '.signatures { margin-top: 24px; display: flex; flex-direction: column; gap: 20px; font-size: 0.78rem; }';
+            html += '.sig-block { display: flex; align-items: flex-end; justify-content: space-between; }';
+            html += '.sig-line { width: 200px; border-top: 1px solid #000; padding-top: 3px; color: #555; font-size: 0.7rem; text-align: right; }';
+            html += '</style></head><body>';
+            
+            html += '<div class="official">Федеральное государственное бюджетное учреждение<br>«Национальный медицинский исследовательский центр<br>имени В. А. Алмазова»<br>Министерства здравоохранения Российской Федерации</div>';
+            html += '<div class="council">Совет обучающихся и молодых учёных</div>';
+            html += '<div class="location-date"><span>г. Санкт-Петербург</span><span>' + (d.date || '') + '</span></div>';
+            html += '<div class="title">ПРОТОКОЛ № ' + (d.number || '') + '</div>';
+            html += '<div class="subtitle">' + (d.meetingType || '') + '</div>';
+            
+            if (d.attendees.trim()) {
+                html += '<table><tr><th>Присутствовали</th></tr>';
+                d.attendees.trim().split('\n').filter(Boolean).forEach(name => {
+                    html += '<tr><td>' + name + '</td></tr>';
+                });
+                html += '</table>';
+            }
+            
+            html += '<p style="margin-top:8px;"><strong>Повестка дня:</strong></p><p>' + d.agenda.replace(/\n/g, '<br>') + '</p>';
+            html += '<p style="margin-top:8px;"><strong>Решили:</strong></p><p>' + d.decisions.replace(/\n/g, '<br>') + '</p>';
+            
+            html += '<div class="signatures">';
+            html += '<div class="sig-block"><div><div style="font-weight:600;">Председатель СОМУ</div><div style="color:#333;">Ланская Е.В.</div></div><div class="sig-line">(подпись)</div></div>';
+            html += '<div class="sig-block"><div><div style="font-weight:600;">Секретарь совещания</div><div style="color:#333;">' + (d.secretary || '') + '</div></div><div class="sig-line">(подпись)</div></div>';
+            html += '</div>';
+            
+            html += '</body></html>';
+            
+            var w = window.open('', '_blank', 'width=750,height=800');
+            w.document.write(html);
+            w.document.close();
+        }
 
         function getFormData() {
             return {
