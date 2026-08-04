@@ -43,7 +43,6 @@
     mask-image:radial-gradient(ellipse at 30% 0%, black 0%, transparent 70%);
   }
 
-  /* HUD corner brackets — signature element */
   .hud{ position:relative; }
   .hud::before, .hud::after,
   .hud .br-tl, .hud .br-tr, .hud .br-bl, .hud .br-br{ content:''; position:absolute; width:14px; height:14px; pointer-events:none; }
@@ -76,7 +75,6 @@
 
   .wrap{ position:relative; z-index:1; max-width:980px; margin:0 auto; padding:24px 32px 110px; }
 
-  /* HERO */
   .hero{
     background:var(--surface);
     backdrop-filter:blur(28px) saturate(1.7); -webkit-backdrop-filter:blur(28px) saturate(1.7);
@@ -122,7 +120,6 @@
     font-size:1rem; color:var(--text-muted); line-height:1.6; max-width:520px; font-weight:400;
   }
 
-  /* SECTION HEADER */
   .section-head{
     display:flex; align-items:baseline; justify-content:space-between;
     margin-bottom:22px;
@@ -135,7 +132,6 @@
     font-size:0.72rem; color:var(--text-faint); font-weight:600; letter-spacing:0.05em;
   }
 
-  /* GRID */
   .grid{
     display:grid;
     grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
@@ -222,7 +218,6 @@
   .btn-primary:hover{ background:var(--primary); color:#fff; box-shadow:0 0 16px rgba(0,166,156,0.4); }
   .btn-disabled{ border-color:var(--line); color:var(--text-faint); cursor:default; }
 
-  /* FOOTER */
   .foot{
     margin-top:64px;
     padding-top:24px;
@@ -269,14 +264,14 @@
 
 <div class="grid">
 
-  <!-- 001 — Айдентика -->
+  <!-- 001 — Айдентика (с анимацией логотипов) -->
   <div class="card is-live hud">
     <a href="#" title="Документация" class="doc-link">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
     </a>
     <span class="card-id">/ 001</span>
-    <div class="cover">
-      <img src="../images/cyss/identity.png" alt="Айдентика">
+    <div class="cover" style="position:relative; overflow:hidden; background:transparent;">
+      <canvas id="identityCanvas" style="width:100%; height:100%; display:block;"></canvas>
     </div>
     <h3>Айдентика</h3>
     <p>Графические стандарты и брендбуки подразделений: шрифты, цвета, логотипы, носители.</p>
@@ -312,6 +307,7 @@
     <span class="br-tr"></span><span class="br-bl"></span>
   </div>
 
+  <!-- 003 — заглушка -->
   <div class="card">
     <span class="card-id">/ 003</span>
     <div class="cover"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-faint)"><path d="M5 2h14M5 22h14M6 2c0 5 4 6.5 6 8 2-1.5 6-3 6-8M6 22c0-5 4-6.5 6-8 2 1.5 6 3 6 8"/></svg></div>
@@ -333,6 +329,83 @@
 
   </div>
 
+  <!-- Скрипт анимации логотипов -->
+  <script>
+    (function() {
+      const canvas = document.getElementById('identityCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      const logoNames = [
+        '../images/cyss/csys.svg',
+        '../images/cyss/ammf.svg',
+        '../images/cyss/asno.svg',
+        '../images/cyss/onlyheart.svg',
+        '../images/cyss/heartclub.svg',
+      ];
+
+      const logos = [];
+      let loaded = 0;
+
+      logoNames.forEach((src, index) => {
+        const img = new Image();
+        img.onload = function() {
+          logos.push({
+            img: img,
+            x: Math.random() * 200,
+            y: Math.random() * 80,
+            vx: (Math.random() - 0.5) * 0.8,
+            vy: (Math.random() - 0.5) * 0.8,
+            w: 40 + Math.random() * 30,
+            rotation: (Math.random() - 0.5) * 0.4,
+            rotSpeed: (Math.random() - 0.5) * 0.008
+          });
+          loaded++;
+        };
+        img.src = src;
+      });
+
+      function resize() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let l of logos) {
+          l.x += l.vx;
+          l.y += l.vy;
+          l.rotation += l.rotSpeed;
+
+          const pad = 10;
+          if (l.x < pad) { l.x = pad; l.vx *= -1; }
+          if (l.x > canvas.width - l.w - pad) { l.x = canvas.width - l.w - pad; l.vx *= -1; }
+          if (l.y < pad) { l.y = pad; l.vy *= -1; }
+          if (l.y > canvas.height - l.w - pad) { l.y = canvas.height - l.w - pad; l.vy *= -1; }
+
+          ctx.save();
+          ctx.globalAlpha = 0.7;
+          ctx.translate(l.x + l.w/2, l.y + l.w/2);
+          ctx.rotate(l.rotation);
+          ctx.drawImage(l.img, -l.w/2, -l.w/2, l.w, l.w);
+          ctx.restore();
+        }
+
+        requestAnimationFrame(animate);
+      }
+
+      const checkLoaded = setInterval(() => {
+        if (loaded >= logoNames.length) {
+          clearInterval(checkLoaded);
+          animate();
+        }
+      }, 100);
+    })();
+  </script>
+
 </body>
 </html>
-
