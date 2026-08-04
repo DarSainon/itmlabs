@@ -331,81 +331,89 @@
 
   <!-- Скрипт анимации логотипов -->
   <script>
-    (function() {
-      const canvas = document.getElementById('identityCanvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
+(function() {
+  const canvas = document.getElementById('identityCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
 
-      const logoNames = [
-        '../images/cyss/csys.svg',
-        '../images/cyss/ammf.svg',
-        '../images/cyss/asno.svg',
-        '../images/cyss/onlyheart.svg',
-        '../images/cyss/heartclub.svg',
-      ];
+  // Путь из cyss/index.html: ../images/cyss/
+  const logoNames = [
+    '../images/cyss/csys.svg',
+    '../images/cyss/ammf.svg',
+    '../images/cyss/asno.svg',
+    '../images/cyss/onlyheart.svg',
+    '../images/cyss/heartclub.svg',
+  ];
 
-      const logos = [];
-      let loaded = 0;
+  const logos = [];
+  let loaded = 0;
+  let errors = 0;
 
-      logoNames.forEach((src, index) => {
-        const img = new Image();
-        img.onload = function() {
-          logos.push({
-            img: img,
-            x: Math.random() * 200,
-            y: Math.random() * 80,
-            vx: (Math.random() - 0.5) * 0.8,
-            vy: (Math.random() - 0.5) * 0.8,
-            w: 40 + Math.random() * 30,
-            rotation: (Math.random() - 0.5) * 0.4,
-            rotSpeed: (Math.random() - 0.5) * 0.008
-          });
-          loaded++;
-        };
-        img.src = src;
+  logoNames.forEach((src) => {
+    const img = new Image();
+    img.onload = function() {
+      logos.push({
+        img: img,
+        x: Math.random() * 200,
+        y: Math.random() * 80,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: (Math.random() - 0.5) * 0.8,
+        w: 40 + Math.random() * 30,
+        rotation: (Math.random() - 0.5) * 0.4,
+        rotSpeed: (Math.random() - 0.5) * 0.008
       });
+      loaded++;
+    };
+    img.onerror = function() {
+      errors++;
+      console.warn('Не загрузился логотип: ' + src);
+      loaded++;
+    };
+    img.src = src;
+  });
 
-      function resize() {
-        const rect = canvas.parentElement.getBoundingClientRect();
-        canvas.width = rect.width;
-        canvas.height = rect.height;
-      }
-      window.addEventListener('resize', resize);
-      resize();
+  function resize() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+  }
+  window.addEventListener('resize', resize);
+  resize();
 
-      function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        for (let l of logos) {
-          l.x += l.vx;
-          l.y += l.vy;
-          l.rotation += l.rotSpeed;
+    for (let l of logos) {
+      l.x += l.vx;
+      l.y += l.vy;
+      l.rotation += l.rotSpeed;
 
-          const pad = 10;
-          if (l.x < pad) { l.x = pad; l.vx *= -1; }
-          if (l.x > canvas.width - l.w - pad) { l.x = canvas.width - l.w - pad; l.vx *= -1; }
-          if (l.y < pad) { l.y = pad; l.vy *= -1; }
-          if (l.y > canvas.height - l.w - pad) { l.y = canvas.height - l.w - pad; l.vy *= -1; }
+      const pad = 10;
+      if (l.x < pad) { l.x = pad; l.vx *= -1; }
+      if (l.x > canvas.width - l.w - pad) { l.x = canvas.width - l.w - pad; l.vx *= -1; }
+      if (l.y < pad) { l.y = pad; l.vy *= -1; }
+      if (l.y > canvas.height - l.w - pad) { l.y = canvas.height - l.w - pad; l.vy *= -1; }
 
-          ctx.save();
-          ctx.globalAlpha = 0.7;
-          ctx.translate(l.x + l.w/2, l.y + l.w/2);
-          ctx.rotate(l.rotation);
-          ctx.drawImage(l.img, -l.w/2, -l.w/2, l.w, l.w);
-          ctx.restore();
-        }
+      ctx.save();
+      ctx.globalAlpha = 0.7;
+      ctx.translate(l.x + l.w/2, l.y + l.w/2);
+      ctx.rotate(l.rotation);
+      ctx.drawImage(l.img, -l.w/2, -l.w/2, l.w, l.w);
+      ctx.restore();
+    }
 
-        requestAnimationFrame(animate);
-      }
+    requestAnimationFrame(animate);
+  }
 
-      const checkLoaded = setInterval(() => {
-        if (loaded >= logoNames.length) {
-          clearInterval(checkLoaded);
-          animate();
-        }
-      }, 100);
-    })();
-  </script>
+  const checkLoaded = setInterval(() => {
+    if (loaded >= logoNames.length) {
+      clearInterval(checkLoaded);
+      if (logos.length > 0) animate();
+      else console.warn('Ни один логотип не загрузился');
+    }
+  }, 100);
+})();
+</script>
 
 </body>
 </html>
