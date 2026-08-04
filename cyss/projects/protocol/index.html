@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Протокол совещания — СОМУ</title>
+    <link rel="icon" type="image/svg+xml" href="/itmlabs/images/favicon/favicon-5.svg?v=0.2">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --teal: #00a69c; --teal-dark: #007a72;
+            --bg: #f4f3ef; --surface: rgba(255,255,255,0.55);
+            --surface-solid: rgba(255,255,255,0.82);
+            --text: #12181c; --text-muted: #5b6570;
+            --text-faint: #98a1a8;
+            --line: rgba(18,24,28,0.12); --line-soft: rgba(18,24,28,0.07);
+            --radius: 18px;
+        }
+        html { background: var(--bg); }
+        body {
+            background: var(--bg); color: var(--text);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased; min-height: 100vh;
+            padding-bottom: 50px;
+        }
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background:
+                linear-gradient(var(--line-soft) 1px, transparent 1px),
+                linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none; z-index: 0;
+            mask-image: radial-gradient(ellipse at 30% 0%, black 0%, transparent 70%);
+        }
+        .home-btn {
+            position: fixed; top: 24px; left: 24px; z-index: 20;
+            width: 44px; height: 44px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.6); backdrop-filter: blur(12px);
+            border: 1px solid rgba(0,166,156,0.2); border-radius: 50%;
+            color: var(--text); text-decoration: none; transition: all 0.25s;
+        }
+        .home-btn:hover { background: rgba(255,255,255,0.9); border-color: var(--teal); color: var(--teal); }
+        .home-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 1.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+        .container { max-width: 700px; margin: 0 auto; padding: 80px 24px 60px; position: relative; z-index: 1; }
+        h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 24px; }
+
+        .card {
+            background: var(--surface-solid);
+            backdrop-filter: blur(18px) saturate(1.5);
+            border: 1px solid var(--line); border-radius: var(--radius);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+            padding: 24px; position: relative; margin-bottom: 16px;
+        }
+        .card h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+        .card h2::before { content: ''; width: 4px; height: 20px; background: var(--teal); border-radius: 2px; }
+
+        .form-group { margin-bottom: 14px; }
+        .form-group label {
+            display: block; font-size: 0.75rem; font-weight: 600; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .form-input, .form-textarea, .form-select {
+            width: 100%; padding: 10px 14px;
+            border: 1px solid var(--line); border-radius: 10px;
+            font-size: 0.9rem; font-family: 'Inter', sans-serif;
+            background: var(--surface); color: var(--text);
+            outline: none; transition: border-color 0.2s;
+        }
+        .form-select { cursor: pointer; appearance: auto; }
+        .form-input:focus, .form-textarea:focus, .form-select:focus { border-color: var(--teal); }
+        .form-textarea { min-height: 100px; resize: vertical; font-family: 'Inter', sans-serif; }
+        .form-textarea.tall { min-height: 160px; }
+
+        .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 10px 22px; border-radius: 40px; font-weight: 600; font-size: 0.85rem;
+            cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif;
+            border: 1px solid var(--teal); background: transparent; color: var(--teal-dark); text-decoration: none;
+        }
+        .btn:hover { background: var(--teal); color: #fff; box-shadow: 0 0 16px rgba(0,166,156,0.4); }
+        .btn-primary { background: var(--teal); color: #fff; }
+        .btn-primary:hover { background: var(--teal-dark); }
+        .btn-outline { border: 1px solid var(--line); color: var(--text-muted); }
+        .btn-outline:hover { background: var(--surface-solid); color: var(--text); border-color: var(--teal); box-shadow: none; }
+
+        /* Модалка предпросмотра */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 100;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
+            display: none; align-items: center; justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            background: #fff; border-radius: 16px; padding: 30px;
+            max-width: 750px; width: 95%; max-height: 85vh; overflow-y: auto;
+            border: 2px solid #000; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            font-family: 'Times New Roman', serif; font-size: 0.85rem; line-height: 1.6;
+            color: #000;
+        }
+        .modal-close {
+            position: sticky; top: 0; float: right;
+            width: 32px; height: 32px; background: #eee; border: none;
+            border-radius: 50%; cursor: pointer; font-size: 1.2rem;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* Уведомление */
+        .toast {
+            position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,166,156,0.9); color: #fff;
+            padding: 10px 24px; border-radius: 30px;
+            font-size: 0.82rem; font-weight: 500; z-index: 50;
+            backdrop-filter: blur(10px); box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            transition: opacity 0.5s;
+        }
+        .toast.hidden { opacity: 0; pointer-events: none; }
+
+        /* PDF-шаблон (скрыт) */
+        .pdf-template {
+            position: absolute; left: -9999px; top: 0;
+            width: 680px; padding: 25px 30px;
+            background: #fff; color: #000;
+            font-family: 'Times New Roman', serif; line-height: 1.5;
+            border: 3px double #000;
+        }
+        .pdf-header { text-align: center; margin-bottom: 14px; }
+        .pdf-header .official {
+            font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.02em; line-height: 1.4;
+        }
+        .pdf-header .council { font-size: 0.8rem; font-weight: 700; color: #007a72; margin-top: 4px; }
+        .pdf-location-date { display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 8px; }
+        .pdf-title {
+            text-align: center; font-size: 0.9rem; font-weight: 700;
+            margin: 12px 0 2px; text-transform: uppercase; letter-spacing: 0.04em;
+        }
+        .pdf-subtitle { text-align: center; font-size: 0.75rem; margin-bottom: 10px; }
+        .pdf-template table {
+            width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 0.72rem;
+        }
+        .pdf-template table td, .pdf-template table th {
+            padding: 4px 8px; border: 1px solid #000;
+        }
+        .pdf-template table th { background: #f0f0f0; text-align: left; font-weight: 600; }
+
+        /* Подписи: вертикально, линия фиксированной ширины, выровнена по правому краю */
+        .pdf-signatures {
+            margin-top: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            font-size: 0.78rem;
+        }
+        .pdf-signatures .sig-block {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .pdf-signatures .sig-info { flex: 0 0 auto; }
+        .pdf-signatures .sig-info .role { font-weight: 600; }
+        .pdf-signatures .sig-info .name { color: #333; }
+        .pdf-signatures .sig-line {
+            width: 200px;
+            flex: none;
+            border-top: 1px solid #000;
+            padding-top: 3px;
+            color: #555;
+            font-size: 0.7rem;
+            text-align: right;
+        }
+
+        /* Превью в модалке */
+        .preview-signatures {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            font-size: 0.75rem;
+        }
+        .preview-signatures .sig-block {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .preview-signatures .sig-info { flex: 0 0 auto; }
+        .preview-signatures .sig-info .role { font-weight: 600; }
+        .preview-signatures .sig-info .name { color: #333; }
+        .preview-signatures .sig-line {
+            width: 200px;
+            flex: none;
+            border-top: 1px solid #000;
+            padding-top: 3px;
+            color: #555;
+            font-size: 0.68rem;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="/itmlabs/cyss/" class="home-btn" title="Назад к СОМУ">
+        <svg viewBox="0 0 24 24"><path d="M3 12L12 3l9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-5h4v5h4a1 1 0 0 0 1-1V10"/></svg>
+    </a>
+
+    <div class="container">
+        <h1>Протокол совещания</h1>
+
+        <div class="card">
+            <h2>Данные протокола</h2>
+
+            <div class="form-group">
+                <label>Тип совещания</label>
+                <select id="meetingType" class="form-select">
+                    <option value="оперативного совещания">Оперативное совещание</option>
+                    <option value="аппаратного совещания">Аппаратное совещание</option>
+                    <option value="стратегического совещания">Стратегическое совещание</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Номер протокола</label>
+                <input type="text" id="number" class="form-input" placeholder="05/2026">
+            </div>
+            <div class="form-group">
+                <label>Дата совещания</label>
+                <input type="date" id="date" class="form-input">
+            </div>
+            <div class="form-group">
+                <label>Секретарь совещания (ФИО)</label>
+                <input type="text" id="secretary" class="form-input" placeholder="Иванов И.И.">
+            </div>
+            <div class="form-group">
+                <label>Присутствовали</label>
+                <textarea id="attendees" class="form-textarea" placeholder="Иванов И.И.&#10;Петров П.П.&#10;Сидорова А.А."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Повестка дня</label>
+                <textarea id="agenda" class="form-textarea" placeholder="1. "></textarea>
+            </div>
+            <div class="form-group">
+                <label>Решили</label>
+                <textarea id="decisions" class="form-textarea tall">Принятие решений было решено перенести на следующее совещание.</textarea>
+            </div>
+
+            <div class="btn-row" style="margin-top:16px;">
+                <button class="btn btn-primary" onclick="downloadPDF()">Скачать PDF</button>
+                <button class="btn btn-outline" onclick="openPreview()">Предпросмотр</button>
+                <button class="btn btn-outline" onclick="clearForm()">Очистить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модалка предпросмотра -->
+    <div class="modal-overlay" id="previewModal">
+        <div class="modal-box" id="previewModalContent">
+            <button class="modal-close" onclick="closePreview()">✕</button>
+            <div id="modalPreviewInner"></div>
+        </div>
+    </div>
+
+    <!-- Уведомление -->
+    <div class="toast" id="toast">Данные сохраняются 1 час</div>
+
+    <!-- PDF-шаблон (скрыт) -->
+    <div class="pdf-template" id="pdfTemplate">
+        <div class="pdf-header">
+            <p class="official">Федеральное государственное бюджетное учреждение<br>«Национальный медицинский исследовательский центр<br>имени В. А. Алмазова»<br>Министерства здравоохранения Российской Федерации</p>
+            <p class="council">Совет обучающихся и молодых учёных</p>
+        </div>
+        <div class="pdf-location-date">
+            <span>г. Санкт-Петербург</span>
+            <span id="pdfDateTop"></span>
+        </div>
+        <div class="pdf-title" id="pdfTitle">ПРОТОКОЛ № </div>
+        <div class="pdf-subtitle" id="pdfSubtitle"></div>
+        <div id="pdfContent"></div>
+        <div class="pdf-signatures" id="pdfSignatures">
+            <div class="sig-block">
+                <div class="sig-info">
+                    <div class="role">Председатель СОМУ</div>
+                    <div class="name">Ланская Е.В.</div>
+                </div>
+                <div class="sig-line">(подпись)</div>
+            </div>
+            <div class="sig-block">
+                <div class="sig-info">
+                    <div class="role">Секретарь совещания</div>
+                    <div class="name" id="pdfSecretaryName"></div>
+                </div>
+                <div class="sig-line">(подпись)</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = 'protocol-data';
+        const TTL = 60 * 60 * 1000;
+
+        // Форматирование даты из input[type=date] в "4 августа 2026 года"
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return dateStr;
+            return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear() + ' года';
+        }
+
+        function loadData() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return;
+                const parsed = JSON.parse(raw);
+                if (parsed.timestamp && Date.now() - parsed.timestamp < TTL) {
+                    document.getElementById('meetingType').value = parsed.meetingType || 'оперативного совещания';
+                    document.getElementById('number').value = parsed.number || '';
+                    document.getElementById('date').value = parsed.date || '';
+                    document.getElementById('secretary').value = parsed.secretary || '';
+                    document.getElementById('attendees').value = parsed.attendees || '';
+                    document.getElementById('agenda').value = parsed.agenda || '';
+                    document.getElementById('decisions').value = parsed.decisions || 'Принятие решений было решено перенести на следующее совещание.';
+                    showToast('Данные восстановлены');
+                } else {
+                    localStorage.removeItem(STORAGE_KEY);
+                    showToast('Данные сброшены (прошёл час)');
+                }
+            } catch(e) {
+                localStorage.removeItem(STORAGE_KEY);
+            }
+        }
+
+        function saveData() {
+            const payload = {
+                meetingType: document.getElementById('meetingType').value,
+                number: document.getElementById('number').value,
+                date: document.getElementById('date').value,
+                secretary: document.getElementById('secretary').value,
+                attendees: document.getElementById('attendees').value,
+                agenda: document.getElementById('agenda').value,
+                decisions: document.getElementById('decisions').value,
+                timestamp: Date.now()
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.remove('hidden');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+
+        function setupAutoNumbering(textareaId) {
+            const textarea = document.getElementById(textareaId);
+            textarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const text = this.value;
+                    const cursorPos = this.selectionStart;
+                    const beforeCursor = text.substring(0, cursorPos);
+                    const lastNewline = beforeCursor.lastIndexOf('\n');
+                    const currentLine = beforeCursor.substring(lastNewline + 1);
+                    const match = currentLine.match(/^(\d+)\.\s*/);
+                    let nextNumber = match ? parseInt(match[1]) + 1 : 1;
+                    const afterCursor = text.substring(cursorPos);
+                    this.value = beforeCursor + '\n' + nextNumber + '. ' + afterCursor;
+                    const newPos = cursorPos + 2 + String(nextNumber).length + 2;
+                    this.selectionStart = this.selectionEnd = newPos;
+                    saveData();
+                } else if (e.key === 'Backspace') {
+                    const text = this.value;
+                    const cursorPos = this.selectionStart;
+                    const beforeCursor = text.substring(0, cursorPos);
+                    const lastNewline = beforeCursor.lastIndexOf('\n');
+                    const currentLine = beforeCursor.substring(lastNewline + 1);
+                    const match = currentLine.match(/^(\d+)\.\s*$/);
+                    if (match && cursorPos === beforeCursor.length) {
+                        e.preventDefault();
+                        this.value = text.substring(0, lastNewline + 1) + text.substring(cursorPos);
+                        this.selectionStart = this.selectionEnd = lastNewline + 1;
+                        saveData();
+                    }
+                }
+            });
+            textarea.addEventListener('input', saveData);
+        }
+
+        setupAutoNumbering('agenda');
+        setupAutoNumbering('decisions');
+
+        ['meetingType', 'number', 'date', 'secretary', 'attendees'].forEach(id => {
+            document.getElementById(id).addEventListener('input', saveData);
+        });
+
+        function openPreview() {
+            const d = getFormData();
+            const modal = document.getElementById('previewModal');
+            const inner = document.getElementById('modalPreviewInner');
+
+            let html = `
+                <div style="text-align:center; margin-bottom:12px;">
+                    <p style="font-size:0.7rem; font-weight:600; text-transform:uppercase;">Федеральное государственное бюджетное учреждение<br>«Национальный медицинский исследовательский центр<br>имени В. А. Алмазова»<br>Министерства здравоохранения Российской Федерации</p>
+                    <p style="font-size:0.8rem; font-weight:700; color:#007a72;">Совет обучающихся и молодых учёных</p>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:0.7rem;">
+                    <span>г. Санкт-Петербург</span><span>${d.date || '...'}</span>
+                </div>
+                <div style="text-align:center; font-size:0.9rem; font-weight:700; text-transform:uppercase; margin-top:10px;">ПРОТОКОЛ № ${d.number || '...'}</div>
+                <div style="text-align:center; font-size:0.75rem; margin-bottom:8px;">${d.meetingType || '...'}</div>
+            `;
+
+            if (d.attendees.trim()) {
+                html += `<table style="width:100%; border-collapse:collapse; margin:8px 0; font-size:0.72rem;"><tr><th>Присутствовали</th></tr>`;
+                d.attendees.trim().split('\n').filter(Boolean).forEach(name => {
+                    html += `<tr><td>${name}</td></tr>`;
+                });
+                html += `</table>`;
+            }
+
+            html += `<p style="margin-top:8px;"><strong>Повестка дня:</strong></p><p>${d.agenda.replace(/\n/g,'<br>') || '<em>не указана</em>'}</p>`;
+            html += `<p style="margin-top:8px;"><strong>Решили:</strong></p><p>${d.decisions.replace(/\n/g,'<br>') || '<em>не указаны</em>'}</p>`;
+
+            html += `
+                <div class="preview-signatures">
+                    <div class="sig-block">
+                        <div class="sig-info">
+                            <div class="role">Председатель СОМУ</div>
+                            <div class="name">Ланская Е.В.</div>
+                        </div>
+                        <div class="sig-line">(подпись)</div>
+                    </div>
+                    <div class="sig-block">
+                        <div class="sig-info">
+                            <div class="role">Секретарь совещания</div>
+                            <div class="name">${d.secretary || '...'}</div>
+                        </div>
+                        <div class="sig-line">(подпись)</div>
+                    </div>
+                </div>
+            `;
+
+            inner.innerHTML = html;
+            modal.classList.add('open');
+        }
+
+        function closePreview() {
+            document.getElementById('previewModal').classList.remove('open');
+        }
+
+        document.getElementById('previewModal').addEventListener('click', function(e) {
+            if (e.target === this) closePreview();
+        });
+
+        function downloadPDF() {
+            const d = getFormData();
+
+            document.getElementById('pdfDateTop').textContent = d.date || '';
+            document.getElementById('pdfTitle').textContent = `ПРОТОКОЛ № ${d.number || ''}`;
+            document.getElementById('pdfSubtitle').textContent = d.meetingType || '';
+            document.getElementById('pdfSecretaryName').textContent = d.secretary || '';
+
+            const pdfContent = document.getElementById('pdfContent');
+            let html = '';
+
+            if (d.attendees.trim()) {
+                html += `<table><tr><th>Присутствовали</th></tr>`;
+                d.attendees.trim().split('\n').filter(Boolean).forEach(name => {
+                    html += `<tr><td>${name}</td></tr>`;
+                });
+                html += `</table>`;
+            }
+
+            html += `<p style="margin-top:8px;"><strong>Повестка дня:</strong></p><p>${d.agenda.replace(/\n/g, '<br>')}</p>`;
+            html += `<p style="margin-top:8px;"><strong>Решили:</strong></p><p>${d.decisions.replace(/\n/g, '<br>')}</p>`;
+
+            pdfContent.innerHTML = html;
+
+            const element = document.getElementById('pdfTemplate');
+            const opt = {
+                margin: [8, 8, 8, 8],
+                filename: `protocol-${d.number || 'new'}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save();
+        }
+
+        function getFormData() {
+            return {
+                meetingType: document.getElementById('meetingType').value,
+                number: document.getElementById('number').value,
+                date: formatDate(document.getElementById('date').value),
+                secretary: document.getElementById('secretary').value,
+                attendees: document.getElementById('attendees').value,
+                agenda: document.getElementById('agenda').value,
+                decisions: document.getElementById('decisions').value,
+            };
+        }
+
+        function clearForm() {
+            document.getElementById('number').value = '';
+            document.getElementById('date').value = '';
+            document.getElementById('secretary').value = '';
+            document.getElementById('attendees').value = '';
+            document.getElementById('agenda').value = '';
+            document.getElementById('decisions').value = 'Принятие решений было решено перенести на следующее совещание.';
+            document.getElementById('meetingType').value = 'оперативного совещания';
+            localStorage.removeItem(STORAGE_KEY);
+            showToast('Форма очищена');
+        }
+
+        loadData();
+        if (!localStorage.getItem(STORAGE_KEY)) saveData();
+    </script>
+</body>
+</html>
