@@ -16,11 +16,87 @@
     "content": "<div style=\"display:flex; flex-direction:column; gap:20px;\"><div><h3 style=\"font-size:1rem; color:#1E3A5F; margin-bottom:8px;\">Российские</h3><div class=\"uni-grid\"><button class=\"uni-btn\" onclick=\"goTo(3)\">Герцена<span class=\"short\">«Мост»</span></button><button class=\"uni-btn\" onclick=\"goTo(4)\">РУДН<span class=\"short\">центр карьеры</span></button><button class=\"uni-btn\" onclick=\"goTo(5)\">ТГАСУ<span class=\"short\">центр карьеры</span></button><button class=\"uni-btn\" onclick=\"goTo(6)\">Шухова<span class=\"short\">развитие карьеры</span></button><button class=\"uni-btn\" onclick=\"goTo(7)\">МГУ<span class=\"short\">факультетские</span></button><button class=\"uni-btn\" onclick=\"goTo(8)\">ВШЭ<span class=\"short\">развитие карьеры</span></button><button class=\"uni-btn\" onclick=\"goTo(9)\">ИТМО<span class=\"short\">обучающихся</span></button><button class=\"uni-btn\" style=\"border-color:#2D9CDB; background:#f5faff;\" onclick=\"goTo(10)\">Сеченовский<span class=\"short\">★ мед</span></button><button class=\"uni-btn\" onclick=\"goTo(11)\">РНИМУ<span class=\"short\">отдел</span></button><button class=\"uni-btn\" onclick=\"goTo(12)\">СПбГУ<span class=\"short\">центр карьер</span></button></div></div><div><h3 style=\"font-size:1rem; color:#1E3A5F; margin-bottom:8px;\">Зарубежные</h3><div class=\"uni-grid\"><button class=\"uni-btn\" onclick=\"goTo(13)\">Гарвард<span class=\"short\">Harvard</span></button><button class=\"uni-btn\" onclick=\"goTo(14)\">Стэнфорд<span class=\"short\">Stanford</span></button><button class=\"uni-btn\" onclick=\"goTo(15)\">Оксфорд<span class=\"short\">Oxford</span></button><button class=\"uni-btn\" onclick=\"goTo(16)\">Кембридж<span class=\"short\">Cambridge</span></button><button class=\"uni-btn\" onclick=\"goTo(17)\">ETH Zurich<span class=\"short\">Швейцария</span></button><button class=\"uni-btn\" onclick=\"goTo(18)\">Сингапур<span class=\"short\">NUS</span></button></div></div><p style=\"font-size:0.7rem; color:#bbb; margin-top:8px;\">Сеченовский выделен как ключевой медицинский референс</p></div>"
   },
   {
-    "type": "content",
-    "title": "РГПУ им. А. И. Герцена",
-    "subtitle": "Отдел карьерных траекторий «Центр Мост» · с 2003 года",
-    "content": "<div class=\"analysis-block\"><div style=\"display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;\"><div style=\"background:#fafafa; border-radius:12px; padding:14px;\"><h3 style=\"margin-top:0;\">Общая информация</h3><p><strong>Полное наименование:</strong> Отдел карьерных траекторий «Центр Мост»</p><p><strong>Вуз:</strong> РГПУ им. А. И. Герцена</p><p><strong>Год основания:</strong> 2003</p><p><strong>Руководитель:</strong> Владимирова Светлана Валентиновна, канд. пед. наук, доцент</p><p><strong>Миссия:</strong> Содействие трудоустройству молодых специалистов и работа с сообществом выпускников</p></div><div style=\"background:#fafafa; border-radius:12px; padding:14px;\"><img src=\"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Herzen_University.jpg/400px-Herzen_University.jpg\" alt=\"РГПУ им. Герцена\" style=\"max-width:100%; border-radius:8px; margin-bottom:8px;\" /><p style=\"font-size:0.75rem; color:#999;\">Главный корпус РГПУ им. А. И. Герцена</p></div></div><div style=\"background:#f5faff; border-left:3px solid #2D9CDB; padding:12px 16px; border-radius:6px; margin-bottom:16px;\"><p><strong>⭐ Ключевая метафора — «Мост».</strong> Центр позиционирует себя как связующее звено между образованием и профессией, между студентом и работодателем. Собственное имя работает как сильный бренд, создающий запоминающийся образ и транслирующий суть деятельности.</p></div><div style=\"display:grid; grid-template-columns:1fr 1fr; gap:16px;\"><div style=\"background:#fafafa; border-radius:12px; padding:14px;\"><h3>Визуальный стиль</h3><ul><li>Строгий минимализм, чёрно-белая гамма с акцентами</li><li>Чёткая иерархия заголовков</li><li>Направляющие линии и геометрические элементы</li><li>Слоган: «Старт вашей карьеры начинается с нами!»</li></ul><p style=\"margin-top:8px;\"><span class=\"badge\">Вывод для ЦА</span> Собственное имя («Мост») работает как сильный бренд. Для ЦК Алмазова стоит рассмотреть аналогичный подход — запоминающееся название, которое сразу говорит о сути.</p></div><div style=\"background:#fafafa; border-radius:12px; padding:14px;\"><h3>Услуги</h3><ul><li>Подбор вакансий и стажировок</li><li>Индивидуальные карьерные консультации</li><li>Помощь в составлении резюме и сопроводительных писем</li><li>Профориентационные мероприятия и диагностика</li><li>Мастер-классы по коммуникациям и собеседованиям</li><li>Поствыпускное сопровождение</li></ul><p style=\"margin-top:8px;\"><span class=\"badge\">Вывод для ЦА</span> Акцент на практические навыки (резюме, собеседования) и работу с выпускниками — соответствует требованиям Минобрнауки.</p></div><div style=\"background:#fafafa; border-radius:12px; padding:14px;\"><h3>Цифровые инструменты</h3><ul><li><a href=\"https://most.herzen.spb.ru/\" target=\"_blank\">Сайт most.herzen.spb.ru</a></li><li><a href=\"https://vk.com/mostspb\" target=\"_blank\">ВКонтакте vk.com/mostspb</a></li><li>Интеграция с платформой «Факультетус»</li><li>Онлайн-запись на консультации</li></ul><p style=\"margin-top:8px;\"><span class=\"badge\">Вывод для ЦА</span> Собственный сайт + активные соцсети + интеграция с внешними платформами (ФРМР, ЕЦП «Работа в России»).</p></div><div style=\"background:#fafafa; border-radius:12px; padding:14px;\"><h3>Взаимодействие с работодателями</h3><ul><li><strong>1000+</strong> организаций-партнёров</li><li>70% — из сферы образования</li><li>Проект «Диалог с работодателем»</li><li>Экскурсии на предприятия</li><li>Проект «Команда школьных педагогов „под ключ“»</li></ul><p style=\"margin-top:8px;\"><span class=\"badge\">Вывод для ЦА</span> Проектный подход к трудоустройству можно адаптировать для медицинских специальностей («Команда врачей-стажёров»).</p></div><div style=\"background:#fafafa; border-radius:12px; padding:14px; grid-column:1/2;\"><h3>Уникальные фишки</h3><ul><li><strong>Собственное имя «Мост»</strong> — визитная карточка центра</li><li><strong>Долгая история</strong> — с 2003 года, реорганизация в 2019 году</li><li><strong>Проект «под ключ»</strong> — подготовка студентов под конкретные школы</li><li><strong>Инклюзивная платформа</strong> — работа с инвалидами («Есть дело»)</li><li><strong>Связь с профильным ведомством</strong> — подведомственность Минпросвещения</li></ul></div><div style=\"background:#fafafa; border-radius:12px; padding:14px;\"><h3>Адаптация для ЦА</h3><ul><li>Собственное имя («Траектория», «Альма-карьер», «Старт»)</li><li>Проект «Команда врачей-стажёров» под конкретные медорганизации</li><li>Активная работа с региональными органами здравоохранения</li><li>Инклюзивные практики для студентов с ОВЗ</li><li>Собственный сайт/страница с новостями и записью</li><li>Расширение партнёрской сети (медицина + смежные сферы)</li></ul></div></div><div style=\"margin-top:16px; background:#f0f4f8; border-radius:12px; padding:12px 16px;\"><h3>Сводная оценка по 5 критериям</h3><div style=\"display:grid; grid-template-columns:1fr 1fr 1fr 1fr 1fr; gap:8px; margin-top:8px;\"><div style=\"text-align:center; background:#fff; border-radius:8px; padding:8px;\"><strong>Визуал</strong><br>⭐⭐⭐⭐</div><div style=\"text-align:center; background:#fff; border-radius:8px; padding:8px;\"><strong>Услуги</strong><br>⭐⭐⭐⭐⭐</div><div style=\"text-align:center; background:#fff; border-radius:8px; padding:8px;\"><strong>Цифра</strong><br>⭐⭐⭐⭐</div><div style=\"text-align:center; background:#fff; border-radius:8px; padding:8px;\"><strong>Работодатели</strong><br>⭐⭐⭐⭐⭐</div><div style=\"text-align:center; background:#fff; border-radius:8px; padding:8px;\"><strong>Фишки</strong><br>⭐⭐⭐⭐⭐</div></div></div><p style=\"margin-top:12px; font-size:0.8rem; color:#999;\">Источники: <a href=\"https://most.herzen.spb.ru/\" target=\"_blank\">most.herzen.spb.ru</a>, <a href=\"https://vk.com/mostspb\" target=\"_blank\">vk.com/mostspb</a>, <a href=\"https://www.herzen.spb.ru/\" target=\"_blank\">herzen.spb.ru</a></p></div>"
-  },
+  "type": "content",
+  "title": "РГПУ им. А. И. Герцена",
+  "subtitle": "Центр карьеры «Мост» · с 2003 года",
+  "content": "
+    <div class='analysis-block'>
+      <img src='images/herzen-logo.png' alt='Логотип РГПУ им. Герцена' style='max-width:200px; float:right; margin-left:20px; border-radius:8px;' />
+      <h3>Общая информация</h3>
+      <p><strong>Полное наименование:</strong> Отдел карьерных траекторий «Центр Мост» (<a href='https://most.herzen.spb.ru/' target='_blank'>most.herzen.spb.ru</a>)</p>
+      <p><strong>Вуз:</strong> Российский государственный педагогический университет им. А. И. Герцена (<a href='https://herzen.spb.ru/' target='_blank'>herzen.spb.ru</a>)</p>
+      <p><strong>Год основания:</strong> 2003 (<a href='https://most.herzen.spb.ru/o-nas/' target='_blank'>история</a>)</p>
+      <p><strong>Руководитель:</strong> Владимирова Светлана Валентиновна, канд. пед. наук, доцент (<a href='https://most.herzen.spb.ru/o-nas/rukovodstvo/' target='_blank'>профиль</a>)</p>
+      <p><strong>Миссия:</strong> Содействие трудоустройству молодых специалистов и работа с сообществом выпускников</p>
+      <p>«Мост» — один из старейших центров карьеры в российских вузах. С 2019 года подразделение получило название «отдел планирования карьерных траекторий».</p>
+    </div>
+
+    <div class='analysis-block'>
+      <h3>1. Визуальный стиль и айдентика</h3>
+      <p><strong>Ключевая метафора — «Мост».</strong> Название позиционирует центр как связующее звено между образованием и профессией, между студентом и работодателем. (<a href='https://most.herzen.spb.ru/o-nas/' target='_blank'>подробнее о бренде</a>)</p>
+      <p><strong>Визуальное оформление:</strong> строгий минимализм, чёрно-белая гамма с акцентными цветами, чёткая иерархия заголовков, использование направляющих линий.</p>
+      <img src='images/herzen-style.png' alt='Пример оформления Центра Мост' style='max-width:100%; border-radius:8px; margin:8px 0;' />
+      <p><strong>Слоган:</strong> «Старт вашей карьеры начинается с нас!»</p>
+      <p><strong>Вывод для ЦК Алмазова:</strong> собственное имя работает как сильный бренд. Стоит рассмотреть аналогичный подход.</p>
+    </div>
+
+    <div class='analysis-block'>
+      <h3>2. Услуги для студентов и выпускников</h3>
+      <ul>
+        <li><strong>Содействие занятости:</strong> подбор вакансий и стажировок (<a href='https://most.herzen.spb.ru/studentyi/' target='_blank'>подробнее</a>)</li>
+        <li><strong>Карьерное консультирование:</strong> индивидуальные консультации, помощь в составлении резюме, подготовка к собеседованиям (<a href='https://most.herzen.spb.ru/konsultatsii/' target='_blank'>запись</a>)</li>
+        <li><strong>Профориентационная работа:</strong> диагностика склонностей, встречи с работодателями, экскурсии (<a href='https://most.herzen.spb.ru/meropriyatiya/' target='_blank'>анонсы</a>)</li>
+        <li><strong>Развитие навыков:</strong> мастер-классы, тренинги по soft skills (<a href='https://most.herzen.spb.ru/master-klassy/' target='_blank'>программа</a>)</li>
+        <li><strong>Работа с выпускниками:</strong> поствыпускное сопровождение, сообщество выпускников (<a href='https://most.herzen.spb.ru/vypusknikam/' target='_blank'>страница</a>)</li>
+      </ul>
+    </div>
+
+    <div class='analysis-block'>
+      <h3>3. Цифровые инструменты</h3>
+      <ul>
+        <li><strong>Сайт:</strong> <a href='https://most.herzen.spb.ru/' target='_blank'>most.herzen.spb.ru</a> — центральная точка входа</li>
+        <li><strong>ВКонтакте:</strong> <a href='https://vk.com/mostspb' target='_blank'>vk.com/mostspb</a> — основной канал коммуникации</li>
+        <li><strong>Платформа «Факультетус»:</strong> размещение резюме и вакансий (<a href='https://facultetus.ru/' target='_blank'>facultetus.ru</a>)</li>
+        <li><strong>Email:</strong> most@herzen.spb.ru, most.08@mail.ru</li>
+        <li><strong>Запись на консультации:</strong> онлайн через сайт</li>
+      </ul>
+      <img src='images/herzen-site.png' alt='Скриншот сайта Центра Мост' style='max-width:100%; border-radius:8px; margin:8px 0;' />
+    </div>
+
+    <div class='analysis-block'>
+      <h3>4. Взаимодействие с работодателями</h3>
+      <p><strong>Масштаб партнёрской сети:</strong> более 1000 организаций, 70% — сфера образования.</p>
+      <p><strong>Ключевые партнёры:</strong> РЖД, Сбербанк, Газпромбанк, Аэропорт Пулково, школы Санкт-Петербурга и Ленобласти, Московский педагогический государственный университет и др. (<a href='https://most.herzen.spb.ru/partneram/' target='_blank'>полный список</a>)</p>
+      <p><strong>Форматы:</strong> Дни карьеры, проект «Диалог с работодателем», экскурсии на предприятия, проект «Команда школьных педагогов „под ключ“» (<a href='https://most.herzen.spb.ru/proekty/' target='_blank'>проекты</a>).</p>
+      <img src='images/herzen-partners.png' alt='Мероприятие с работодателями' style='max-width:100%; border-radius:8px; margin:8px 0;' />
+    </div>
+
+    <div class='analysis-block'>
+      <h3>5. Уникальные фишки</h3>
+      <ul>
+        <li><strong>Собственное брендированное имя «Мост»</strong> — выделяет среди других центров.</li>
+        <li><strong>Долгая история</strong> — с 2003 года, в 2019 году прошёл реорганизацию.</li>
+        <li><strong>Проект «Команда школьных педагогов „под ключ“»</strong> — подготовка студентов под конкретные школы (<a href='https://most.herzen.spb.ru/proekty/komanda/' target='_blank'>подробнее</a>).</li>
+        <li><strong>Социальная направленность (инклюзия)</strong> — работа с инклюзивной платформой «Есть дело» (<a href='https://estdelo.ru/' target='_blank'>estdelo.ru</a>).</li>
+        <li><strong>Участие в профессиональных интенсивах</strong> — руководитель центра участвует в образовательных интенсивах для руководителей карьерных центров (<a href='https://innopolis.ru/' target='_blank'>Университет Иннополис</a>).</li>
+      </ul>
+    </div>
+
+    <div class='analysis-block'>
+      <h3>Сводная таблица</h3>
+      <table style='width:100%; border-collapse:collapse; font-size:0.8rem;'>
+        <thead><tr style='background:#f0f4f8;'><th style='padding:8px; text-align:left; border-bottom:2px solid #ddd;'>Критерий</th><th style='padding:8px; text-align:left; border-bottom:2px solid #ddd;'>Оценка</th><th style='padding:8px; text-align:left; border-bottom:2px solid #ddd;'>Ключевые особенности</th></tr></thead>
+        <tbody>
+          <tr><td style='padding:6px; border-bottom:1px solid #eee;'><strong>Визуальный стиль</strong></td><td style='padding:6px; border-bottom:1px solid #eee;'>⭐⭐⭐⭐</td><td style='padding:6px; border-bottom:1px solid #eee;'>Собственное имя, строгий минимализм, чёрно-белая гамма</td></tr>
+          <tr><td style='padding:6px; border-bottom:1px solid #eee;'><strong>Услуги</strong></td><td style='padding:6px; border-bottom:1px solid #eee;'>⭐⭐⭐⭐⭐</td><td style='padding:6px; border-bottom:1px solid #eee;'>Полный спектр: от профориентации до поствыпускного сопровождения</td></tr>
+          <tr><td style='padding:6px; border-bottom:1px solid #eee;'><strong>Цифровые инструменты</strong></td><td style='padding:6px; border-bottom:1px solid #eee;'>⭐⭐⭐⭐</td><td style='padding:6px; border-bottom:1px solid #eee;'>Сайт, ВКонтакте, интеграция с «Факультетус»</td></tr>
+          <tr><td style='padding:6px; border-bottom:1px solid #eee;'><strong>Взаимодействие с работодателями</strong></td><td style='padding:6px; border-bottom:1px solid #eee;'>⭐⭐⭐⭐⭐</td><td style='padding:6px; border-bottom:1px solid #eee;'>1000+ партнёров, проекты «под ключ»</td></tr>
+          <tr><td style='padding:6px; border-bottom:1px solid #eee;'><strong>Уникальные фишки</strong></td><td style='padding:6px; border-bottom:1px solid #eee;'>⭐⭐⭐⭐⭐</td><td style='padding:6px; border-bottom:1px solid #eee;'>Собственное имя, инклюзивная платформа, долгая история</td></tr>
+        </tbody>
+      </table>
+    </div>
+  "
+},
   {
     "type": "content",
     "title": "РУДН",
