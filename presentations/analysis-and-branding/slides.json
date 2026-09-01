@@ -19,7 +19,7 @@
   "type": "content",
   "title": "РГПУ им. А. И. Герцена",
   "subtitle": "Центр карьеры «Мост» · с 2003 года",
-  "content": "
+  "content": `
     <div class='analysis-block'>
       <img src='images/herzen-logo.png' alt='Логотип РГПУ им. Герцена' style='max-width:200px; float:right; margin-left:20px; border-radius:8px;' />
       <h3>Общая информация</h3>
@@ -95,7 +95,7 @@
         </tbody>
       </table>
     </div>
-  "
+  `
 },
   {
     "type": "content",
