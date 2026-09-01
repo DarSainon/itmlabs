@@ -1,0 +1,580 @@
+<!DOCTYPE html><html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ЦК Алмазова · Анализ и айдентика</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background:#f5f5f7;
+  color:#1E3A5F;
+  font-family:'Inter',sans-serif;
+  height:100vh;
+  overflow:hidden;
+  display:flex;
+}
+.sidebar {
+  width:220px;
+  background:#fff;
+  border-right:1px solid #e0e0e0;
+  padding:24px 16px 16px;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  flex-shrink:0;
+  overflow-y:auto;
+  transition: display 0.2s;
+}
+.sidebar.hidden { display:none; }
+.sidebar .section-title {
+  font-size:0.65rem;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:#999;
+  padding:12px 14px 4px 14px;
+  cursor:default;
+  user-select:none;
+}
+.sidebar .menu-item {
+  background:transparent;
+  border:none;
+  color:#666;
+  padding:8px 14px 8px 20px;
+  border-radius:6px;
+  text-align:left;
+  font-size:0.8rem;
+  cursor:pointer;
+  transition:all 0.2s;
+  font-family:inherit;
+}
+.sidebar .menu-item:hover {
+  background:#f0f4f8;
+  color:#1E3A5F;
+}
+.sidebar .menu-item.active {
+  background:#e6f0fa;
+  color:#1E3A5F;
+  font-weight:500;
+  border-left:3px solid #2D9CDB;
+}
+.main {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  overflow:hidden;
+  background:#fff;
+}
+.slide-wrapper {
+  flex:1;
+  overflow-y:auto;
+  padding:40px 50px;
+}
+.slide { display:none; }
+.slide.active { display:block; }
+.back-btn {
+  position:absolute;
+  top:16px;
+  left:16px;
+  background:#f0f4f8;
+  border:1px solid #e0e0e0;
+  color:#666;
+  padding:4px 14px;
+  border-radius:20px;
+  font-size:0.7rem;
+  cursor:pointer;
+  display:none;
+  font-family:inherit;
+  transition:0.2s;
+  z-index:5;
+}
+.back-btn.visible { display:block; }
+.back-btn:hover { background:#e0e8f0; color:#1E3A5F; }
+.page-number {
+  position:absolute;
+  bottom:16px;
+  right:24px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.65rem;
+  color:#bbb;
+}
+.page-number.hidden { display:none; }
+.footer {
+  position:absolute;
+  bottom:16px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:0.65rem;
+  color:#ccc;
+  font-weight:300;
+  letter-spacing:0.02em;
+  white-space:nowrap;
+}
+.slide-title {
+  font-size:1.8rem;
+  font-weight:600;
+  color:#1E3A5F;
+  margin-bottom:2px;
+}
+.slide-subtitle {
+  font-size:0.8rem;
+  color:#888;
+  border-bottom:1px solid #eee;
+  padding-bottom:10px;
+  margin-bottom:16px;
+}
+.accent-line {
+  width:50px;
+  height:3px;
+  background:#2D9CDB;
+  border-radius:2px;
+  margin:6px 0 14px;
+}
+.grid-2 {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+.card {
+  background:#fafafa;
+  border:1px solid #eee;
+  border-radius:12px;
+  padding:14px 16px;
+  transition:0.2s;
+}
+.card:hover {
+  border-color:#2D9CDB;
+  box-shadow:0 4px 12px rgba(45,156,219,0.06);
+}
+.card .name {
+  font-weight:600;
+  color:#1E3A5F;
+  margin-bottom:2px;
+}
+.card .uni {
+  font-size:0.7rem;
+  color:#999;
+}
+.card .feature {
+  font-size:0.78rem;
+  color:#555;
+  margin-top:4px;
+}
+.card a {
+  color:#2D9CDB;
+  font-size:0.7rem;
+  text-decoration:none;
+  border-bottom:1px solid rgba(45,156,219,0.2);
+}
+.matrix-table {
+  width:100%;
+  border-collapse:collapse;
+  font-size:0.7rem;
+}
+.matrix-table th {
+  color:#999;
+  font-weight:500;
+  text-align:left;
+  padding:4px 6px;
+  border-bottom:1px solid #eee;
+}
+.matrix-table td {
+  padding:4px 6px;
+  border-bottom:1px solid #f5f5f5;
+  color:#555;
+}
+.matrix-table td:first-child {
+  color:#1E3A5F;
+  font-weight:500;
+}
+.highlight-box {
+  background:#f5faff;
+  border-left:3px solid #2D9CDB;
+  padding:10px 14px;
+  border-radius:6px;
+  margin-bottom:8px;
+}
+.highlight-box p {
+  font-size:0.8rem;
+  color:#333;
+}
+.highlight-box strong {
+  color:#1E3A5F;
+}
+.concept-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:16px;
+  margin-top:8px;
+}
+.concept-card {
+  background:#fafafa;
+  border:1px solid #eee;
+  border-radius:12px;
+  padding:16px;
+  text-align:center;
+}
+.concept-card .emoji { font-size:2rem; margin-bottom:6px; }
+.concept-card h4 { font-weight:600; color:#1E3A5F; font-size:0.95rem; }
+.concept-card p { font-size:0.75rem; color:#666; margin-top:4px; }
+.menu-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:30px;
+  max-width:700px;
+  margin:20px auto 0;
+  width:100%;
+}
+.menu-col h2 {
+  font-size:1.1rem;
+  font-weight:600;
+  color:#1E3A5F;
+  margin-bottom:12px;
+  border-bottom:2px solid #eee;
+  padding-bottom:6px;
+}
+.menu-col .menu-btn {
+  display:block;
+  width:100%;
+  background:#fafafa;
+  border:1px solid #eee;
+  border-radius:10px;
+  padding:12px 16px;
+  margin-bottom:8px;
+  text-align:left;
+  font-size:0.85rem;
+  color:#333;
+  cursor:pointer;
+  transition:all 0.2s;
+  font-family:inherit;
+}
+.menu-col .menu-btn:hover {
+  background:#f0f4f8;
+  border-color:#2D9CDB;
+  transform:translateX(4px);
+}
+.menu-col .menu-btn .sub {
+  font-size:0.7rem;
+  color:#999;
+  display:block;
+  margin-top:2px;
+}
+@media (max-width:700px) {
+  .sidebar { width:160px; padding:12px; }
+  .slide-wrapper { padding:20px; }
+  .grid-2, .concept-grid, .menu-grid { grid-template-columns:1fr; }
+  .menu-grid { gap:16px; }
+  .footer { font-size:0.55rem; }
+}
+</style>
+</head>
+<body><div class="sidebar hidden" id="sidebar">
+  <div class="section-title">Аналитика</div>
+  <button class="menu-item" data-target="1">Краткая сводка</button>
+  <button class="menu-item" data-target="2">Российские ЦК (10)</button>
+  <button class="menu-item" data-target="3">Сводная матрица</button>
+  <button class="menu-item" data-target="4">Ключевые выводы</button>
+  <div class="section-title" style="margin-top:12px;">Айдентика и брендинг</div>
+  <button class="menu-item" data-target="5">Анализ бренда ЦА</button>
+  <button class="menu-item" data-target="6">Концепция 1</button>
+  <button class="menu-item" data-target="7">Концепция 2</button>
+  <button class="menu-item" data-target="8">Концепция 3</button>
+</div><div class="main">
+  <button class="back-btn" id="backBtn">← Назад</button>
+  <div class="slide-wrapper" id="slideWrapper"></div>
+  <div class="page-number hidden" id="pageNumber">1 / 9</div>
+  <div class="footer">Морев Илья · специалист ЦК</div>
+</div><script>
+// ============================================================
+//  МАССИВ СЛАЙДОВ — ЭТУ ЧАСТЬ ВЫ БУДЕТЕ РЕДАКТИРОВАТЬ
+//  Чтобы изменить содержание, просто правите текст внутри
+//  title, subtitle и content (можно использовать HTML).
+// ============================================================
+const slides = [
+  // 0 — ГЛАВНОЕ МЕНЮ
+  {
+    type:'menu',
+    content:`
+      <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center;">
+        <div style="font-size:2.8rem; font-weight:300; color:#2D9CDB; letter-spacing:0.05em;">ЦК | Центр Алмазова</div>
+        <div style="font-size:1.1rem; color:#888; margin-top:4px;">Конкурентный анализ и концепции айдентики</div>
+        <div class="accent-line" style="margin:16px auto 20px;"></div>
+        <div class="menu-grid">
+          <div class="menu-col">
+            <h2>Аналитика</h2>
+            <button class="menu-btn" data-target="1">Краткая сводка <span class="sub">ключевые цифры</span></button>
+            <button class="menu-btn" data-target="2">Российские ЦК (10) <span class="sub">обзор лучших практик</span></button>
+            <button class="menu-btn" data-target="3">Сводная матрица <span class="sub">сравнительная таблица</span></button>
+            <button class="menu-btn" data-target="4">Ключевые выводы <span class="sub">рекомендации</span></button>
+          </div>
+          <div class="menu-col">
+            <h2>Айдентика и брендинг</h2>
+            <button class="menu-btn" data-target="5">Анализ бренда ЦА <span class="sub">существующая айдентика</span></button>
+            <button class="menu-btn" data-target="6">Концепция 1 <span class="sub">преемственность</span></button>
+            <button class="menu-btn" data-target="7">Концепция 2 <span class="sub">современность</span></button>
+            <button class="menu-btn" data-target="8">Концепция 3 <span class="sub">универсальность</span></button>
+          </div>
+        </div>
+      </div>
+    `
+  },
+  // 1 — КРАТКАЯ СВОДКА
+  {
+    type:'content',
+    title:'Краткая сводка',
+    subtitle:'Ключевые цифры и направления',
+    content:`
+      <div style="display:flex; gap:30px; flex-wrap:wrap; margin-bottom:20px;">
+        <div><span style="color:#999;">Университетов</span><br><span style="font-size:1.8rem; font-weight:600; color:#1E3A5F;">10</span></div>
+        <div><span style="color:#999;">Критериев анализа</span><br><span style="font-size:1.8rem; font-weight:600; color:#1E3A5F;">5</span></div>
+        <div><span style="color:#999;">Выявленных практик</span><br><span style="font-size:1.8rem; font-weight:600; color:#1E3A5F;">12</span></div>
+        <div><span style="color:#999;">Концепций айдентики</span><br><span style="font-size:1.8rem; font-weight:600; color:#1E3A5F;">3</span></div>
+      </div>
+      <div class="accent-line"></div>
+      <p style="font-size:0.9rem; color:#666; max-width:80%;">Анализ проведён по единой матрице: визуальный стиль, услуги, цифровые инструменты, взаимодействие с работодателями, уникальные фишки. На основе анализа разработаны 3 концепции айдентики для Центра карьеры Алмазова.</p>
+    `
+  },
+  // 2 — РОССИЙСКИЕ ЦК (10)
+  {
+    type:'content',
+    title:'Российские центры карьеры',
+    subtitle:'10 университетов · анализ лучших практик',
+    content:`
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="card"><div class="name">Герцена</div><div class="uni">Центр «Мост»</div><div class="feature">Собственный бренд, инклюзия</div></div>
+        <div class="card"><div class="name">РУДН</div><div class="uni">Центр карьеры РУДН</div><div class="feature">Международность, ОВЗ</div></div>
+        <div class="card"><div class="name">ТГАСУ</div><div class="uni">Центр карьеры и трудоустройства</div><div class="feature">«История успеха», Ассоциация</div></div>
+        <div class="card"><div class="name">БГТУ Шухова</div><div class="uni">Центр развития карьеры</div><div class="feature">Ранняя профориентация</div></div>
+        <div class="card"><div class="name">МГУ</div><div class="uni">Факультетские центры</div><div class="feature">Децентрализованная модель</div></div>
+        <div class="card"><div class="name">ВШЭ</div><div class="uni">Центр развития карьеры</div><div class="feature">Крупнейшее онлайн-сообщество</div></div>
+        <div class="card"><div class="name">ИТМО</div><div class="uni">Центр карьеры обучающихся</div><div class="feature">IT-специализация, проекты</div></div>
+        <div class="card" style="border-color:#2D9CDB; background:#f5faff;"><div class="name" style="color:#2D9CDB;">Сеченовский</div><div class="uni">Центр карьеры</div><div class="feature">⭐ Медицинская специализация</div></div>
+        <div class="card"><div class="name">РНИМУ</div><div class="uni">Отдел содействия трудоустройству</div><div class="feature">Центр компетенций</div></div>
+        <div class="card"><div class="name">СПбГУ</div><div class="uni">Центр карьер</div><div class="feature">Уникальное имя, Alumni</div></div>
+      </div>
+      <p style="font-size:0.7rem; color:#bbb; margin-top:12px;">Сеченовский выделен как ключевой референс для медицинского вуза</p>
+    `
+  },
+  // 3 — СВОДНАЯ МАТРИЦА
+  {
+    type:'content',
+    title:'Сводная матрица',
+    subtitle:'Ключевые характеристики 10 ЦК',
+    content:`
+      <div style="overflow-y:auto; flex:1;">
+        <table class="matrix-table">
+          <thead><tr><th>Университет</th><th>Название ЦК</th><th>Уникальная фишка</th></tr></thead>
+          <tbody>
+            <tr><td>Герцена</td><td>«Мост»</td><td>Собственный бренд, инклюзия</td></tr>
+            <tr><td>РУДН</td><td>Центр карьеры РУДН</td><td>Международность, ОВЗ</td></tr>
+            <tr><td>ТГАСУ</td><td>Центр карьеры и трудоустройства</td><td>«История успеха»</td></tr>
+            <tr><td>БГТУ Шухова</td><td>Центр развития карьеры</td><td>Ранняя профориентация</td></tr>
+            <tr><td>МГУ</td><td>Факультетские центры</td><td>Децентрализованная модель</td></tr>
+            <tr><td>ВШЭ</td><td>Центр развития карьеры</td><td>Крупнейшее онлайн-сообщество</td></tr>
+            <tr><td>ИТМО</td><td>Центр карьеры обучающихся</td><td>IT-специализация</td></tr>
+            <tr><td style="font-weight:600;">Сеченовский</td><td>Центр карьеры</td><td style="font-weight:500; color:#2D9CDB;">Медицинская специализация</td></tr>
+            <tr><td>РНИМУ</td><td>Отдел содействия трудоустройству</td><td>Центр компетенций</td></tr>
+            <tr><td>СПбГУ</td><td>Центр карьер</td><td>Уникальное имя</td></tr>
+          </tbody>
+        </table>
+      </div>
+    `
+  },
+  // 4 — КЛЮЧЕВЫЕ ВЫВОДЫ
+  {
+    type:'content',
+    title:'Ключевые выводы',
+    subtitle:'Лучшие практики для адаптации',
+    content:`
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <div class="highlight-box"><p><strong>1. Брендинг и нейминг</strong><br>Собственное запоминающееся имя — как «Мост» у Герцена или «Центр карьер» у СПбГУ.</p></div>
+        <div class="highlight-box"><p><strong>2. Медицинская специализация</strong><br>Интеграция с ФРМР, порталы «Факультетус» и «Medcareer», фокус на ординатуру.</p></div>
+        <div class="highlight-box"><p><strong>3. Цифровые инструменты</strong><br>Развивать Telegram-канал, сообщество ВКонтакте, создать карьерный портал.</p></div>
+        <div class="highlight-box"><p><strong>4. Работа с целевыми группами</strong><br>Адаптировать подходы для ОВЗ, целевиков, ординаторов, врачей-стажёров.</p></div>
+        <div class="highlight-box"><p><strong>5. Мероприятия и форматы</strong><br>«Истории успеха», хакатоны, кейс-чемпионаты с работодателями.</p></div>
+      </div>
+    `
+  },
+  // 5 — АНАЛИЗ БРЕНДА ЦЕНТРА АЛМАЗОВА
+  {
+    type:'content',
+    title:'Анализ бренда Центра Алмазова',
+    subtitle:'Что есть сейчас · что можно взять',
+    content:`
+      <div class="grid-2">
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Существующий бренд</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Логотип: золотой (#F0AF00) + синий (#1E418C)</li>
+            <li>• Шрифт: Mazzard M Regular</li>
+            <li>• Направления: Клиника, Наука, Образование</li>
+            <li>• Строгий, академический стиль</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Что можно адаптировать</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Цветовая палитра (золото, синий, бирюза, бордовый)</li>
+            <li>• Элементы фирменной графики</li>
+            <li>• Преемственность с брендом Центра</li>
+            <li>• Доверие и статусность</li>
+          </ul>
+        </div>
+      </div>
+      <div class="accent-line" style="margin-top:12px;"></div>
+      <p style="font-size:0.8rem; color:#666;">Задача: разработать айдентику ЦК, которая будет узнаваема, но при этом сохранит связь с брендом Центра Алмазова.</p>
+    `
+  },
+  // 6 — КОНЦЕПЦИЯ 1: Преемственность
+  {
+    type:'content',
+    title:'Концепция 1 · Преемственность',
+    subtitle:'Строгая привязка к бренду Центра Алмазова',
+    content:`
+      <div class="concept-grid">
+        <div class="concept-card"><div class="emoji">🏛️</div><h4>Цвета</h4><p>Золотой (#F0AF00) + тёмно-синий (#1E418C). Строгая, статусная палитра.</p></div>
+        <div class="concept-card"><div class="emoji">🔤</div><h4>Шрифты</h4><p>Mazzard M (как в брендбуке) для заголовков, Inter для текста.</p></div>
+        <div class="concept-card"><div class="emoji">📐</div><h4>Графика</h4><p>Геометрические линии, минималистичные рамки, золотые акценты.</p></div>
+      </div>
+      <p style="font-size:0.8rem; color:#666; margin-top:12px;">Айдентика полностью наследует бренд Центра Алмазова, добавляя карьерную специфику. Подходит для консервативной аудитории.</p>
+    `
+  },
+  // 7 — КОНЦЕПЦИЯ 2: Современность
+  {
+    type:'content',
+    title:'Концепция 2 · Современность',
+    subtitle:'Свежий, молодёжный стиль с элементами бренда',
+    content:`
+      <div class="concept-grid">
+        <div class="concept-card"><div class="emoji">🎨</div><h4>Цвета</h4><p>Бирюзовый (#5EEAD4) + тёмно-синий (#0A1A2B). Свежо и современно.</p></div>
+        <div class="concept-card"><div class="emoji">🔤</div><h4>Шрифты</h4><p>Inter (свободный гротеск), акцентные цифры — JetBrains Mono.</p></div>
+        <div class="concept-card"><div class="emoji">📐</div><h4>Графика</h4><p>Плавные линии, градиенты, лёгкие тени, современный минимализм.</p></div>
+      </div>
+      <p style="font-size:0.8rem; color:#666; margin-top:12px;">Сохранена связь с брендом через синий цвет, но добавлена молодёжная энергия. Подходит для привлечения студентов.</p>
+    `
+  },
+  // 8 — КОНЦЕПЦИЯ 3: Универсальность
+  {
+    type:'content',
+    title:'Концепция 3 · Универсальность',
+    subtitle:'Нейтральный, доверительный стиль для всех аудиторий',
+    content:`
+      <div class="concept-grid">
+        <div class="concept-card"><div class="emoji">⚪</div><h4>Цвета</h4><p>Светло-серый (#F5F5F7) + тёмно-синий (#1E3A5F) + акцент (#2D9CDB).</p></div>
+        <div class="concept-card"><div class="emoji">🔤</div><h4>Шрифты</h4><p>Inter, чёткая иерархия, максимум читаемости.</p></div>
+        <div class="concept-card"><div class="emoji">📐</div><h4>Графика</h4><p>Чистые линии, аккуратные рамки, мягкие тени, минимализм.</p></div>
+      </div>
+      <p style="font-size:0.8rem; color:#666; margin-top:12px;">Наиболее универсальный вариант. Подходит для работы с работодателями, госструктурами, академической средой.</p>
+    `
+  }
+];
+
+// ============================================================
+//  РЕНДЕРИНГ И НАВИГАЦИЯ (НЕ ТРОГАЙТЕ ЭТУ ЧАСТЬ)
+// ============================================================
+const wrapper = document.getElementById('slideWrapper');
+const pageNumber = document.getElementById('pageNumber');
+const backBtn = document.getElementById('backBtn');
+const sidebar = document.getElementById('sidebar');
+
+let current = 0;
+const total = slides.length;
+
+function renderSlide(index) {
+  const data = slides[index];
+  const div = document.createElement('div');
+  div.className = 'slide' + (index === current ? ' active' : '');
+  div.dataset.index = index;
+  if (data.type === 'menu') {
+    div.innerHTML = data.content;
+    setTimeout(() => {
+      div.querySelectorAll('.menu-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          const target = parseInt(this.dataset.target);
+          if (!isNaN(target)) goTo(target);
+        });
+      });
+    }, 10);
+  } else {
+    div.innerHTML = `
+      <div class="slide-title">${data.title}</div>
+      <div class="slide-subtitle">${data.subtitle}</div>
+      <div style="flex:1;">${data.content}</div>
+    `;
+  }
+  return div;
+}
+
+function buildSlides() {
+  wrapper.innerHTML = '';
+  slides.forEach((_, i) => {
+    wrapper.appendChild(renderSlide(i));
+  });
+  updateUI();
+}
+
+function updateUI() {
+  document.querySelectorAll('.slide').forEach((s, i) => {
+    s.classList.toggle('active', i === current);
+  });
+  document.querySelectorAll('.menu-item').forEach((btn) => {
+    const target = parseInt(btn.dataset.target);
+    btn.classList.toggle('active', target === current);
+  });
+  if (current === 0) {
+    sidebar.classList.add('hidden');
+    pageNumber.classList.add('hidden');
+    backBtn.classList.remove('visible');
+  } else {
+    sidebar.classList.remove('hidden');
+    pageNumber.classList.remove('hidden');
+    backBtn.classList.add('visible');
+    pageNumber.textContent = (current) + ' / ' + (total - 1);
+  }
+}
+
+function goTo(index) {
+  if (index < 0) index = 0;
+  if (index >= total) index = total - 1;
+  current = index;
+  buildSlides();
+}
+
+backBtn.addEventListener('click', () => goTo(0));
+
+document.querySelectorAll('.menu-item').forEach((btn) => {
+  btn.addEventListener('click', function() {
+    const target = parseInt(this.dataset.target);
+    if (!isNaN(target)) goTo(target);
+  });
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    if (current === 0) return;
+    goTo(current + 1);
+  }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    if (current === 0) return;
+    goTo(current - 1);
+  }
+});
+
+let startX = 0;
+document.querySelector('.main').addEventListener('touchstart', (e) => {
+  startX = e.touches[0].clientX;
+});
+document.querySelector('.main').addEventListener('touchend', (e) => {
+  if (current === 0) return;
+  const diff = startX - e.changedTouches[0].clientX;
+  if (Math.abs(diff) > 40) {
+    if (diff > 0) goTo(current + 1);
+    else goTo(current - 1);
+  }
+});
+
+buildSlides();
+</script></body>
+</html>

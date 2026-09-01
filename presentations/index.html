@@ -1,0 +1,220 @@
+<!DOCTYPE html><html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Презентации · ITMLABS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=JetBrains+Mono&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #000;
+      --text: #fff;
+      --text-muted: rgba(255, 255, 255, 0.5);
+      --accent: #5eead4;
+      --card-bg: rgba(20, 20, 22, 0.8);
+      --border: rgba(255, 255, 255, 0.06);
+      --font: 'Inter', sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+      --grid-size: 80px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.6;
+      min-height: 100vh;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: var(--grid-size) var(--grid-size);
+      background-position: center center;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+    .logo a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 1.4rem;
+      transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .logo a:hover { color: var(--text); }
+    .logo svg {
+      width: 24px;
+      height: 24px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .header-title {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .header-title h1 {
+      font-size: 2.2rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+    header::before,
+    header::after {
+      content: '';
+      position: absolute;
+      background: var(--border);
+      height: 1px;
+      width: 15%;
+      top: 0.6rem;
+    }
+    header::before { left: 0; }
+    header::after { right: 0; }
+#presentations-list {
+display: flex;
+flex-direction: column;
+gap: 1.25rem;
+margin: 2rem 0 3rem;
+}
+.card {
+background: var(--card-bg);
+border: 1px solid var(--border);
+border-radius: 12px;
+padding: 1.25rem 1.5rem;
+display: flex;
+flex-wrap: wrap;
+align-items: center;
+justify-content: space-between;
+transition: border-color 0.2s, background 0.2s;
+}
+.card:hover {
+border-color: rgba(94, 234, 212, 0.3);
+background: rgba(30, 30, 34, 0.8);
+}
+.card-left {
+display: flex;
+flex-direction: column;
+gap: 0.3rem;
+flex: 1 1 60%;
+}
+.card-date {
+font-family: var(--mono);
+font-size: 0.7rem;
+color: var(--text-muted);
+letter-spacing: 0.02em;
+}
+.card-title {
+font-size: 1.15rem;
+font-weight: 500;
+letter-spacing: -0.01em;
+color: var(--text);
+text-decoration: none;
+}
+.card-title:hover { color: var(--accent); }
+.card-description {
+font-size: 0.9rem;
+color: var(--text-muted);
+margin-top: 0.1rem;
+}
+.card-link {
+font-family: var(--mono);
+font-size: 1.2rem;
+color: var(--text-muted);
+text-decoration: none;
+padding: 0.2rem 0.5rem;
+transition: color 0.2s;
+flex-shrink: 0;
+}
+.card-link:hover {
+color: var(--accent);
+}
+
+@media (max-width: 640px) {
+.container { padding: 1.2rem 1rem; }
+.header-title h1 { font-size: 1.6rem; }
+.card { flex-direction: column; align-items: stretch; gap: 0.5rem; }
+.card-link { align-self: flex-end; }
+header::before, header::after { width: 8%; }
+}
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <a href="/itmlabs/" title="На главную">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 12L12 3l9 9" />
+            <path d="M5 10v4a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-4" />
+          </svg>
+        </a>
+      </div>
+      <div class="header-title">
+        <span class="section-label">/ presentations</span>
+        <h1>Презентации</h1>
+      </div>
+    </header>    <main id="presentations-list">
+      <!-- карточки вставляются скриптом -->
+    </main>
+  </div>  <script>
+    // Данные презентаций — встроены прямо сюда
+    const presentations = [
+      {
+        date: "2026-09-01",
+        title: "Анализ ЦК и концепции айдентики",
+        description: "Конкурентный анализ 10 университетов, 3 концепции брендинга для Центра карьеры Алмазова",
+        link: "analysis-and-branding/"
+      }
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('presentations-list');
+
+      if (!presentations.length) {
+        container.innerHTML = `
+          <div style="color: var(--text-muted); font-family: var(--mono); font-size: 0.9rem; padding: 2rem 0;">
+            Пока нет ни одной презентации.
+          </div>
+        `;
+        return;
+      }
+
+      // Сортировка по дате (сначала новые)
+      const sorted = [...presentations].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+      const html = sorted.map(item => `
+        <div class="card">
+          <div class="card-left">
+            <div class="card-date">${item.date}</div>
+            <a href="${item.link}" class="card-title">${item.title}</a>
+            <div class="card-description">${item.description}</div>
+          </div>
+          <a href="${item.link}" class="card-link">→</a>
+        </div>
+      `).join('');
+
+      container.innerHTML = html;
+    });
+  </script></body>
+</html>
