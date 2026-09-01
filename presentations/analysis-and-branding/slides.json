@@ -19,8 +19,7 @@
   "type": "content",
   "title": "РГПУ им. А. И. Герцена",
   "subtitle": "Центр карьеры «Мост» · с 2003 года",
-  "content": "
-    <div class='analysis-block'>
+  "content": "<div class='analysis-block'>
       <img src='images/herzen-logo.png' alt='Логотип РГПУ им. Герцена' style='max-width:200px; float:right; margin-left:20px; border-radius:8px;' />
       <h3>Общая информация</h3>
       <p><strong>Полное наименование:</strong> Отдел карьерных траекторий «Центр Мост» (<a href='https://most.herzen.spb.ru/' target='_blank'>most.herzen.spb.ru</a>)</p>
@@ -94,8 +93,8 @@
           <tr><td style='padding:6px; border-bottom:1px solid #eee;'><strong>Уникальные фишки</strong></td><td style='padding:6px; border-bottom:1px solid #eee;'>⭐⭐⭐⭐⭐</td><td style='padding:6px; border-bottom:1px solid #eee;'>Собственное имя, инклюзивная платформа, долгая история</td></tr>
         </tbody>
       </table>
-    </div>
-  "
+    </div>"
+  
 },
   {
     "type": "content",
