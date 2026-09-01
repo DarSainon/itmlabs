@@ -317,15 +317,6 @@ body {
   margin:8px 0;
   box-shadow:0 2px 8px rgba(0,0,0,0.04);
 }
-.analysis-block .badge {
-  display:inline-block;
-  background:#e6f0fa;
-  color:#1E3A5F;
-  font-size:0.7rem;
-  padding:2px 10px;
-  border-radius:12px;
-  margin-right:6px;
-}
 @media (max-width:700px) {
   .sidebar { width:160px; padding:12px; }
   .slide-wrapper { padding:20px; }
@@ -339,7 +330,7 @@ body {
 
 <div class="sidebar hidden" id="sidebar">
   <div class="section-title">Российские вузы</div>
-  <button class="menu-item" data-target="3">Герцена</button>
+  <button class="menu-item active" data-target="3">Герцена</button>
   <button class="menu-item" data-target="4">РУДН</button>
   <button class="menu-item" data-target="5">ТГАСУ</button>
   <button class="menu-item" data-target="6">БГТУ Шухова</button>
@@ -373,125 +364,6 @@ body {
   <div class="footer">Морев Илья · специалист ЦК</div>
 </div>
 
-<script>
-// ============================================================
-//  ЗАГРУЗКА СЛАЙДОВ ИЗ JSON
-// ============================================================
-let slides = [];
-let current = 0;
-const total = slides.length;
-
-const wrapper = document.getElementById('slideWrapper');
-const pageNumber = document.getElementById('pageNumber');
-const backBtn = document.getElementById('backBtn');
-const sidebar = document.getElementById('sidebar');
-
-function renderSlide(index) {
-  const data = slides[index];
-  if (!data) return;
-  const div = document.createElement('div');
-  div.className = 'slide' + (index === current ? ' active' : '');
-  div.dataset.index = index;
-  if (data.type === 'menu') {
-    div.innerHTML = data.content;
-    setTimeout(() => {
-      div.querySelectorAll('.menu-btn').forEach(btn => {
-        btn.addEventListener('click', function(e) {
-          const target = parseInt(this.dataset.target);
-          if (!isNaN(target)) goTo(target);
-        });
-      });
-    }, 10);
-  } else {
-    div.innerHTML = `
-      <div class="slide-title">${data.title || ''}</div>
-      <div class="slide-subtitle">${data.subtitle || ''}</div>
-      <div style="flex:1;">${data.content || ''}</div>
-    `;
-  }
-  return div;
-}
-
-function buildSlides() {
-  wrapper.innerHTML = '';
-  slides.forEach((_, i) => {
-    wrapper.appendChild(renderSlide(i));
-  });
-  updateUI();
-}
-
-function updateUI() {
-  document.querySelectorAll('.slide').forEach((s, i) => {
-    s.classList.toggle('active', i === current);
-  });
-  document.querySelectorAll('.menu-item').forEach((btn) => {
-    const target = parseInt(btn.dataset.target);
-    btn.classList.toggle('active', target === current);
-  });
-  if (current === 0) {
-    sidebar.classList.add('hidden');
-    pageNumber.classList.add('hidden');
-    backBtn.classList.remove('visible');
-  } else {
-    sidebar.classList.remove('hidden');
-    pageNumber.classList.remove('hidden');
-    backBtn.classList.add('visible');
-    pageNumber.textContent = (current) + ' / ' + (slides.length - 1);
-  }
-}
-
-function goTo(index) {
-  if (index < 0) index = 0;
-  if (index >= slides.length) index = slides.length - 1;
-  current = index;
-  buildSlides();
-}
-
-backBtn.addEventListener('click', () => goTo(0));
-
-document.querySelectorAll('.menu-item').forEach((btn) => {
-  btn.addEventListener('click', function() {
-    const target = parseInt(this.dataset.target);
-    if (!isNaN(target)) goTo(target);
-  });
-});
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-    if (current === 0) return;
-    goTo(current + 1);
-  }
-  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-    if (current === 0) return;
-    goTo(current - 1);
-  }
-});
-
-let startX = 0;
-document.querySelector('.main').addEventListener('touchstart', (e) => {
-  startX = e.touches[0].clientX;
-});
-document.querySelector('.main').addEventListener('touchend', (e) => {
-  if (current === 0) return;
-  const diff = startX - e.changedTouches[0].clientX;
-  if (Math.abs(diff) > 40) {
-    if (diff > 0) goTo(current + 1);
-    else goTo(current - 1);
-  }
-});
-
-// Загрузка данных
-fetch('slides.json')
-  .then(res => res.json())
-  .then(data => {
-    slides = data;
-    current = 0;
-    buildSlides();
-  })
-  .catch(err => {
-    console.error('Ошибка загрузки slides.json:', err);
-    wrapper.innerHTML = '<div style="padding:40px; color:#999;">Не удалось загрузить данные. Убедитесь, что файл slides.json лежит в той же папке.</div>';
-  });
-</script>
+<script src="slides.js"></script>
 </body>
 </html>
