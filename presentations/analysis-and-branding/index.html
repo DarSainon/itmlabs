@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="ru">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -261,36 +262,85 @@ body {
   display:block;
   margin-top:2px;
 }
+.uni-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr 1fr 1fr;
+  gap:10px;
+  margin-top:12px;
+}
+.uni-grid .uni-btn {
+  background:#fafafa;
+  border:1px solid #eee;
+  border-radius:10px;
+  padding:12px 8px;
+  text-align:center;
+  cursor:pointer;
+  transition:all 0.2s;
+  font-family:inherit;
+  font-size:0.75rem;
+  color:#333;
+}
+.uni-grid .uni-btn:hover {
+  background:#f0f4f8;
+  border-color:#2D9CDB;
+  transform:translateY(-2px);
+}
+.uni-grid .uni-btn .short { font-size:0.6rem; color:#999; display:block; margin-top:2px; }
 @media (max-width:700px) {
   .sidebar { width:160px; padding:12px; }
   .slide-wrapper { padding:20px; }
-  .grid-2, .concept-grid, .menu-grid { grid-template-columns:1fr; }
+  .grid-2, .concept-grid, .menu-grid, .uni-grid { grid-template-columns:1fr; }
   .menu-grid { gap:16px; }
   .footer { font-size:0.55rem; }
 }
 </style>
 </head>
-<body><div class="sidebar hidden" id="sidebar">
-  <div class="section-title">Аналитика</div>
-  <button class="menu-item" data-target="1">Краткая сводка</button>
-  <button class="menu-item" data-target="2">Российские ЦК (10)</button>
-  <button class="menu-item" data-target="3">Сводная матрица</button>
-  <button class="menu-item" data-target="4">Ключевые выводы</button>
-  <div class="section-title" style="margin-top:12px;">Айдентика и брендинг</div>
-  <button class="menu-item" data-target="5">Анализ бренда ЦА</button>
-  <button class="menu-item" data-target="6">Концепция 1</button>
-  <button class="menu-item" data-target="7">Концепция 2</button>
-  <button class="menu-item" data-target="8">Концепция 3</button>
-</div><div class="main">
-  <button class="back-btn" id="backBtn">← Назад</button>
+<body>
+
+<div class="sidebar hidden" id="sidebar">
+  <!-- РОССИЙСКИЕ ВУЗЫ -->
+  <div class="section-title">Российские вузы</div>
+  <button class="menu-item" data-target="3">Герцена</button>
+  <button class="menu-item" data-target="4">РУДН</button>
+  <button class="menu-item" data-target="5">ТГАСУ</button>
+  <button class="menu-item" data-target="6">БГТУ Шухова</button>
+  <button class="menu-item" data-target="7">МГУ</button>
+  <button class="menu-item" data-target="8">ВШЭ</button>
+  <button class="menu-item" data-target="9">ИТМО</button>
+  <button class="menu-item" data-target="10">Сеченовский</button>
+  <button class="menu-item" data-target="11">РНИМУ</button>
+  <button class="menu-item" data-target="12">СПбГУ</button>
+
+  <!-- ЗАРУБЕЖНЫЕ ВУЗЫ -->
+  <div class="section-title" style="margin-top:12px;">Зарубежные вузы</div>
+  <button class="menu-item" data-target="13">Гарвард</button>
+  <button class="menu-item" data-target="14">Стэнфорд</button>
+  <button class="menu-item" data-target="15">Оксфорд</button>
+  <button class="menu-item" data-target="16">Кембридж</button>
+  <button class="menu-item" data-target="17">ETH Zurich</button>
+  <button class="menu-item" data-target="18">Сингапур</button>
+
+  <!-- ОБЩИЕ БЛОКИ -->
+  <div class="section-title" style="margin-top:12px;">Общие блоки</div>
+  <button class="menu-item" data-target="19">Сводная матрица</button>
+  <button class="menu-item" data-target="20">Ключевые выводы</button>
+  <div class="section-title" style="margin-top:12px;">Айдентика</div>
+  <button class="menu-item" data-target="21">Анализ бренда ЦА</button>
+  <button class="menu-item" data-target="22">Концепция 1</button>
+  <button class="menu-item" data-target="23">Концепция 2</button>
+  <button class="menu-item" data-target="24">Концепция 3</button>
+</div>
+
+<div class="main">
+  <button class="back-btn" id="backBtn">← На главную</button>
   <div class="slide-wrapper" id="slideWrapper"></div>
-  <div class="page-number hidden" id="pageNumber">1 / 9</div>
+  <div class="page-number hidden" id="pageNumber">1 / 25</div>
   <div class="footer">Морев Илья · специалист ЦК</div>
-</div><script>
+</div>
+
+<script>
 // ============================================================
-//  МАССИВ СЛАЙДОВ — ЭТУ ЧАСТЬ ВЫ БУДЕТЕ РЕДАКТИРОВАТЬ
-//  Чтобы изменить содержание, просто правите текст внутри
-//  title, subtitle и content (можно использовать HTML).
+//  МАССИВ СЛАЙДОВ
 // ============================================================
 const slides = [
   // 0 — ГЛАВНОЕ МЕНЮ
@@ -303,18 +353,34 @@ const slides = [
         <div class="accent-line" style="margin:16px auto 20px;"></div>
         <div class="menu-grid">
           <div class="menu-col">
-            <h2>Аналитика</h2>
-            <button class="menu-btn" data-target="1">Краткая сводка <span class="sub">ключевые цифры</span></button>
-            <button class="menu-btn" data-target="2">Российские ЦК (10) <span class="sub">обзор лучших практик</span></button>
-            <button class="menu-btn" data-target="3">Сводная матрица <span class="sub">сравнительная таблица</span></button>
-            <button class="menu-btn" data-target="4">Ключевые выводы <span class="sub">рекомендации</span></button>
+            <h2>Российские вузы</h2>
+            <button class="menu-btn" data-target="3">Герцена <span class="sub">Центр «Мост»</span></button>
+            <button class="menu-btn" data-target="4">РУДН <span class="sub">Центр карьеры РУДН</span></button>
+            <button class="menu-btn" data-target="5">ТГАСУ <span class="sub">Центр карьеры и трудоустройства</span></button>
+            <button class="menu-btn" data-target="6">БГТУ Шухова <span class="sub">Центр развития карьеры</span></button>
+            <button class="menu-btn" data-target="7">МГУ <span class="sub">Факультетские центры</span></button>
+            <button class="menu-btn" data-target="8">ВШЭ <span class="sub">Центр развития карьеры</span></button>
+            <button class="menu-btn" data-target="9">ИТМО <span class="sub">Центр карьеры обучающихся</span></button>
+            <button class="menu-btn" data-target="10">Сеченовский <span class="sub">Центр карьеры</span></button>
+            <button class="menu-btn" data-target="11">РНИМУ <span class="sub">Отдел содействия трудоустройству</span></button>
+            <button class="menu-btn" data-target="12">СПбГУ <span class="sub">Центр карьер</span></button>
           </div>
           <div class="menu-col">
-            <h2>Айдентика и брендинг</h2>
-            <button class="menu-btn" data-target="5">Анализ бренда ЦА <span class="sub">существующая айдентика</span></button>
-            <button class="menu-btn" data-target="6">Концепция 1 <span class="sub">преемственность</span></button>
-            <button class="menu-btn" data-target="7">Концепция 2 <span class="sub">современность</span></button>
-            <button class="menu-btn" data-target="8">Концепция 3 <span class="sub">универсальность</span></button>
+            <h2>Зарубежные вузы</h2>
+            <button class="menu-btn" data-target="13">Гарвард <span class="sub">Harvard</span></button>
+            <button class="menu-btn" data-target="14">Стэнфорд <span class="sub">Stanford</span></button>
+            <button class="menu-btn" data-target="15">Оксфорд <span class="sub">Oxford</span></button>
+            <button class="menu-btn" data-target="16">Кембридж <span class="sub">Cambridge</span></button>
+            <button class="menu-btn" data-target="17">ETH Zurich <span class="sub">Швейцария</span></button>
+            <button class="menu-btn" data-target="18">Сингапур <span class="sub">NUS</span></button>
+            <h2 style="margin-top:16px;">Общие блоки</h2>
+            <button class="menu-btn" data-target="19">Сводная матрица <span class="sub">сравнение</span></button>
+            <button class="menu-btn" data-target="20">Ключевые выводы <span class="sub">рекомендации</span></button>
+            <h2 style="margin-top:16px;">Айдентика</h2>
+            <button class="menu-btn" data-target="21">Анализ бренда ЦА <span class="sub">существующая айдентика</span></button>
+            <button class="menu-btn" data-target="22">Концепция 1 <span class="sub">преемственность</span></button>
+            <button class="menu-btn" data-target="23">Концепция 2 <span class="sub">современность</span></button>
+            <button class="menu-btn" data-target="24">Концепция 3 <span class="sub">универсальность</span></button>
           </div>
         </div>
       </div>
@@ -327,66 +393,738 @@ const slides = [
     subtitle:'Ключевые цифры и направления',
     content:`
       <div style="display:flex; gap:30px; flex-wrap:wrap; margin-bottom:20px;">
-        <div><span style="color:#999;">Университетов</span><br><span style="font-size:1.8rem; font-weight:600; color:#1E3A5F;">10</span></div>
+        <div><span style="color:#999;">Российских вузов</span><br><span style="font-size:1.8rem; font-weight:600; color:#1E3A5F;">10</span></div>
+        <div><span style="color:#999;">Зарубежных вузов</span><br><span style="font-size:1.8rem; font-weight:600; color:#1E3A5F;">6</span></div>
         <div><span style="color:#999;">Критериев анализа</span><br><span style="font-size:1.8rem; font-weight:600; color:#1E3A5F;">5</span></div>
-        <div><span style="color:#999;">Выявленных практик</span><br><span style="font-size:1.8rem; font-weight:600; color:#1E3A5F;">12</span></div>
         <div><span style="color:#999;">Концепций айдентики</span><br><span style="font-size:1.8rem; font-weight:600; color:#1E3A5F;">3</span></div>
       </div>
       <div class="accent-line"></div>
       <p style="font-size:0.9rem; color:#666; max-width:80%;">Анализ проведён по единой матрице: визуальный стиль, услуги, цифровые инструменты, взаимодействие с работодателями, уникальные фишки. На основе анализа разработаны 3 концепции айдентики для Центра карьеры Алмазова.</p>
     `
   },
-  // 2 — РОССИЙСКИЕ ЦК (10)
+  // 2 — СЕТКА ВУЗОВ (ПРОМЕЖУТОЧНЫЙ СЛАЙД)
   {
     type:'content',
-    title:'Российские центры карьеры',
-    subtitle:'10 университетов · анализ лучших практик',
+    title:'Университеты',
+    subtitle:'Выберите вуз для детального анализа',
     content:`
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
-        <div class="card"><div class="name">Герцена</div><div class="uni">Центр «Мост»</div><div class="feature">Собственный бренд, инклюзия</div></div>
-        <div class="card"><div class="name">РУДН</div><div class="uni">Центр карьеры РУДН</div><div class="feature">Международность, ОВЗ</div></div>
-        <div class="card"><div class="name">ТГАСУ</div><div class="uni">Центр карьеры и трудоустройства</div><div class="feature">«История успеха», Ассоциация</div></div>
-        <div class="card"><div class="name">БГТУ Шухова</div><div class="uni">Центр развития карьеры</div><div class="feature">Ранняя профориентация</div></div>
-        <div class="card"><div class="name">МГУ</div><div class="uni">Факультетские центры</div><div class="feature">Децентрализованная модель</div></div>
-        <div class="card"><div class="name">ВШЭ</div><div class="uni">Центр развития карьеры</div><div class="feature">Крупнейшее онлайн-сообщество</div></div>
-        <div class="card"><div class="name">ИТМО</div><div class="uni">Центр карьеры обучающихся</div><div class="feature">IT-специализация, проекты</div></div>
-        <div class="card" style="border-color:#2D9CDB; background:#f5faff;"><div class="name" style="color:#2D9CDB;">Сеченовский</div><div class="uni">Центр карьеры</div><div class="feature">⭐ Медицинская специализация</div></div>
-        <div class="card"><div class="name">РНИМУ</div><div class="uni">Отдел содействия трудоустройству</div><div class="feature">Центр компетенций</div></div>
-        <div class="card"><div class="name">СПбГУ</div><div class="uni">Центр карьер</div><div class="feature">Уникальное имя, Alumni</div></div>
+      <div style="display:flex; flex-direction:column; gap:20px;">
+        <div>
+          <h3 style="font-size:1rem; color:#1E3A5F; margin-bottom:8px;">Российские</h3>
+          <div class="uni-grid">
+            <button class="uni-btn" onclick="goTo(3)">Герцена<span class="short">«Мост»</span></button>
+            <button class="uni-btn" onclick="goTo(4)">РУДН<span class="short">центр карьеры</span></button>
+            <button class="uni-btn" onclick="goTo(5)">ТГАСУ<span class="short">центр карьеры</span></button>
+            <button class="uni-btn" onclick="goTo(6)">Шухова<span class="short">развитие карьеры</span></button>
+            <button class="uni-btn" onclick="goTo(7)">МГУ<span class="short">факультетские</span></button>
+            <button class="uni-btn" onclick="goTo(8)">ВШЭ<span class="short">развитие карьеры</span></button>
+            <button class="uni-btn" onclick="goTo(9)">ИТМО<span class="short">обучающихся</span></button>
+            <button class="uni-btn" style="border-color:#2D9CDB; background:#f5faff;" onclick="goTo(10)">Сеченовский<span class="short">★ мед</span></button>
+            <button class="uni-btn" onclick="goTo(11)">РНИМУ<span class="short">отдел</span></button>
+            <button class="uni-btn" onclick="goTo(12)">СПбГУ<span class="short">центр карьер</span></button>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size:1rem; color:#1E3A5F; margin-bottom:8px;">Зарубежные</h3>
+          <div class="uni-grid">
+            <button class="uni-btn" onclick="goTo(13)">Гарвард<span class="short">Harvard</span></button>
+            <button class="uni-btn" onclick="goTo(14)">Стэнфорд<span class="short">Stanford</span></button>
+            <button class="uni-btn" onclick="goTo(15)">Оксфорд<span class="short">Oxford</span></button>
+            <button class="uni-btn" onclick="goTo(16)">Кембридж<span class="short">Cambridge</span></button>
+            <button class="uni-btn" onclick="goTo(17)">ETH Zurich<span class="short">Швейцария</span></button>
+            <button class="uni-btn" onclick="goTo(18)">Сингапур<span class="short">NUS</span></button>
+          </div>
+        </div>
+        <p style="font-size:0.7rem; color:#bbb; margin-top:8px;">Сеченовский выделен как ключевой медицинский референс</p>
       </div>
-      <p style="font-size:0.7rem; color:#bbb; margin-top:12px;">Сеченовский выделен как ключевой референс для медицинского вуза</p>
     `
   },
-  // 3 — СВОДНАЯ МАТРИЦА
+  // 3 — ГЕРЦЕНА
+  {
+    type:'content',
+    title:'РГПУ им. А. И. Герцена',
+    subtitle:'Центр карьеры «Мост» · с 2003 года',
+    content:`
+      <div class="grid-2">
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Визуальный стиль</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Собственное имя «Мост»</li>
+            <li>• Чёрно-белая гамма с акцентом</li>
+            <li>• Строгий минимализм</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Услуги</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Индивидуальные консультации</li>
+            <li>• Помощь в составлении резюме</li>
+            <li>• Подбор вакансий и стажировок</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Цифровые инструменты</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Страница ВКонтакте</li>
+            <li>• Интеграция с «Факультетус»</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Взаимодействие с работодателями</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Инклюзивная платформа «Есть дело»</li>
+            <li>• Проект «Атлас профессий»</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Уникальные фишки</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Собственное имя «Мост»</li>
+            <li>• Социальная направленность</li>
+            <li>• История с 2003 года</li>
+          </ul>
+          <a href="https://vk.com/mostspb" target="_blank" style="margin-top:8px; display:inline-block;">Страница ВК →</a>
+        </div>
+      </div>
+    `
+  },
+  // 4 — РУДН
+  {
+    type:'content',
+    title:'РУДН',
+    subtitle:'Центр карьеры РУДН',
+    content:`
+      <div class="grid-2">
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Визуальный стиль</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Бренд университета</li>
+            <li>• Слоган «Открой новые возможности»</li>
+            <li>• Минималистичный дизайн</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Услуги</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Индивидуальные консультации</li>
+            <li>• Профориентационное тестирование</li>
+            <li>• Информационные рассылки вакансий</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Цифровые инструменты</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Группа ВКонтакте</li>
+            <li>• Calendly для записи</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Взаимодействие с работодателями</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Российские и международные компании</li>
+            <li>• Карьерные мероприятия</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Уникальные фишки</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Международная направленность</li>
+            <li>• Отдельная работа с ОВЗ</li>
+            <li>• Профориентолог в штате</li>
+          </ul>
+          <a href="https://www.rudn.ru" target="_blank" style="margin-top:8px; display:inline-block;">Сайт РУДН →</a>
+        </div>
+      </div>
+    `
+  },
+  // 5 — ТГАСУ
+  {
+    type:'content',
+    title:'ТГАСУ',
+    subtitle:'Центр карьеры и трудоустройства',
+    content:`
+      <div class="grid-2">
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Визуальный стиль</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Логотип с аббревиатурой</li>
+            <li>• Слоган «Найди себя в работе»</li>
+            <li>• Индустриальный стиль</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Услуги</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Организация практик и стажировок</li>
+            <li>• Карьерные форумы</li>
+            <li>• Индивидуальные карьерные траектории</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Цифровые инструменты</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Отдельная страница на сайте</li>
+            <li>• Группа ВКонтакте</li>
+            <li>• Telegram-канал</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Взаимодействие с работодателями</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• База более 300 предприятий</li>
+            <li>• Проект «История успеха»</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Уникальные фишки</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Проект «История успеха»</li>
+            <li>• Ассоциация работодателей</li>
+            <li>• Отраслевая специализация</li>
+          </ul>
+          <a href="http://www.tsuab.ru" target="_blank" style="margin-top:8px; display:inline-block;">Сайт ТГАСУ →</a>
+        </div>
+      </div>
+    `
+  },
+  // 6 — БГТУ ШУХОВА
+  {
+    type:'content',
+    title:'БГТУ им. В. Г. Шухова',
+    subtitle:'Центр развития карьеры',
+    content:`
+      <div class="grid-2">
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Визуальный стиль</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Логотип университета</li>
+            <li>• Слоганы «Поможем построить карьеру мечты!»</li>
+            <li>• Акцент на соцсети</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Услуги</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Помощь в составлении резюме</li>
+            <li>• Подготовка к собеседованиям</li>
+            <li>• Ярмарки вакансий</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Цифровые инструменты</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Страница на сайте</li>
+            <li>• Группа ВКонтакте</li>
+            <li>• Telegram-канал</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Взаимодействие с работодателями</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Партнёрская сеть</li>
+            <li>• Экскурсии на предприятия</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Уникальные фишки</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Ранняя профориентация (со школы)</li>
+            <li>• Широкая партнёрская сеть</li>
+            <li>• Акцент на практику</li>
+          </ul>
+          <a href="https://www.bstu.ru" target="_blank" style="margin-top:8px; display:inline-block;">Сайт БГТУ →</a>
+        </div>
+      </div>
+    `
+  },
+  // 7 — МГУ
+  {
+    type:'content',
+    title:'МГУ им. М. В. Ломоносова',
+    subtitle:'Факультетские центры карьеры',
+    content:`
+      <div class="grid-2">
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Визуальный стиль</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Отсутствует единый общеуниверситетский центр</li>
+            <li>• Факультетские центры</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Услуги</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Размещение вакансий</li>
+            <li>• Карьерные порталы факультетов</li>
+            <li>• Портал для иностранных студентов</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Цифровые инструменты</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Карьерный портал юридического факультета</li>
+            <li>• Стенды в корпусах</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Взаимодействие с работодателями</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Ведущие компании (Huawei, L'Oreal, Тинькофф и др.)</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Уникальные фишки</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Децентрализованная модель</li>
+            <li>• Центр «Первая ступень»</li>
+            <li>• Портал для иностранных студентов</li>
+          </ul>
+          <a href="https://www.msu.ru" target="_blank" style="margin-top:8px; display:inline-block;">Сайт МГУ →</a>
+        </div>
+      </div>
+    `
+  },
+  // 8 — ВШЭ
+  {
+    type:'content',
+    title:'НИУ ВШЭ',
+    subtitle:'Центр развития карьеры',
+    content:`
+      <div class="grid-2">
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Визуальный стиль</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Крупнейшее карьерное онлайн-сообщество</li>
+            <li>• Современный digital-стиль</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Услуги</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Вакансии в ведущих компаниях</li>
+            <li>• Практики и стажировки</li>
+            <li>• Карьерное консультирование</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Цифровые инструменты</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Сайт career.hse.ru</li>
+            <li>• Социальные сети</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Взаимодействие с работодателями</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Широкая сеть работодателей</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Уникальные фишки</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Крупнейшее онлайн-сообщество</li>
+            <li>• Экосистемный подход</li>
+            <li>• Отдельная работа с ОВЗ</li>
+          </ul>
+          <a href="https://career.hse.ru" target="_blank" style="margin-top:8px; display:inline-block;">career.hse.ru →</a>
+        </div>
+      </div>
+    `
+  },
+  // 9 — ИТМО
+  {
+    type:'content',
+    title:'Университет ИТМО',
+    subtitle:'Центр карьеры обучающихся',
+    content:`
+      <div class="grid-2">
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Визуальный стиль</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Современный IT-стиль</li>
+            <li>• Ориентация на молодёжную аудиторию</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Услуги</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Консультирование по практикам</li>
+            <li>• Дни карьеры и ярмарки</li>
+            <li>• База работодателей</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Цифровые инструменты</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Сайт careers.itmo.ru</li>
+            <li>• Telegram-канал</li>
+            <li>• ВКонтакте</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Взаимодействие с работодателями</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• ITMO.HUNTER и ИТМО.Case</li>
+            <li>• Карьерный форум</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Уникальные фишки</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• IT-специализация</li>
+            <li>• Проектный подход</li>
+            <li>• Регулярные карьерные форумы</li>
+          </ul>
+          <a href="https://careers.itmo.ru" target="_blank" style="margin-top:8px; display:inline-block;">careers.itmo.ru →</a>
+        </div>
+      </div>
+    `
+  },
+  // 10 — СЕЧЕНОВСКИЙ
+  {
+    type:'content',
+    title:'Сеченовский университет',
+    subtitle:'Центр карьеры · медицинская специализация',
+    content:`
+      <div class="grid-2">
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Визуальный стиль</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Медицинский, академический стиль</li>
+            <li>• Интеграция с брендом университета</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Услуги</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Содействие карьерному росту</li>
+            <li>• Научная карьера и R&D</li>
+            <li>• Платформа «Факультетус»</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Цифровые инструменты</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Цифровой портал «Факультетус»</li>
+            <li>• Портал «Medcareer»</li>
+            <li>• Интеграция с hh.ru и SuperJob</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Взаимодействие с работодателями</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Кадровые партнёры через «Факультетус»</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Уникальные фишки</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>⭐ Медицинская специализация</li>
+            <li>• Интеграция науки и карьеры</li>
+            <li>• Фокус на молодёжную науку</li>
+          </ul>
+          <a href="https://www.sechenov.ru" target="_blank" style="margin-top:8px; display:inline-block;">Сайт Сеченовского →</a>
+        </div>
+      </div>
+    `
+  },
+  // 11 — РНИМУ
+  {
+    type:'content',
+    title:'РНИМУ им. Н. И. Пирогова',
+    subtitle:'Отдел содействия трудоустройству',
+    content:`
+      <div class="grid-2">
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Визуальный стиль</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Академический, медицинский</li>
+            <li>• Отсутствует выраженный бренд ЦК</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Услуги</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Содействие трудоустройству</li>
+            <li>• Сопровождение выпускников</li>
+            <li>• Центр компетенций</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Цифровые инструменты</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Почта ostsv@rsmu.ru</li>
+            <li>• Сайт университета</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Взаимодействие с работодателями</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Стандартное взаимодействие</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Уникальные фишки</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Центр компетенций</li>
+            <li>• Паспортизация навыков</li>
+            <li>• Интеграция с образовательным процессом</li>
+          </ul>
+          <a href="https://www.rsmu.ru" target="_blank" style="margin-top:8px; display:inline-block;">Сайт РНИМУ →</a>
+        </div>
+      </div>
+    `
+  },
+  // 12 — СПбГУ
+  {
+    type:'content',
+    title:'СПбГУ',
+    subtitle:'Центр карьер (без окончания)',
+    content:`
+      <div class="grid-2">
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Визуальный стиль</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Современный, минималистичный</li>
+            <li>• Уникальное название «Центр карьер»</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Услуги</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Информационное сопровождение</li>
+            <li>• Стажировки, экскурсии, хакатоны</li>
+            <li>• Кейс-чемпионаты</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Цифровые инструменты</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Сайт spbu.ru</li>
+            <li>• Группа ВКонтакте</li>
+            <li>• Telegram-канал</li>
+            <li>• Карьерный портал alumni.spbu.ru</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Взаимодействие с работодателями</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Активное привлечение партнёров</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Уникальные фишки</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Уникальное имя «Центр карьер»</li>
+            <li>• Интеграция с Alumni-порталом</li>
+            <li>• Хакатоны и кейс-чемпионаты</li>
+          </ul>
+          <a href="https://spbu.ru" target="_blank" style="margin-top:8px; display:inline-block;">Сайт СПбГУ →</a>
+        </div>
+      </div>
+    `
+  },
+  // 13 — ГАРВАРД
+  {
+    type:'content',
+    title:'Гарвардский университет',
+    subtitle:'Harvard University · Career Services',
+    content:`
+      <div class="grid-2">
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Визуальный стиль</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Академический, статусный</li>
+            <li>• Тёмно-бордовый (#A41034)</li>
+            <li>• Строгий минимализм</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Услуги</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Индивидуальные карьерные консультации</li>
+            <li>• Помощь в поиске стажировок</li>
+            <li>• Программа наставничества</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Цифровые инструменты</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Портал Career Services</li>
+            <li>• Crimson Careers</li>
+            <li>• LinkedIn интеграция</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Уникальные фишки</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Глобальная сеть выпускников</li>
+            <li>• Ранние карьерные треки</li>
+            <li>• Онлайн-тренинги</li>
+          </ul>
+          <a href="https://careerservices.fas.harvard.edu/" target="_blank" style="margin-top:8px; display:inline-block;">Сайт →</a>
+        </div>
+      </div>
+    `
+  },
+  // 14 — СТЭНФОРД
+  {
+    type:'content',
+    title:'Стэнфордский университет',
+    subtitle:'Stanford · Career Development Center',
+    content:`
+      <div class="grid-2">
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Визуальный стиль</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Современный, инновационный</li>
+            <li>• Кардинал-красный (#8C1515)</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Услуги</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Карьерное консультирование</li>
+            <li>• Помощь в стартапах</li>
+            <li>• Программа «Cardinal Careers»</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Цифровые инструменты</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Stanford Career</li>
+            <li>• Handshake</li>
+            <li>• Виртуальные ярмарки</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Уникальные фишки</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Связь с Кремниевой долиной</li>
+            <li>• Программа стартап-менторства</li>
+            <li>• Междисциплинарный подход</li>
+          </ul>
+          <a href="https://career.stanford.edu/" target="_blank" style="margin-top:8px; display:inline-block;">Сайт →</a>
+        </div>
+      </div>
+    `
+  },
+  // 15 — ОКСФОРД
+  {
+    type:'content',
+    title:'Оксфордский университет',
+    subtitle:'Oxford · Careers Service',
+    content:`
+      <div class="grid-2">
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Визуальный стиль</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Классический, британский</li>
+            <li>• Оксфордский синий (#002147)</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Услуги</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Индивидуальные консультации</li>
+            <li>• Навыки интервью</li>
+            <li>• Программа «Oxford Careers»</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Цифровые инструменты</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Oxford CareerConnect</li>
+            <li>• Сайт careers.ox.ac.uk</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Уникальные фишки</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Оксфордская модель колледжей</li>
+            <li>• Глобальная сеть выпускников</li>
+            <li>• Практика в консалтинге и финансах</li>
+          </ul>
+          <a href="https://www.careers.ox.ac.uk/" target="_blank" style="margin-top:8px; display:inline-block;">Сайт →</a>
+        </div>
+      </div>
+    `
+  },
+  // 16 — КЕМБРИДЖ
+  {
+    type:'content',
+    title:'Кембриджский университет',
+    subtitle:'Cambridge · Careers Service',
+    content:`
+      <div class="grid-2">
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Визуальный стиль</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Академический, британский</li>
+            <li>• Кембриджский синий (#A3C1AD)</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Услуги</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Карьерное консультирование</li>
+            <li>• Практика и стажировки</li>
+            <li>• Навыки интервью</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Цифровые инструменты</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Cambridge Careers</li>
+            <li>• Handshake</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Уникальные фишки</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Связь с промышленностью</li>
+            <li>• Стажировки в научных парках</li>
+            <li>• Менторство выпускников</li>
+          </ul>
+          <a href="https://www.careers.cam.ac.uk/" target="_blank" style="margin-top:8px; display:inline-block;">Сайт →</a>
+        </div>
+      </div>
+    `
+  },
+  // 17 — ETH ZURICH
+  {
+    type:'content',
+    title:'ETH Zurich',
+    subtitle:'Швейцарская высшая техническая школа',
+    content:`
+      <div class="grid-2">
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Визуальный стиль</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Современный, технологичный</li>
+            <li>• Тёмно-синий, бирюзовый</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Услуги</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Карьерное консультирование</li>
+            <li>• Связь с индустрией</li>
+            <li>• Программа стажировок</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Цифровые инструменты</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• ETH Career Center</li>
+            <li>• Alumni-портал</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Уникальные фишки</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Связь с промышленностью Швейцарии</li>
+            <li>• Стажировки в исследовательских центрах</li>
+            <li>• Инновационный экосистемный подход</li>
+          </ul>
+          <a href="https://ethz.ch/en/the-eth-zurich/career.html" target="_blank" style="margin-top:8px; display:inline-block;">Сайт →</a>
+        </div>
+      </div>
+    `
+  },
+  // 18 — СИНГАПУР (NUS)
+  {
+    type:'content',
+    title:'Национальный университет Сингапура',
+    subtitle:'NUS · Centre for Future-Ready Graduates',
+    content:`
+      <div class="grid-2">
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Визуальный стиль</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Современный, азиатский</li>
+            <li>• Оранжевый (#F77F00)</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Услуги</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Карьерные консультации</li>
+            <li>• Программа «Future-ready»</li>
+            <li>• Помощь в стажировках</li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-size:0.7rem; color:#999;">Цифровые инструменты</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• NUS Career+</li>
+            <li>• Виртуальные ярмарки</li>
+          </ul>
+          <div style="font-size:0.7rem; color:#999; margin-top:12px;">Уникальные фишки</div>
+          <ul style="list-style:none; margin-top:4px; font-size:0.8rem; color:#555; line-height:1.8;">
+            <li>• Азиатский бизнес-фокус</li>
+            <li>• Глобальные стажировки</li>
+            <li>• Интеграция с работодателями региона</li>
+          </ul>
+          <a href="https://nus.edu.sg/cfg" target="_blank" style="margin-top:8px; display:inline-block;">Сайт →</a>
+        </div>
+      </div>
+    `
+  },
+  // 19 — СВОДНАЯ МАТРИЦА
   {
     type:'content',
     title:'Сводная матрица',
-    subtitle:'Ключевые характеристики 10 ЦК',
+    subtitle:'Сравнительная таблица вузов',
     content:`
       <div style="overflow-y:auto; flex:1;">
         <table class="matrix-table">
-          <thead><tr><th>Университет</th><th>Название ЦК</th><th>Уникальная фишка</th></tr></thead>
+          <thead><tr><th>Вуз</th><th>Страна</th><th>Название ЦК</th><th>Уникальная фишка</th></tr></thead>
           <tbody>
-            <tr><td>Герцена</td><td>«Мост»</td><td>Собственный бренд, инклюзия</td></tr>
-            <tr><td>РУДН</td><td>Центр карьеры РУДН</td><td>Международность, ОВЗ</td></tr>
-            <tr><td>ТГАСУ</td><td>Центр карьеры и трудоустройства</td><td>«История успеха»</td></tr>
-            <tr><td>БГТУ Шухова</td><td>Центр развития карьеры</td><td>Ранняя профориентация</td></tr>
-            <tr><td>МГУ</td><td>Факультетские центры</td><td>Децентрализованная модель</td></tr>
-            <tr><td>ВШЭ</td><td>Центр развития карьеры</td><td>Крупнейшее онлайн-сообщество</td></tr>
-            <tr><td>ИТМО</td><td>Центр карьеры обучающихся</td><td>IT-специализация</td></tr>
-            <tr><td style="font-weight:600;">Сеченовский</td><td>Центр карьеры</td><td style="font-weight:500; color:#2D9CDB;">Медицинская специализация</td></tr>
-            <tr><td>РНИМУ</td><td>Отдел содействия трудоустройству</td><td>Центр компетенций</td></tr>
-            <tr><td>СПбГУ</td><td>Центр карьер</td><td>Уникальное имя</td></tr>
+            <tr><td>Герцена</td><td>РФ</td><td>«Мост»</td><td>Собственный бренд, инклюзия</td></tr>
+            <tr><td>РУДН</td><td>РФ</td><td>Центр карьеры РУДН</td><td>Международность, ОВЗ</td></tr>
+            <tr><td>ТГАСУ</td><td>РФ</td><td>Центр карьеры и трудоустройства</td><td>«История успеха», Ассоциация</td></tr>
+            <tr><td>БГТУ Шухова</td><td>РФ</td><td>Центр развития карьеры</td><td>Ранняя профориентация</td></tr>
+            <tr><td>МГУ</td><td>РФ</td><td>Факультетские центры</td><td>Децентрализованная модель</td></tr>
+            <tr><td>ВШЭ</td><td>РФ</td><td>Центр развития карьеры</td><td>Крупнейшее онлайн-сообщество</td></tr>
+            <tr><td>ИТМО</td><td>РФ</td><td>Центр карьеры обучающихся</td><td>IT-специализация, проекты</td></tr>
+            <tr><td style="font-weight:600;">Сеченовский</td><td>РФ</td><td>Центр карьеры</td><td style="font-weight:500; color:#2D9CDB;">⭐ Медицинская специализация</td></tr>
+            <tr><td>РНИМУ</td><td>РФ</td><td>Отдел содействия трудоустройству</td><td>Центр компетенций</td></tr>
+            <tr><td>СПбГУ</td><td>РФ</td><td>Центр карьер</td><td>Уникальное имя, Alumni</td></tr>
+            <tr><td>Гарвард</td><td>США</td><td>Career Services</td><td>Глобальная сеть, ранние треки</td></tr>
+            <tr><td>Стэнфорд</td><td>США</td><td>Career Development Center</td><td>Кремниевая долина, стартапы</td></tr>
+            <tr><td>Оксфорд</td><td>ВБ</td><td>Careers Service</td><td>Модель колледжей, консалтинг</td></tr>
+            <tr><td>Кембридж</td><td>ВБ</td><td>Careers Service</td><td>Научные парки, менторство</td></tr>
+            <tr><td>ETH Zurich</td><td>Швейцария</td><td>Career Center</td><td>Инновации, исследовательские центры</td></tr>
+            <tr><td>Сингапур (NUS)</td><td>Сингапур</td><td>Centre for Future-Ready Graduates</td><td>Азиатский фокус, глобальные стажировки</td></tr>
           </tbody>
         </table>
       </div>
     `
   },
-  // 4 — КЛЮЧЕВЫЕ ВЫВОДЫ
+  // 20 — КЛЮЧЕВЫЕ ВЫВОДЫ
   {
     type:'content',
     title:'Ключевые выводы',
-    subtitle:'Лучшие практики для адаптации',
+    subtitle:'Лучшие практики для адаптации в ЦК Алмазова',
     content:`
       <div style="display:flex; flex-direction:column; gap:8px;">
         <div class="highlight-box"><p><strong>1. Брендинг и нейминг</strong><br>Собственное запоминающееся имя — как «Мост» у Герцена или «Центр карьер» у СПбГУ.</p></div>
@@ -394,10 +1132,11 @@ const slides = [
         <div class="highlight-box"><p><strong>3. Цифровые инструменты</strong><br>Развивать Telegram-канал, сообщество ВКонтакте, создать карьерный портал.</p></div>
         <div class="highlight-box"><p><strong>4. Работа с целевыми группами</strong><br>Адаптировать подходы для ОВЗ, целевиков, ординаторов, врачей-стажёров.</p></div>
         <div class="highlight-box"><p><strong>5. Мероприятия и форматы</strong><br>«Истории успеха», хакатоны, кейс-чемпионаты с работодателями.</p></div>
+        <div class="highlight-box"><p><strong>6. Зарубежный опыт</strong><br>Лига плюща — ранние карьерные треки, глобальная сеть выпускников, менторство. ETH Zurich — инновационная экосистема. NUS — азиатский фокус с глобальными стажировками.</p></div>
       </div>
     `
   },
-  // 5 — АНАЛИЗ БРЕНДА ЦЕНТРА АЛМАЗОВА
+  // 21 — АНАЛИЗ БРЕНДА ЦЕНТРА АЛМАЗОВА
   {
     type:'content',
     title:'Анализ бренда Центра Алмазова',
@@ -427,7 +1166,7 @@ const slides = [
       <p style="font-size:0.8rem; color:#666;">Задача: разработать айдентику ЦК, которая будет узнаваема, но при этом сохранит связь с брендом Центра Алмазова.</p>
     `
   },
-  // 6 — КОНЦЕПЦИЯ 1: Преемственность
+  // 22 — КОНЦЕПЦИЯ 1: Преемственность
   {
     type:'content',
     title:'Концепция 1 · Преемственность',
@@ -441,7 +1180,7 @@ const slides = [
       <p style="font-size:0.8rem; color:#666; margin-top:12px;">Айдентика полностью наследует бренд Центра Алмазова, добавляя карьерную специфику. Подходит для консервативной аудитории.</p>
     `
   },
-  // 7 — КОНЦЕПЦИЯ 2: Современность
+  // 23 — КОНЦЕПЦИЯ 2: Современность
   {
     type:'content',
     title:'Концепция 2 · Современность',
@@ -455,7 +1194,7 @@ const slides = [
       <p style="font-size:0.8rem; color:#666; margin-top:12px;">Сохранена связь с брендом через синий цвет, но добавлена молодёжная энергия. Подходит для привлечения студентов.</p>
     `
   },
-  // 8 — КОНЦЕПЦИЯ 3: Универсальность
+  // 24 — КОНЦЕПЦИЯ 3: Универсальность
   {
     type:'content',
     title:'Концепция 3 · Универсальность',
@@ -472,7 +1211,7 @@ const slides = [
 ];
 
 // ============================================================
-//  РЕНДЕРИНГ И НАВИГАЦИЯ (НЕ ТРОГАЙТЕ ЭТУ ЧАСТЬ)
+//  РЕНДЕРИНГ И НАВИГАЦИЯ
 // ============================================================
 const wrapper = document.getElementById('slideWrapper');
 const pageNumber = document.getElementById('pageNumber');
@@ -576,5 +1315,6 @@ document.querySelector('.main').addEventListener('touchend', (e) => {
 });
 
 buildSlides();
-</script></body>
+</script>
+</body>
 </html>
